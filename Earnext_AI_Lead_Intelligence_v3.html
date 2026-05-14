@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Earnext — AI Lead & Client Intelligence System</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --teal:#00B9B6;--teal-lt:#80DCDB;--teal-pale:#E6F8F8;--teal-pale2:#EAF9F9;
+  --navy:#000059;--navy-dk:#00003B;
+  --gray:#E0E0EB;--gray-lt:#F4F4F8;--gray-mid:#B0B0C0;
+  --violet:#470A57;--slate:#608C97;--teal-dp:#005467;
+  --lavender:#7367F0;--mustard:#B09C4F;
+  --green:#16A34A;--amber:#D97706;--red:#DC2626;
+  --text:#000059;--text2:#4A4A6A;--text3:#8080A0;
+  --white:#fff;--sidebar-w:210px;--right-w:290px;
+}
+body{font-family:'Manrope',sans-serif;background:var(--gray-lt);color:var(--text);height:100vh;display:flex;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--navy-dk);display:flex;flex-direction:column;height:100vh;}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+.logo-text{font-size:18px;font-weight:800;color:#fff;letter-spacing:.08em;}
+.logo-text span{color:var(--teal);}
+.logo-sub{font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;margin-top:2px;}
+.nav-items{flex:1;padding:12px 0;overflow-y:auto;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 18px;font-size:13px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;transition:all .15s;border-left:3px solid transparent;user-select:none;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.05);}
+.nav-item.active{color:#fff;background:rgba(0,185,182,.12);border-left-color:var(--teal);}
+.nav-item i{font-size:18px;flex-shrink:0;}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--teal);color:#fff;}
+.nav-section{padding:14px 18px 6px;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.25);}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,.08);}
+.user-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.user-name{font-size:12px;font-weight:600;color:#fff;}
+.user-role{font-size:10px;color:rgba(255,255,255,.4);}
+.ai-btn{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;background:rgba(0,185,182,.15);border:1px solid rgba(0,185,182,.3);cursor:pointer;}
+.ai-btn span{font-size:12px;color:rgba(255,255,255,.8);font-weight:500;}
+.ai-btn i{font-size:16px;color:var(--teal);}
+.beta-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--teal);color:#fff;margin-left:auto;}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* topbar */
+.topbar{background:#fff;border-bottom:1px solid var(--gray);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.topbar-left{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text3);}
+.bc-current{color:var(--navy);font-weight:600;}
+.topbar-right{display:flex;gap:8px;align-items:center;}
+.btn-ghost{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--gray);background:#fff;color:var(--navy);cursor:pointer;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:6px;transition:border-color .15s;}
+.btn-ghost:hover{border-color:var(--teal);}
+.btn-teal{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:700;border:none;background:var(--teal);color:#fff;cursor:pointer;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:6px;}
+.btn-teal:hover{background:var(--teal-dp);}
+.btn-navy{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:700;border:none;background:var(--navy);color:#fff;cursor:pointer;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:6px;}
+.btn-navy:hover{background:var(--teal);}
+
+/* import banner */
+.import-banner{background:linear-gradient(135deg,var(--navy-dk),#1a1a7a);border-bottom:2px solid var(--teal);padding:12px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.import-banner.hidden{display:none;}
+.ib-icon{width:36px;height:36px;border-radius:8px;background:rgba(0,185,182,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ib-icon i{font-size:20px;color:var(--teal);}
+.ib-text{flex:1;}
+.ib-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.ib-sub{font-size:11px;color:rgba(255,255,255,.5);}
+.btn-import{padding:8px 18px;border-radius:7px;font-size:12px;font-weight:700;background:var(--teal);color:#fff;border:none;cursor:pointer;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:7px;}
+.btn-dismiss{padding:8px 14px;border-radius:7px;font-size:12px;font-weight:600;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);cursor:pointer;font-family:'Manrope',sans-serif;}
+
+/* pages */
+.page{display:none;flex:1;overflow:hidden;}
+.page.active{display:flex;}
+
+/* ── PAGE: LEAD INTELLIGENCE ── */
+.lead-list-panel{width:240px;flex-shrink:0;background:#fff;border-right:1px solid var(--gray);display:flex;flex-direction:column;overflow:hidden;}
+.llp-header{padding:14px 16px;border-bottom:1px solid var(--gray);display:flex;align-items:center;justify-content:space-between;}
+.llp-title{font-size:12px;font-weight:700;color:var(--navy);}
+.llp-count{font-size:11px;color:var(--text3);}
+.llp-search{padding:10px 12px;border-bottom:1px solid var(--gray);}
+.llp-search input{width:100%;padding:7px 10px;border:1px solid var(--gray);border-radius:6px;font-size:12px;font-family:'Manrope',sans-serif;color:var(--navy);outline:none;}
+.llp-search input:focus{border-color:var(--teal);}
+.llp-filters{padding:8px 12px;border-bottom:1px solid var(--gray);display:flex;gap:5px;flex-wrap:wrap;}
+.filter-btn{padding:3px 10px;border-radius:99px;font-size:10px;font-weight:600;border:1px solid var(--gray);background:#fff;color:var(--text3);cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s;}
+.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.filter-btn.f-alta.active{background:var(--green);border-color:var(--green);}
+.filter-btn.f-media.active{background:var(--amber);border-color:var(--amber);}
+.filter-btn.f-bassa.active{background:var(--red);border-color:var(--red);}
+.lead-items{flex:1;overflow-y:auto;}
+.lead-item{padding:12px 14px;border-bottom:1px solid var(--gray);cursor:pointer;transition:background .1s;}
+.lead-item:hover{background:var(--teal-pale2);}
+.lead-item.active{background:var(--teal-pale);border-left:3px solid var(--teal);}
+.li-name{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-sub{font-size:11px;color:var(--text3);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-footer{display:flex;align-items:center;justify-content:space-between;}
+.li-score{font-size:12px;font-weight:700;color:var(--teal-dp);}
+.li-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.li-alta{background:#DCFCE7;color:var(--green);}
+.li-media{background:#FEF3C7;color:var(--amber);}
+.li-bassa{background:#FEE2E2;color:var(--red);}
+.li-assigned-label{font-size:10px;color:var(--slate);margin-top:3px;}
+
+/* center scroll */
+.center{flex:1;overflow-y:auto;padding:20px;}
+
+/* empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px;}
+.empty-state.hidden{display:none;}
+.es-icon{width:72px;height:72px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
+.es-icon i{font-size:36px;color:var(--teal);}
+.es-title{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.es-sub{font-size:14px;color:var(--text3);margin-bottom:24px;line-height:1.6;max-width:360px;}
+
+/* lead detail */
+.lead-detail{display:none;}
+.lead-detail.visible{display:block;}
+.lead-header{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:20px 24px;margin-bottom:16px;}
+.lead-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;}
+.lead-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
+.lead-info{flex:1;}
+.lead-name-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;}
+.lead-name{font-size:22px;font-weight:700;color:var(--navy);}
+.lead-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;}
+.lead-sub{font-size:13px;color:var(--text2);margin-bottom:8px;}
+.lead-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.lead-tag{font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--gray);color:var(--text2);}
+.lead-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:12px;}
+.lm-label{color:var(--text3);font-size:11px;margin-bottom:2px;}
+.lm-value{color:var(--navy);font-weight:600;}
+.lead-actions{display:flex;gap:8px;flex-shrink:0;}
+.score-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.score-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:16px 18px;}
+.sc-label{font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:500;}
+.sc-main{display:flex;align-items:baseline;gap:6px;margin-bottom:6px;}
+.sc-val{font-size:28px;font-weight:700;color:var(--navy);}
+.sc-max{font-size:12px;color:var(--text3);}
+.sc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.badge-alto{background:#DCFCE7;color:var(--green);}
+.badge-medio{background:#FEF3C7;color:var(--amber);}
+.badge-basso{background:#FEE2E2;color:var(--red);}
+.sc-bar{height:5px;background:var(--gray);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+.sc-bar-fill{height:100%;border-radius:99px;transition:width .6s ease;}
+.sc-desc{font-size:11px;color:var(--text3);line-height:1.4;}
+.tab-nav{display:flex;gap:0;background:#fff;border-radius:10px 10px 0 0;border:1px solid var(--gray);border-bottom:none;padding:0 8px;}
+.tab-btn{padding:12px 16px;font-size:13px;font-weight:600;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text3);cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s;white-space:nowrap;margin-bottom:-1px;}
+.tab-btn:hover{color:var(--navy);}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
+.tab-content{background:#fff;border:1px solid var(--gray);border-radius:0 0 10px 10px;padding:20px;margin-bottom:16px;}
+.tab-pane{display:none;}.tab-pane.active{display:block;}
+.pan-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.pan-card{background:var(--gray-lt);border:1px solid var(--gray);border-radius:8px;padding:16px 18px;}
+.pan-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.pan-title i{color:var(--teal);font-size:16px;}
+.beh-row{display:flex;align-items:center;gap:10px;font-size:12px;margin-bottom:8px;}
+.beh-row i{font-size:16px;color:var(--gray-mid);flex-shrink:0;}
+.beh-label{color:var(--text2);flex:1;}
+.beh-val{font-weight:600;color:var(--navy);}
+.int-row{margin-bottom:10px;}
+.int-label-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
+.int-label{color:var(--text2);}
+.int-pct{font-weight:700;color:var(--navy);}
+.int-bar{height:6px;background:var(--gray);border-radius:99px;overflow:hidden;}
+.int-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--teal-lt));}
+.ai-summary-box{background:linear-gradient(135deg,#EAF9F9,#F0EFF8);border:1px solid var(--teal-lt);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.7;}
+.regole-box{background:var(--teal-pale);border:1px solid var(--teal-lt);border-radius:8px;padding:12px 14px;}
+.regola-item{font-size:11px;color:var(--teal-dp);padding:5px 0;border-bottom:1px solid rgba(0,185,182,.15);display:flex;align-items:center;gap:7px;}
+.regola-item:last-child{border-bottom:none;}
+.regola-item i{font-size:13px;color:var(--teal);flex-shrink:0;}
+.assigned-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;margin-left:6px;}
+.assigned-badge i{font-size:12px;}
+
+/* right panel */
+.right-panel{width:var(--right-w);flex-shrink:0;background:#fff;border-left:1px solid var(--gray);overflow-y:auto;display:flex;flex-direction:column;}
+.rp-section{padding:16px 18px;border-bottom:1px solid var(--gray);}
+.rp-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.rp-title i{font-size:16px;color:var(--teal);}
+.nba-box{background:linear-gradient(135deg,var(--teal-pale2),#F3F0FD);border:1px solid var(--teal-lt);border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+.nba-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+.nba-action{font-size:14px;font-weight:700;color:var(--teal-dp);margin-bottom:6px;}
+.nba-desc{font-size:11px;color:var(--text2);line-height:1.5;}
+.nba-items{display:flex;flex-direction:column;gap:7px;}
+.nba-item{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--text2);padding:8px 10px;border:1px solid var(--gray);border-radius:7px;cursor:pointer;transition:border-color .15s;}
+.nba-item:hover{border-color:var(--teal);}
+.nba-item i{font-size:16px;flex-shrink:0;}
+.ni-teal i{color:var(--teal);}
+.ni-violet i{color:var(--lavender);}
+.ni-navy i{color:var(--navy);}
+.email-box{border:1px solid var(--gray);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+.email-hdr{background:var(--gray-lt);padding:10px 12px;border-bottom:1px solid var(--gray);}
+.email-subj-lbl{font-size:10px;color:var(--text3);margin-bottom:3px;}
+.email-subj{font-size:12px;font-weight:600;color:var(--navy);}
+.email-body{padding:12px;font-size:12px;color:var(--text2);line-height:1.7;max-height:160px;overflow-y:auto;}
+.email-actions{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--gray);}
+.btn-use{flex:1;padding:9px;border-radius:7px;font-size:12px;font-weight:700;border:none;background:var(--navy);color:#fff;cursor:pointer;font-family:'Manrope',sans-serif;}
+.btn-use:hover{background:var(--teal);}
+.btn-copy{width:36px;height:36px;border-radius:7px;border:1px solid var(--gray);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.btn-copy:hover{border-color:var(--teal);}
+.btn-copy i{font-size:16px;color:var(--text3);}
+.benefits{display:flex;flex-direction:column;gap:6px;}
+.ben-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);}
+.ben-check{color:var(--teal)!important;font-size:14px;}
+
+/* ── PAGE: CLIENTI ATTIVI ── */
+.page-scroll{flex:1;overflow-y:auto;padding:24px;}
+.page-header{margin-bottom:24px;}
+.page-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.page-sub{font-size:14px;color:var(--text3);}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--teal-lt));}
+.kpi-val{font-size:28px;font-weight:700;color:var(--navy);line-height:1;}
+.kpi-label{font-size:11px;color:var(--text3);margin-top:6px;}
+.kpi-delta{font-size:11px;color:var(--teal);margin-top:4px;font-weight:600;}
+.data-card{background:#fff;border:1px solid var(--gray);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+.data-card-hdr{padding:16px 20px;border-bottom:1px solid var(--gray);display:flex;align-items:center;justify-content:space-between;}
+.data-card-title{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.data-card-title i{color:var(--teal);font-size:16px;}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;padding:10px 16px;border-bottom:1px solid var(--gray);text-align:left;background:var(--gray-lt);}
+.data-table td{padding:11px 16px;border-bottom:1px solid var(--gray);color:var(--text2);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:var(--teal-pale2);}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:10px;font-weight:600;}
+.p-alta{background:#DCFCE7;color:var(--green);}
+.p-media{background:#FEF3C7;color:var(--amber);}
+.p-bassa{background:#FEE2E2;color:var(--red);}
+.p-teal{background:var(--teal-pale);color:var(--teal-dp);}
+.p-slate{background:#EEF2F8;color:var(--slate);}
+.score-chip{display:inline-flex;align-items:center;justify-content:center;width:36px;height:22px;border-radius:5px;font-size:11px;font-weight:700;}
+
+/* ── PAGE: DASHBOARD ── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.dash-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.chart-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:20px;}
+.chart-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.chart-card-title i{color:var(--teal);font-size:16px;}
+.chart-wrap{position:relative;width:100%;height:220px;}
+.sales-rank{display:flex;flex-direction:column;gap:10px;}
+.sr-row{display:flex;align-items:center;gap:12px;}
+.sr-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.sr-name{font-size:12px;font-weight:600;color:var(--navy);flex:1;}
+.sr-count{font-size:13px;font-weight:700;color:var(--teal-dp);min-width:24px;text-align:right;}
+.sr-bar-wrap{width:80px;height:5px;background:var(--gray);border-radius:99px;overflow:hidden;}
+.sr-bar{height:100%;border-radius:99px;background:var(--teal);}
+
+/* ── PAGE: AUTOMAZIONI ── */
+.auto-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.auto-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:20px;}
+.auto-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.auto-card-title i{color:var(--teal);font-size:16px;}
+.rule-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--gray);border-radius:8px;margin-bottom:8px;transition:border-color .15s;}
+.rule-row:hover{border-color:var(--teal);}
+.rule-row:last-child{margin-bottom:0;}
+.rule-icon{font-size:20px;flex-shrink:0;}
+.rule-body{flex:1;}
+.rule-cond{font-size:12px;color:var(--text2);line-height:1.4;}
+.rule-cond strong{color:var(--navy);}
+.rule-arrow{font-size:16px;color:var(--gray-mid);flex-shrink:0;}
+.rule-out{font-size:11px;font-weight:600;padding:4px 12px;border-radius:99px;flex-shrink:0;}
+.ro-sales{background:var(--teal-pale);color:var(--teal-dp);}
+.ro-nurture{background:#FEF3C7;color:var(--amber);}
+.ro-risk{background:#FEE2E2;color:var(--red);}
+.ro-premium{background:#F3F0FD;color:var(--lavender);}
+.ro-upsell{background:#DCFCE7;color:var(--green);}
+/* Toggle switch */
+.toggle-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.toggle{position:relative;width:36px;height:20px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--gray);border-radius:99px;transition:.2s;}
+.toggle-slider:before{content:'';position:absolute;height:14px;width:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+.toggle input:checked + .toggle-slider{background:var(--teal);}
+.toggle input:checked + .toggle-slider:before{transform:translateX(16px);}
+/* Stat boxes */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.stat-box{padding:14px 16px;background:var(--gray-lt);border:1px solid var(--gray);border-radius:8px;text-align:center;}
+.stat-val{font-size:22px;font-weight:700;color:var(--navy);}
+.stat-label{font-size:11px;color:var(--text3);margin-top:4px;}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:#fff;border-radius:14px;width:420px;overflow:hidden;transform:translateY(12px);transition:transform .2s;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-hdr{padding:20px 24px 16px;border-bottom:1px solid var(--gray);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:15px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.modal-title i{color:var(--teal);font-size:18px;}
+.modal-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--gray);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.modal-close:hover{border-color:var(--teal);}
+.modal-close i{font-size:16px;color:var(--text3);}
+.modal-body{padding:16px 24px;}
+.modal-lead-info{background:var(--teal-pale);border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+.modal-lead-name{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.modal-lead-sub{font-size:12px;color:var(--teal-dp);}
+.modal-section-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+.sales-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.sales-card{padding:12px 10px;border:1px solid var(--gray);border-radius:8px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+.sales-card:hover{border-color:var(--teal);}
+.sales-card.selected{border-color:var(--teal);background:var(--teal-pale);}
+.sc-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.sc-name{font-size:11px;font-weight:600;color:var(--navy);}
+.sc-role{font-size:10px;color:var(--text3);}
+.modal-note label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:6px;}
+.modal-note textarea{width:100%;padding:10px 12px;border:1px solid var(--gray);border-radius:8px;font-size:12px;font-family:'Manrope',sans-serif;color:var(--navy);resize:none;outline:none;height:70px;margin-bottom:0;}
+.modal-note textarea:focus{border-color:var(--teal);}
+.modal-footer{padding:14px 24px;border-top:1px solid var(--gray);display:flex;gap:8px;justify-content:flex-end;}
+
+/* toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy-dk);border:1px solid var(--teal);border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:12px;font-size:13px;color:#fff;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s ease;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast i{font-size:20px;color:var(--teal);}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">EAR<span>N</span>EXT</div>
+    <div class="logo-sub">Wealthtech Platform</div>
+  </div>
+  <nav class="nav-items">
+    <div class="nav-section">Principale</div>
+    <div class="nav-item active" onclick="goPage('leads',this)"><i class="ti ti-brain"></i>Lead Intelligence<span class="nav-badge" id="nav-count">0</span></div>
+    <div class="nav-item" onclick="goPage('clienti',this)"><i class="ti ti-users"></i>Clienti Attivi<span class="nav-badge" id="nav-count-clienti" style="background:var(--green);display:none;">0</span></div>
+    <div class="nav-item" onclick="goPage('dashboard',this)"><i class="ti ti-chart-bar"></i>Dashboard</div>
+    <div class="nav-section">Strumenti</div>
+    <div class="nav-item" onclick="goPage('automazioni',this)"><i class="ti ti-settings-automation"></i>Automazioni</div>
+    <div class="nav-item" style="opacity:.4;cursor:not-allowed;"><i class="ti ti-message-bolt"></i>Contenuti AI<span style="font-size:9px;margin-left:auto;color:rgba(255,255,255,.3);">presto</span></div>
+    <div class="nav-item" style="opacity:.4;cursor:not-allowed;"><i class="ti ti-report-analytics"></i>Report<span style="font-size:9px;margin-left:auto;color:rgba(255,255,255,.3);">presto</span></div>
+    <div class="nav-item" style="opacity:.4;cursor:not-allowed;"><i class="ti ti-settings"></i>Impostazioni</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-row">
+      <div class="user-avatar" style="background:#00B9B6;">BB</div>
+      <div><div class="user-name">Beverly Bertolino</div><div class="user-role">Manager</div></div>
+    </div>
+    <div class="ai-btn">
+      <i class="ti ti-robot"></i><span>AI Assistant</span><span class="beta-tag">BETA</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <span id="topbar-section">Lead Intelligence</span>
+      <i class="ti ti-chevron-right" id="topbar-chevron" style="display:none;font-size:14px;"></i>
+      <span class="bc-current" id="topbar-title"></span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-ghost" onclick="document.getElementById('csv-file').click()">
+        <i class="ti ti-upload"></i>Carica CSV
+      </button>
+      <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="handleCSV(this)">
+      <button class="btn-ghost" id="btn-prev" onclick="navLead(-1)" style="display:none"><i class="ti ti-chevron-left"></i></button>
+      <button class="btn-ghost" id="btn-next" onclick="navLead(1)"  style="display:none"><i class="ti ti-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <!-- Import banner -->
+  <div class="import-banner" id="import-banner">
+    <div class="ib-icon"><i class="ti ti-file-spreadsheet"></i></div>
+    <div class="ib-text">
+      <div class="ib-title">Carica i dati reali da Salesflare</div>
+      <div class="ib-sub">Importa il file <strong style="color:var(--teal-lt);">*_CRM.csv</strong> generato da <strong style="color:var(--teal-lt);">earnext_ai.py</strong></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-import" onclick="document.getElementById('csv-file').click()"><i class="ti ti-upload"></i>Carica CSV</button>
+      <button class="btn-dismiss" onclick="dismissBanner()">Usa demo</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PAGE: LEAD INTELLIGENCE
+  ══════════════════════════════════ -->
+  <div class="page active" id="page-leads">
+    <!-- Lead list panel -->
+    <div class="lead-list-panel">
+      <div class="llp-header">
+        <span class="llp-title">Lead</span>
+        <span class="llp-count" id="llp-count">0 totali</span>
+      </div>
+      <div class="llp-search">
+        <input type="text" placeholder="Cerca nome, azienda..." oninput="filterLeads(this.value)" id="search-input">
+      </div>
+      <div class="llp-filters">
+        <button class="filter-btn active" onclick="setFilter('tutti',this)">Tutti</button>
+        <button class="filter-btn f-alta"  onclick="setFilter('Alta',this)">Alta</button>
+        <button class="filter-btn f-media" onclick="setFilter('Media',this)">Media</button>
+        <button class="filter-btn f-bassa" onclick="setFilter('Bassa',this)">Bassa</button>
+      </div>
+      <div class="lead-items" id="lead-items"></div>
+    </div>
+
+    <!-- Center -->
+    <div class="center">
+      <div class="empty-state" id="empty-state">
+        <div class="es-icon"><i class="ti ti-file-upload"></i></div>
+        <div class="es-title">Nessun dato caricato</div>
+        <div class="es-sub">Carica il file CSV generato da <strong>earnext_ai.py</strong> per visualizzare i tuoi lead con scoring AI reale.</div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-teal" onclick="document.getElementById('csv-file').click()"><i class="ti ti-upload"></i>Carica CSV</button>
+          <button class="btn-ghost" onclick="loadDemo()">Usa dati demo</button>
+        </div>
+      </div>
+      <div class="lead-detail" id="lead-detail">
+        <div class="lead-header">
+          <div class="lead-top">
+            <div class="lead-avatar" id="d-avatar">--</div>
+            <div class="lead-info">
+              <div class="lead-name-row">
+                <div class="lead-name" id="d-name">—</div>
+                <span class="lead-status" id="d-status">—</span>
+              </div>
+              <div class="lead-sub" id="d-sub">—</div>
+              <div class="lead-tags" id="d-tags"></div>
+            </div>
+            <div class="lead-actions">
+              <button class="btn-ghost"><i class="ti ti-dots"></i>Azioni</button>
+              <button class="btn-navy" onclick="openAssign()"><i class="ti ti-user-check"></i>Assegna a Sales</button>
+            </div>
+          </div>
+          <div class="lead-meta">
+            <div><div class="lm-label">Stage CRM</div><div class="lm-value" id="d-stage">—</div></div>
+            <div><div class="lm-label">Fonte</div><div class="lm-value" id="d-source">—</div></div>
+            <div><div class="lm-label">Ultimo contatto</div><div class="lm-value" id="d-last">—</div></div>
+            <div><div class="lm-label">Città</div><div class="lm-value" id="d-city">—</div></div>
+          </div>
+        </div>
+        <div class="score-row">
+          <div class="score-card"><div class="sc-label">Conversion Score</div><div class="sc-main"><span class="sc-val" id="sc-conv">0</span><span class="sc-max">/100</span><span class="sc-badge" id="sb-conv">—</span></div><div class="sc-bar"><div class="sc-bar-fill" id="bar-conv" style="width:0%"></div></div><div class="sc-desc" id="sd-conv">—</div></div>
+          <div class="score-card"><div class="sc-label">Value Perception</div><div class="sc-main"><span class="sc-val" id="sc-vp">0</span><span class="sc-max">/100</span><span class="sc-badge" id="sb-vp">—</span></div><div class="sc-bar"><div class="sc-bar-fill" id="bar-vp" style="width:0%"></div></div><div class="sc-desc" id="sd-vp">—</div></div>
+          <div class="score-card"><div class="sc-label">Readiness Score</div><div class="sc-main"><span class="sc-val" id="sc-read">0</span><span class="sc-max">/100</span><span class="sc-badge" id="sb-read">—</span></div><div class="sc-bar"><div class="sc-bar-fill" id="bar-read" style="width:0%"></div></div><div class="sc-desc" id="sd-read">—</div></div>
+          <div class="score-card"><div class="sc-label">Azione AI</div><div class="sc-main" style="margin-top:8px;"><span style="font-size:15px;font-weight:700;color:var(--navy);" id="sc-action">—</span></div><div style="margin-top:8px;"></div><div class="sc-desc" id="sd-action">—</div></div>
+        </div>
+        <div class="tab-nav">
+          <button class="tab-btn active" onclick="showLeadTab('panoramica',this)">Panoramica</button>
+          <button class="tab-btn" onclick="showLeadTab('regole',this)">Regole AI</button>
+          <button class="tab-btn" onclick="showLeadTab('email',this)">Email AI</button>
+        </div>
+        <div class="tab-content">
+          <div id="tab-panoramica" class="tab-pane active">
+            <div class="pan-grid">
+              <div class="pan-card"><div class="pan-title"><i class="ti ti-activity"></i>Dati CRM</div><div id="pan-crm-data">—</div></div>
+              <div class="pan-card"><div class="pan-title"><i class="ti ti-target"></i>Hotness & Stage</div><div id="pan-stage-data">—</div></div>
+              <div class="pan-card"><div class="pan-title"><i class="ti ti-sparkles"></i>AI Summary</div><div class="ai-summary-box" id="pan-summary">—</div></div>
+            </div>
+          </div>
+          <div id="tab-regole" class="tab-pane">
+            <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:12px;">Regole del Decision Engine attivate per questo lead</div>
+            <div id="regole-content">—</div>
+          </div>
+          <div id="tab-email" class="tab-pane">
+            <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:12px;">Email generata dall'AI</div>
+            <div class="email-box" style="max-width:580px;">
+              <div class="email-hdr"><div class="email-subj-lbl">Oggetto:</div><div class="email-subj" id="tab-email-subj">—</div></div>
+              <div class="email-body" id="tab-email-body">—</div>
+              <div class="email-actions"><button class="btn-use" onclick="copyEmail()">Copia email</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="right-panel">
+      <div class="rp-section">
+        <div class="rp-title"><i class="ti ti-bolt"></i>AI — Next Best Action</div>
+        <div class="nba-box"><div class="nba-label">Azione consigliata</div><div class="nba-action" id="rp-action">—</div><div class="nba-desc" id="rp-desc">—</div></div>
+        <div class="nba-items">
+          <div class="nba-item ni-teal"><i class="ti ti-phone"></i><span>Prenota call introduttiva</span></div>
+          <div class="nba-item ni-violet"><i class="ti ti-file-description"></i><span>Invia case study personalizzato</span></div>
+          <div class="nba-item ni-navy"><i class="ti ti-mail"></i><span>Invia email personalizzata</span></div>
+        </div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title"><i class="ti ti-mail-bolt"></i>Email suggerita dall'AI</div>
+        <div class="email-box">
+          <div class="email-hdr"><div class="email-subj-lbl">Oggetto:</div><div class="email-subj" id="rp-email-subj">—</div></div>
+          <div class="email-body" id="rp-email-body">—</div>
+          <div class="email-actions">
+            <button class="btn-use" onclick="copyEmail()">Usa questa email</button>
+            <button class="btn-copy" onclick="copyEmail()"><i class="ti ti-copy"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title"><i class="ti ti-chart-arrows-vertical"></i>Benefici attesi</div>
+        <div class="benefits">
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Aumento conversion rate</span></div>
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Maggiore attivazione e utilizzo</span></div>
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Riduzione churn</span></div>
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Migliore produttività del team</span></div>
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Allineamento marketing-sales</span></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /page-leads -->
+
+  <!-- ══════════════════════════════════
+       PAGE: CLIENTI ATTIVI
+  ══════════════════════════════════ -->
+  <div class="page" id="page-clienti">
+    <div class="page-scroll">
+      <div class="page-header">
+        <div class="page-title">Clienti Attivi</div>
+        <div class="page-sub">Lead con Readiness Alta — pronti per il contatto commerciale</div>
+      </div>
+      <div class="kpi-strip" id="ca-kpi-strip">
+        <div class="kpi-card"><div class="kpi-val" id="ca-total">0</div><div class="kpi-label">Clienti attivi totali</div><div class="kpi-delta">↑ Alta readiness</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="ca-assegnati">0</div><div class="kpi-label">Già assegnati</div><div class="kpi-delta">↑ in gestione</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="ca-pipeline">€0</div><div class="kpi-label">Pipeline stimato</div><div class="kpi-delta">↑ valore opportunità</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="ca-avg-score">0</div><div class="kpi-label">Score medio</div><div class="kpi-delta">↑ conversion score</div></div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-hdr">
+          <div class="data-card-title"><i class="ti ti-users-group"></i>Lead con Alta Readiness</div>
+          <span style="font-size:11px;color:var(--text3);">ordinati per score</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Nome</th><th>Azienda</th><th>Ruolo</th><th>Città</th><th>Stage</th><th>Score</th><th>Azione AI</th><th>Assegnato a</th></tr></thead>
+          <tbody id="ca-table-body"><tr><td colspan="8" style="text-align:center;color:var(--text3);padding:24px;">Carica il CSV per vedere i clienti attivi</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PAGE: DASHBOARD
+  ══════════════════════════════════ -->
+  <div class="page" id="page-dashboard">
+    <div class="page-scroll">
+      <div class="page-header">
+        <div class="page-title">Dashboard AI</div>
+        <div class="page-sub">Panoramica score, pipeline e distribuzione readiness</div>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-card"><div class="kpi-val" id="db-total">0</div><div class="kpi-label">Lead totali</div><div class="kpi-delta">↑ database CRM</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="db-alta">0</div><div class="kpi-label">Alta readiness</div><div class="kpi-delta" style="color:var(--green);">→ Sales Activation</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="db-media">0</div><div class="kpi-label">Media readiness</div><div class="kpi-delta" style="color:var(--amber);">→ Onboarding Call</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="db-bassa">0</div><div class="kpi-label">Bassa readiness</div><div class="kpi-delta" style="color:var(--red);">→ Nurturing LLM</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="chart-card">
+          <div class="chart-card-title"><i class="ti ti-chart-donut"></i>Distribuzione Readiness</div>
+          <div class="chart-wrap"><canvas id="chartReadiness" role="img" aria-label="Distribuzione readiness lead"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title"><i class="ti ti-chart-bar"></i>Score per lead (top 10)</div>
+          <div class="chart-wrap"><canvas id="chartScores" role="img" aria-label="Score per lead top 10"></canvas></div>
+        </div>
+      </div>
+      <div class="dash-grid">
+        <div class="chart-card">
+          <div class="chart-card-title"><i class="ti ti-flame"></i>Distribuzione Hotness</div>
+          <div class="chart-wrap"><canvas id="chartHotness" role="img" aria-label="Distribuzione hotness"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title"><i class="ti ti-user-star"></i>Lead assegnati per sales</div>
+          <div class="sales-rank" id="sales-rank">
+            <div style="font-size:12px;color:var(--text3);padding:20px 0;">Nessun lead assegnato ancora.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PAGE: AUTOMAZIONI
+  ══════════════════════════════════ -->
+  <div class="page" id="page-automazioni">
+    <div class="page-scroll">
+      <div class="page-header">
+        <div class="page-title">Automazioni AI</div>
+        <div class="page-sub">Regole attive del Decision Engine — attiva o disattiva per ogni flusso</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-val" id="auto-attive">5</div><div class="stat-label">Regole attive</div></div>
+        <div class="stat-box"><div class="stat-val" id="auto-lead-proc">0</div><div class="stat-label">Lead processati</div></div>
+        <div class="stat-box"><div class="stat-val" id="auto-azioni">0</div><div class="stat-label">Azioni suggerite</div></div>
+      </div>
+      <div class="auto-grid">
+        <div class="auto-card">
+          <div class="auto-card-title"><i class="ti ti-bolt"></i>Regole di scoring</div>
+          <div class="rule-row">
+            <i class="rule-icon ti ti-clock" style="color:var(--teal);"></i>
+            <div class="rule-body"><div class="rule-cond"><strong>Contatto recente ≤14gg + Demo</strong> richiesta</div></div>
+            <span class="rule-arrow">→</span>
+            <span class="rule-out ro-sales">Sales Activation</span>
+            <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,0)"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="rule-row">
+            <i class="rule-icon ti ti-flame" style="color:var(--red);"></i>
+            <div class="rule-body"><div class="rule-cond"><strong>Hotness Hot</strong> + Score ≥70</div></div>
+            <span class="rule-arrow">→</span>
+            <span class="rule-out ro-sales">Priorità immediata</span>
+            <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,1)"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="rule-row">
+            <i class="rule-icon ti ti-mail-opened" style="color:var(--lavender);"></i>
+            <div class="rule-body"><div class="rule-cond"><strong>Email aperte + pagine avanzate</strong> visitate</div></div>
+            <span class="rule-arrow">→</span>
+            <span class="rule-out ro-premium">Contenuti premium</span>
+            <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,2)"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="rule-row">
+            <i class="rule-icon ti ti-zzz" style="color:var(--mustard);"></i>
+            <div class="rule-body"><div class="rule-cond">Nessun contatto <strong>da oltre 60 giorni</strong></div></div>
+            <span class="rule-arrow">→</span>
+            <span class="rule-out ro-nurture">Nurturing LLM</span>
+            <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,3)"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="rule-row">
+            <i class="rule-icon ti ti-trending-up" style="color:var(--green);"></i>
+            <div class="rule-body"><div class="rule-cond">Fonte <strong>Referral</strong> → alta priorità automatica</div></div>
+            <span class="rule-arrow">→</span>
+            <span class="rule-out ro-upsell">Alta priorità</span>
+            <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,4)"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-card-title"><i class="ti ti-alert-triangle"></i>Regole di retention risk</div>
+          <div class="rule-row">
+            <i class="rule-icon ti ti-chart-line-down" style="color:var(--red);"></i>
+            <div class="rule-body"><div class="rule-cond">Molti clienti caricati + <strong>utilizzo in calo</strong></div></div>
+            <span class="rule-arrow">→</span>
+            <span class="rule-out ro-risk">Retention alert</span>
+            <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,5)"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="rule-row">
+            <i class="rule-icon ti ti-star" style="color:var(--teal);"></i>
+            <div class="rule-body"><div class="rule-cond">Alto utilizzo + <strong>simulazioni attive</strong></div></div>
+            <span class="rule-arrow">→</span>
+            <span class="rule-out ro-upsell">Upselling</span>
+            <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,6)"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="rule-row">
+            <i class="rule-icon ti ti-currency-euro" style="color:var(--mustard);"></i>
+            <div class="rule-body"><div class="rule-cond">Valore opportunità <strong>superiore a €1.000</strong></div></div>
+            <span class="rule-arrow">→</span>
+            <span class="rule-out ro-sales">Escalation</span>
+            <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,7)"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+      </div>
+      <!-- Log attività -->
+      <div class="data-card">
+        <div class="data-card-hdr">
+          <div class="data-card-title"><i class="ti ti-list-check"></i>Log attività AI</div>
+          <button class="btn-ghost" onclick="clearLog()" style="font-size:11px;padding:5px 10px;">Svuota log</button>
+        </div>
+        <div id="auto-log" style="padding:16px 20px;font-size:12px;color:var(--text3);min-height:80px;">
+          Nessuna attività registrata. Carica il CSV per avviare il sistema.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ASSIGN MODAL -->
+<div class="modal-overlay" id="assign-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title"><i class="ti ti-user-check"></i>Assegna lead a un sales</div>
+      <button class="modal-close" onclick="closeAssign()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-lead-info">
+        <div class="modal-lead-name" id="assign-lead-name">—</div>
+        <div class="modal-lead-sub" id="assign-lead-info">—</div>
+      </div>
+      <div class="modal-section-label">Seleziona il sales</div>
+      <div class="sales-grid">
+        <div class="sales-card" id="sc-cs" onclick="selectSales('cs',this)">
+          <div class="sc-av" style="background:#00B9B6;">CS</div>
+          <div class="sc-name">Client Service</div><div class="sc-role">Support</div>
+        </div>
+        <div class="sales-card" id="sc-renzo" onclick="selectSales('renzo',this)">
+          <div class="sc-av" style="background:#7367F0;">RM</div>
+          <div class="sc-name">Renzo Moretti</div><div class="sc-role">Sales</div>
+        </div>
+        <div class="sales-card" id="sc-paolo" onclick="selectSales('paolo',this)">
+          <div class="sc-av" style="background:#608C97;">PB</div>
+          <div class="sc-name">Paolo Baroni</div><div class="sc-role">Sales</div>
+        </div>
+      </div>
+      <div class="modal-note">
+        <label>Nota per il sales (opzionale)</label>
+        <textarea id="assign-note" placeholder="Es: Lead interessato alla reportistica. Chiamare entro oggi."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeAssign()">Annulla</button>
+      <button class="btn-navy" onclick="confirmAssign()"><i class="ti ti-check"></i>Assegna</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="ti ti-circle-check"></i><span id="toast-msg">OK</span></div>
+
+<script>
+// ── STATO ──
+let allLeads = [], filteredLeads = [], currentIdx = 0, activeFilter = 'tutti';
+const leadAssignments = {};
+const USERS = {
+  cs:    { name:'Client Service', role:'Support', avatar:'CS', color:'#00B9B6' },
+  renzo: { name:'Renzo Moretti',  role:'Sales',   avatar:'RM', color:'#7367F0' },
+  paolo: { name:'Paolo Baroni',   role:'Sales',   avatar:'PB', color:'#608C97' },
+};
+let ruleStates = [true,true,true,true,true,true,true,true];
+let dbCharts = {};
+
+// ── NAVIGAZIONE PAGINE ──
+function goPage(page, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if(navEl) navEl.classList.add('active');
+  const sections = {leads:'Lead Intelligence',clienti:'Clienti Attivi',dashboard:'Dashboard AI',automazioni:'Automazioni'};
+  document.getElementById('topbar-section').textContent = sections[page]||page;
+  document.getElementById('topbar-title').textContent = '';
+  document.getElementById('topbar-chevron').style.display = 'none';
+  document.getElementById('btn-prev').style.display = page==='leads' && allLeads.length ? 'flex':'none';
+  document.getElementById('btn-next').style.display = page==='leads' && allLeads.length ? 'flex':'none';
+  if(page==='dashboard') setTimeout(renderDashboardCharts, 50);
+  if(page==='clienti') renderClientiAttivi();
+  if(page==='automazioni') updateAutoStats();
+}
+
+// ── CSV ──
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if(lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).map(line => {
+    const vals=[]; let inQ=false, cur='';
+    for(const ch of line){
+      if(ch==='"'){inQ=!inQ;}
+      else if(ch===','&&!inQ){vals.push(cur.trim());cur='';}
+      else cur+=ch;
+    }
+    vals.push(cur.trim());
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=(vals[i]||'').replace(/^"|"$/g,''));
+    return obj;
+  }).filter(r=>r['Account name']||r['Contact name']);
+}
+
+function handleCSV(input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const leads = parseCSV(e.target.result);
+    if(!leads.length){showToast('File CSV vuoto o non valido',true);return;}
+    loadLeads(leads, file.name);
+  };
+  reader.readAsText(file,'UTF-8');
+  input.value='';
+}
+
+function loadLeads(leads, filename) {
+  allLeads = leads.sort((a,b)=>parseInt(b['Conversion Score']||0)-parseInt(a['Conversion Score']||0));
+  filteredLeads = [...allLeads];
+  document.getElementById('import-banner').classList.add('hidden');
+  document.getElementById('empty-state').classList.add('hidden');
+  document.getElementById('nav-count').textContent = allLeads.length;
+  document.getElementById('llp-count').textContent = allLeads.length+' totali';
+  document.getElementById('btn-prev').style.display='flex';
+  document.getElementById('btn-next').style.display='flex';
+  renderLeadList();
+  selectLead(0);
+  updateAutoStats();
+  addLog(`✓ Caricati ${allLeads.length} lead da ${filename}`);
+  showToast(`✓ ${allLeads.length} lead caricati`);
+  // Conta attivi
+  const alta = allLeads.filter(l=>(l['Readiness']||'').trim()==='Alta').length;
+  document.getElementById('nav-count-clienti').textContent = alta;
+  document.getElementById('nav-count-clienti').style.display = alta ? '' : 'none';
+}
+
+function renderLeadList() {
+  const c = document.getElementById('lead-items');
+  c.innerHTML = '';
+  filteredLeads.forEach((lead,i)=>{
+    const r = (lead['Readiness']||'Bassa').trim();
+    const score = parseInt(lead['Conversion Score']||0);
+    const name = lead['Contact name']||lead['Account name']||'—';
+    const sub  = lead['Contact role']||lead['Account name']||'—';
+    const asgn = leadAssignments[allLeads.indexOf(lead)];
+    const div = document.createElement('div');
+    div.className='lead-item'; div.dataset.idx=i;
+    div.innerHTML=`<div class="li-name">${name}</div><div class="li-sub">${sub}</div>
+      <div class="li-footer"><span class="li-score">${score}/100</span><span class="li-badge li-${r.toLowerCase()}">${r}</span></div>
+      ${asgn?`<div class="li-assigned-label">→ ${asgn.name}</div>`:''}`;
+    div.onclick=()=>selectLead(i);
+    c.appendChild(div);
+  });
+}
+
+function selectLead(idx) {
+  if(!filteredLeads.length) return;
+  idx = Math.max(0,Math.min(idx,filteredLeads.length-1));
+  currentIdx=idx;
+  document.querySelectorAll('.lead-item').forEach((el,i)=>el.classList.toggle('active',i===idx));
+  renderDetail(filteredLeads[idx]);
+  document.getElementById('lead-detail').classList.add('visible');
+  const items=document.querySelectorAll('.lead-item');
+  if(items[idx]) items[idx].scrollIntoView({block:'nearest'});
+}
+function navLead(dir){selectLead(currentIdx+dir);}
+function filterLeads(q){
+  const qu=q.toLowerCase();
+  filteredLeads=allLeads.filter(l=>{
+    const n=((l['Contact name']||'')+' '+(l['Account name']||'')).toLowerCase();
+    return(!qu||n.includes(qu))&&(activeFilter==='tutti'||(l['Readiness']||'').trim()===activeFilter);
+  });
+  document.getElementById('llp-count').textContent=filteredLeads.length+' totali';
+  renderLeadList();
+  if(filteredLeads.length) selectLead(0);
+}
+function setFilter(f,btn){
+  activeFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filterLeads(document.getElementById('search-input').value);
+}
+
+function renderDetail(lead) {
+  const name=(lead['Contact name']||lead['Account name']||'—').trim();
+  const role=(lead['Contact role']||'').trim();
+  const city=(lead['City']||'').trim();
+  const country=(lead['Country']||'').trim();
+  const r=(lead['Readiness']||'Bassa').trim();
+  const conv=parseInt(lead['Conversion Score']||0);
+  const vp=parseInt(lead['Value Perception Score']||0);
+  const read=parseInt(lead['Readiness Score']||0);
+  const action=(lead['Azione AI']||'—').trim();
+  const stage=(lead['Opp Stage']||'—').trim();
+  const source=(lead['Lead Source']||'—').trim();
+  const last=(lead['Giorni ultimo contatto']||'—').trim();
+  const regole=(lead['Regole Attivate']||'—').trim();
+  const emailS=(lead['Email Oggetto']||'').trim();
+  const emailB=(lead['Email Corpo']||'').trim();
+  const hotness=(lead['Hotness']||'—').trim();
+  const email=(lead['Contact email']||'').trim();
+  const initials=name.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
+  document.getElementById('d-avatar').textContent=initials||'??';
+  document.getElementById('d-name').textContent=name;
+  document.getElementById('topbar-title').textContent=name;
+  document.getElementById('topbar-chevron').style.display='inline';
+  const st=document.getElementById('d-status');
+  if(r==='Alta'){st.textContent='Lead Attivo';st.style.cssText='background:#DCFCE7;color:#16A34A;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;';}
+  else if(r==='Media'){st.textContent='In nurturing';st.style.cssText='background:#FEF3C7;color:#D97706;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;';}
+  else{st.textContent='Lead Freddo';st.style.cssText='background:#FEE2E2;color:#DC2626;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;';}
+  document.getElementById('d-sub').textContent=[role,city,country].filter(Boolean).join(' · ')||'—';
+  const tags=document.getElementById('d-tags');
+  tags.innerHTML='';
+  [source,hotness,stage].filter(t=>t&&t!=='—').forEach(t=>{const s=document.createElement('span');s.className='lead-tag';s.textContent=t;tags.appendChild(s);});
+  // Assigned badge
+  const oldB=document.getElementById('assign-badge'); if(oldB)oldB.remove();
+  const aIdx=allLeads.indexOf(lead);
+  if(leadAssignments[aIdx]){
+    const u=USERS[leadAssignments[aIdx].key];
+    const badge=document.createElement('span');
+    badge.id='assign-badge';badge.className='assigned-badge';
+    badge.style.cssText=`background:${u.color}20;color:${u.color};`;
+    badge.innerHTML=`<i class="ti ti-user"></i>${u.name}`;
+    document.getElementById('d-name').insertAdjacentElement('afterend',badge);
+  }
+  document.getElementById('d-stage').textContent=stage;
+  document.getElementById('d-source').textContent=source;
+  document.getElementById('d-last').textContent=last;
+  document.getElementById('d-city').textContent=city||country||'—';
+  const sc=r==='Alta'?'#00B9B6':r==='Media'?'#D97706':'#DC2626';
+  const bc=r==='Alta'?'badge-alto':r==='Media'?'badge-medio':'badge-basso';
+  const bt=r==='Alta'?'ALTO':r==='Media'?'MEDIO':'BASSO';
+  ['conv','vp','read'].forEach((k,i)=>{
+    const v=[conv,vp,read][i];
+    document.getElementById('sc-'+k).textContent=v;
+    document.getElementById('bar-'+k).style.width=v+'%';
+    document.getElementById('bar-'+k).style.background=sc;
+    document.getElementById('sb-'+k).textContent=bt;
+    document.getElementById('sb-'+k).className='sc-badge '+bc;
+  });
+  const dm={Alta:{conv:'Alta probabilità di conversione',vp:'Ha compreso il valore della piattaforma',read:'Pronto per un contatto commerciale'},Media:{conv:'Buona probabilità, ancora in maturazione',vp:'Interesse presente, valore parzialmente compreso',read:'Necessita di ulteriore nurturing'},Bassa:{conv:'Lead in fase iniziale',vp:'Non ha ancora compreso il valore',read:'Non pronto per contatto commerciale'}};
+  document.getElementById('sd-conv').textContent=dm[r].conv;
+  document.getElementById('sd-vp').textContent=dm[r].vp;
+  document.getElementById('sd-read').textContent=dm[r].read;
+  document.getElementById('sc-action').textContent=action;
+  document.getElementById('sd-action').textContent=`Strategia AI per readiness ${r.toLowerCase()}`;
+  document.getElementById('pan-crm-data').innerHTML=`
+    <div class="beh-row"><i class="ti ti-building"></i><span class="beh-label">Account</span><span class="beh-val">${lead['Account name']||'—'}</span></div>
+    <div class="beh-row"><i class="ti ti-mail"></i><span class="beh-label">Email</span><span class="beh-val" style="font-size:11px;">${email||'—'}</span></div>
+    <div class="beh-row"><i class="ti ti-map-pin"></i><span class="beh-label">Città</span><span class="beh-val">${city||'—'}</span></div>
+    <div class="beh-row"><i class="ti ti-clock"></i><span class="beh-label">Ultimo contatto</span><span class="beh-val">${last}</span></div>
+    <div class="beh-row"><i class="ti ti-currency-euro"></i><span class="beh-label">Valore opp.</span><span class="beh-val">€${parseFloat(lead['Opp Value']||0).toLocaleString('it-IT')}</span></div>`;
+  const hc=hotness.toLowerCase()==='hot'?'#DC2626':hotness.toLowerCase()==='warm'?'#D97706':'#8080A0';
+  document.getElementById('pan-stage-data').innerHTML=`
+    <div class="beh-row"><i class="ti ti-flame" style="color:${hc};"></i><span class="beh-label">Hotness</span><span class="beh-val" style="color:${hc};">${hotness}</span></div>
+    <div class="beh-row"><i class="ti ti-git-merge"></i><span class="beh-label">Stage CRM</span><span class="beh-val">${stage}</span></div>
+    <div class="beh-row"><i class="ti ti-source-code"></i><span class="beh-label">Lead source</span><span class="beh-val">${source}</span></div>
+    <div class="beh-row"><i class="ti ti-chart-line"></i><span class="beh-label">Probabilità</span><span class="beh-val">${Math.round(parseFloat(lead['Opp Probability']||0)*100)}%</span></div>`;
+  document.getElementById('pan-summary').innerHTML=
+    action==='Sales Activation'?`${name} mostra alta readiness e hotness <strong>${hotness.toLowerCase()}</strong>. Stage CRM: <strong>${stage}</strong>. Contattato ${last}. Azione consigliata: <strong>contatto commerciale entro 48h</strong>.`:
+    action==='Onboarding Call'?`${name} è in fase di valutazione. Stage CRM: <strong>${stage}</strong>. Invia contenuti educativi mirati e prenota una call esplorativa.`:
+    `${name} è in fase iniziale. Poca interazione recente. Attiva sequenza di <strong>nurturing automatico</strong> con email educative personalizzate.`;
+  if(regole&&regole!=='—'){
+    const items=regole.split('|').map(r=>r.trim()).filter(Boolean);
+    document.getElementById('regole-content').innerHTML=`<div class="regole-box">${items.map(r=>`<div class="regola-item"><i class="ti ti-check"></i>${r}</div>`).join('')}</div>`;
+  } else {
+    document.getElementById('regole-content').innerHTML='<div style="font-size:12px;color:var(--text3);">Nessuna regola specifica attivata per questo lead.</div>';
+  }
+  const eh=emailB.replace(/\n/g,'<br>');
+  document.getElementById('tab-email-subj').textContent=emailS||'—';
+  document.getElementById('tab-email-body').innerHTML=eh||'—';
+  document.getElementById('rp-email-subj').textContent=emailS||'—';
+  document.getElementById('rp-email-body').innerHTML=eh||'—';
+  document.getElementById('rp-action').textContent=action;
+  document.getElementById('rp-desc').textContent=r==='Alta'?'Il lead ha alta readiness. Contatto commerciale entro 48h.':r==='Media'?'Interesse presente. Invia contenuti educativi mirati.':'Lead freddo. Attiva nurturing automatico via LLM.';
+}
+
+// ── CLIENTI ATTIVI ──
+function renderClientiAttivi() {
+  const alta = allLeads.filter(l=>(l['Readiness']||'').trim()==='Alta');
+  document.getElementById('ca-total').textContent = alta.length;
+  const assegnati = alta.filter((_,i)=>leadAssignments[allLeads.indexOf(alta[i])]).length;
+  document.getElementById('ca-assegnati').textContent = assegnati;
+  const pipeline = alta.reduce((s,l)=>s+parseFloat(l['Opp Value']||0),0);
+  document.getElementById('ca-pipeline').textContent = '€'+pipeline.toLocaleString('it-IT');
+  const avgScore = alta.length ? Math.round(alta.reduce((s,l)=>s+parseInt(l['Conversion Score']||0),0)/alta.length) : 0;
+  document.getElementById('ca-avg-score').textContent = avgScore;
+  const tbody = document.getElementById('ca-table-body');
+  if(!alta.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:24px;">Nessun lead con Alta readiness nel database</td></tr>';return;}
+  tbody.innerHTML = alta.sort((a,b)=>parseInt(b['Conversion Score']||0)-parseInt(a['Conversion Score']||0)).map(lead=>{
+    const aIdx = allLeads.indexOf(lead);
+    const asgn = leadAssignments[aIdx];
+    const u = asgn ? USERS[asgn.key] : null;
+    const score = parseInt(lead['Conversion Score']||0);
+    const scColor = score>=70?'var(--teal-dp)':score>=45?'var(--amber)':'var(--red)';
+    return `<tr>
+      <td><strong style="color:var(--navy);">${lead['Contact name']||'—'}</strong></td>
+      <td>${lead['Account name']||'—'}</td>
+      <td>${lead['Contact role']||'—'}</td>
+      <td>${lead['City']||'—'}</td>
+      <td><span class="pill p-teal">${lead['Opp Stage']||'—'}</span></td>
+      <td><span style="font-weight:700;color:${scColor};">${score}</span></td>
+      <td><span class="pill p-teal">${lead['Azione AI']||'—'}</span></td>
+      <td>${u?`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;background:${u.color}20;color:${u.color};"><i class="ti ti-user" style="font-size:11px;"></i>${u.name}</span>`:'<span style="color:var(--text3);font-size:11px;">Non assegnato</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── DASHBOARD CHARTS ──
+function renderDashboardCharts() {
+  // KPI
+  const tot=allLeads.length;
+  const alta=allLeads.filter(l=>(l['Readiness']||'').trim()==='Alta').length;
+  const media=allLeads.filter(l=>(l['Readiness']||'').trim()==='Media').length;
+  const bassa=allLeads.filter(l=>(l['Readiness']||'').trim()==='Bassa').length;
+  document.getElementById('db-total').textContent=tot;
+  document.getElementById('db-alta').textContent=alta;
+  document.getElementById('db-media').textContent=media;
+  document.getElementById('db-bassa').textContent=bassa;
+  // Destroy old charts
+  ['chartReadiness','chartScores','chartHotness'].forEach(id=>{
+    if(dbCharts[id]){dbCharts[id].destroy();delete dbCharts[id];}
+  });
+  // Readiness donut
+  dbCharts['chartReadiness']=new Chart(document.getElementById('chartReadiness'),{
+    type:'doughnut',
+    data:{labels:['Alta','Media','Bassa'],datasets:[{data:[alta,media,bassa],backgroundColor:['#00B9B6','#D97706','#DC2626'],borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{family:'Manrope',size:11}}}}}
+  });
+  // Top 10 scores bar
+  const top10=allLeads.slice(0,10);
+  const labels10=top10.map(l=>(l['Contact name']||l['Account name']||'—').split(' ')[0]);
+  const scores10=top10.map(l=>parseInt(l['Conversion Score']||0));
+  const colors10=top10.map(l=>(l['Readiness']||'').trim()==='Alta'?'#00B9B6':(l['Readiness']||'').trim()==='Media'?'#D97706':'#DC2626');
+  dbCharts['chartScores']=new Chart(document.getElementById('chartScores'),{
+    type:'bar',
+    data:{labels:labels10,datasets:[{data:scores10,backgroundColor:colors10,borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{family:'Manrope',size:10}}},y:{max:100,ticks:{font:{family:'Manrope',size:10}},grid:{color:'rgba(0,0,89,0.04)'}}}}
+  });
+  // Hotness
+  const hot=allLeads.filter(l=>(l['Hotness']||'').toLowerCase()==='hot').length;
+  const warm=allLeads.filter(l=>(l['Hotness']||'').toLowerCase()==='warm').length;
+  const cold=allLeads.filter(l=>(l['Hotness']||'').toLowerCase()==='cold').length;
+  const other=tot-hot-warm-cold;
+  dbCharts['chartHotness']=new Chart(document.getElementById('chartHotness'),{
+    type:'bar',
+    data:{labels:['Hot','Warm','Cold','N/A'],datasets:[{data:[hot,warm,cold,other],backgroundColor:['#DC2626','#D97706','#608C97','#B0B0C0'],borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{family:'Manrope',size:11}}},y:{ticks:{font:{family:'Manrope',size:11}},grid:{color:'rgba(0,0,89,0.04)'}}}}
+  });
+  // Sales rank
+  const counts={cs:0,renzo:0,paolo:0};
+  Object.values(leadAssignments).forEach(a=>{if(counts[a.key]!==undefined)counts[a.key]++;});
+  const maxC=Math.max(...Object.values(counts),1);
+  document.getElementById('sales-rank').innerHTML=Object.entries(USERS).map(([k,u])=>`
+    <div class="sr-row">
+      <div class="sr-av" style="background:${u.color};">${u.avatar}</div>
+      <div class="sr-name">${u.name}<br><span style="font-size:10px;color:var(--text3);">${u.role}</span></div>
+      <div class="sr-bar-wrap"><div class="sr-bar" style="width:${Math.round((counts[k]/maxC)*100)}%;background:${u.color};"></div></div>
+      <div class="sr-count">${counts[k]}</div>
+    </div>`).join('');
+}
+
+// ── AUTOMAZIONI ──
+function toggleRule(el, idx) {
+  ruleStates[idx] = el.checked;
+  const active = ruleStates.filter(Boolean).length;
+  document.getElementById('auto-attive').textContent = active;
+  addLog(`${el.checked?'✓ Attivata':'✗ Disattivata'} regola #${idx+1}`);
+  showToast(`Regola ${el.checked?'attivata':'disattivata'}`);
+}
+function updateAutoStats() {
+  document.getElementById('auto-lead-proc').textContent = allLeads.length;
+  const azioni = allLeads.filter(l=>l['Regole Attivate']&&l['Regole Attivate']!=='—').length;
+  document.getElementById('auto-azioni').textContent = azioni;
+}
+const autoLog = [];
+function addLog(msg) {
+  const ts = new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  autoLog.unshift(`<div style="padding:6px 0;border-bottom:1px solid var(--gray);display:flex;gap:10px;"><span style="color:var(--text3);flex-shrink:0;">${ts}</span><span>${msg}</span></div>`);
+  if(autoLog.length>20) autoLog.pop();
+  document.getElementById('auto-log').innerHTML = autoLog.join('');
+}
+function clearLog(){autoLog.length=0;document.getElementById('auto-log').innerHTML='<span style="color:var(--text3);">Log svuotato.</span>';}
+
+// ── TABS LEAD ──
+function showLeadTab(id,btn) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── ASSIGN ──
+let selectedSalesKey=null;
+function openAssign(){
+  if(!filteredLeads.length)return;
+  const lead=filteredLeads[currentIdx];
+  const name=lead['Contact name']||lead['Account name']||'—';
+  document.getElementById('assign-lead-name').textContent=name;
+  document.getElementById('assign-lead-info').textContent=[lead['Contact role'],lead['City']].filter(Boolean).join(' · ')||'—';
+  document.getElementById('assign-note').value='';
+  selectedSalesKey=null;
+  document.querySelectorAll('.sales-card').forEach(c=>c.classList.remove('selected'));
+  const aIdx=allLeads.indexOf(filteredLeads[currentIdx]);
+  if(leadAssignments[aIdx]){selectedSalesKey=leadAssignments[aIdx].key;const el=document.getElementById('sc-'+selectedSalesKey);if(el)el.classList.add('selected');}
+  document.getElementById('assign-modal').classList.add('open');
+}
+function closeAssign(){document.getElementById('assign-modal').classList.remove('open');}
+function selectSales(key,el){selectedSalesKey=key;document.querySelectorAll('.sales-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+function confirmAssign(){
+  if(!selectedSalesKey){showToast('Seleziona un sales prima di procedere');return;}
+  const u=USERS[selectedSalesKey];
+  const aIdx=allLeads.indexOf(filteredLeads[currentIdx]);
+  leadAssignments[aIdx]={key:selectedSalesKey,name:u.name};
+  renderLeadList();selectLead(currentIdx);closeAssign();
+  addLog(`Lead "${filteredLeads[currentIdx]['Contact name']||filteredLeads[currentIdx]['Account name']}" assegnato a ${u.name}`);
+  showToast(`✓ Lead assegnato a ${u.name}`);
+}
+document.getElementById('assign-modal').addEventListener('click',function(e){if(e.target===this)closeAssign();});
+
+// ── UTILS ──
+function copyEmail(){
+  const body=document.getElementById('tab-email-body').innerText;
+  const subj=document.getElementById('tab-email-subj').textContent;
+  navigator.clipboard.writeText(`Oggetto: ${subj}\n\n${body}`).catch(()=>{});
+  showToast('Email copiata negli appunti');
+}
+function showToast(msg,isError=false){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.style.borderColor=isError?'#DC2626':'var(--teal)';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+}
+function dismissBanner(){document.getElementById('import-banner').classList.add('hidden');loadDemo();}
+
+// ── DEMO DATA ──
+function loadDemo(){
+  const demo=[
+    {'Account name':'Studio Rossi & Partners','Contact name':'Giulia Ferrari','Contact email':'giulia@ferrari.it','Contact role':'Family Officer','City':'Milano','Country':'Italia','Lead Source':'Webinar','Hotness':'hot','Opp Stage':'Proposal','Opp Probability':'0.8','Opp Value':'5000','Giorni ultimo contatto':'2 giorni fa','Conversion Score':'84','Value Perception Score':'72','Readiness Score':'78','Readiness':'Alta','Azione AI':'Sales Activation','Regole Attivate':'Contatto recente + Demo → Sales Activation | Hot + Score alto → Priorità immediata','Email Oggetto':'Pronti per una call — Giulia','Email Corpo':'Ciao Giulia,\n\nho visto il tuo interesse per Earnext e la pianificazione patrimoniale.\n\nSarei felice di mostrarti in 20 minuti come la piattaforma può trasformare la tua operatività.\n\nA presto,\nTeam Earnext'},
+    {'Account name':'Verdi Consulting','Contact name':'Marco Verdi','Contact email':'marco@verdi.it','Contact role':'Consulente Indipendente','City':'Roma','Country':'Italia','Lead Source':'Referral','Hotness':'warm','Opp Stage':'Qualified','Opp Probability':'0.6','Opp Value':'3000','Giorni ultimo contatto':'5 giorni fa','Conversion Score':'71','Value Perception Score':'65','Readiness Score':'66','Readiness':'Media','Azione AI':'Onboarding Call','Regole Attivate':'Fonte referral → Alta priorità','Email Oggetto':'Un caso studio per te — Marco','Email Corpo':'Ciao Marco,\n\nho selezionato un case study su come un consulente indipendente ha migliorato le sue presentazioni patrimoniali.\n\nA presto,\nTeam Earnext'},
+    {'Account name':'Studio Bianchi','Contact name':'Sara Bianchi','Contact email':'sara@bianchi.it','Contact role':'Commercialista','City':'Torino','Country':'Italia','Lead Source':'Ads','Hotness':'cold','Opp Stage':'New','Opp Probability':'0.2','Opp Value':'0','Giorni ultimo contatto':'12 giorni fa','Conversion Score':'28','Value Perception Score':'35','Readiness Score':'26','Readiness':'Bassa','Azione AI':'Nurturing LLM','Regole Attivate':'—','Email Oggetto':'Scopri come Earnext semplifica la gestione patrimoniale','Email Corpo':'Ciao Sara,\n\ngestire i patrimoni dei tuoi clienti richiede tempo e strumenti adeguati.\n\nEarnext è la piattaforma che aiuta i professionisti a offrire una visione patrimoniale completa.\n\nA presto,\nTeam Earnext'},
+    {'Account name':'Alpha Wealth','Contact name':'Luca Romano','Contact email':'luca@alpha.it','Contact role':'Wealth Manager','City':'Firenze','Country':'Italia','Lead Source':'Webinar','Hotness':'hot','Opp Stage':'Demo','Opp Probability':'0.75','Opp Value':'8000','Giorni ultimo contatto':'1 giorni fa','Conversion Score':'91','Value Perception Score':'85','Readiness Score':'85','Readiness':'Alta','Azione AI':'Sales Activation','Regole Attivate':'Contatto recente + Demo → Sales Activation | Hot + Score alto → Priorità immediata | Opportunità alto valore → Escalation','Email Oggetto':'Pronti per una call — Luca','Email Corpo':'Ciao Luca,\n\nho visto il tuo interesse per Earnext.\n\nData la tua esperienza nella gestione patrimoniale, sono sicuro che la nostra piattaforma potrà portare valore immediato.\n\nA presto,\nTeam Earnext'},
+  ];
+  loadLeads(demo,'dati-demo');
+}
+</script>
+</body>
+</html>
