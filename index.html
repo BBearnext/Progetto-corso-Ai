@@ -379,25 +379,36 @@ body{font-family:'Manrope',sans-serif;background:var(--gray-lt);color:var(--text
 .li-bassa{background:#FEE2E2;color:var(--red);}
 /* nav badge green */
 .nav-badge-green{background:var(--green)!important;}
-/* ── REPORT PAGE ── */
-.report-section-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:2px solid var(--teal);}
-.report-section-title i{color:var(--teal);font-size:18px;}
-.report-desc{font-size:12px;color:var(--text3);margin-bottom:16px;margin-top:4px;}
-.report-funnel-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:16px;}
-.rf-stage{background:#fff;border:1px solid var(--gray);border-radius:8px;padding:12px 10px;text-align:center;position:relative;}
-.rf-stage::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:8px 8px 0 0;}
-.rf-num{font-size:20px;font-weight:700;color:var(--navy);}
-.rf-label{font-size:10px;color:var(--text3);margin-top:4px;line-height:1.3;}
-.rf-pct{font-size:11px;font-weight:600;margin-top:6px;}
-.rf-empty{grid-column:span 7;text-align:center;color:var(--text3);padding:24px;font-size:12px;}
+/* ── EMAIL DUAL TAB ── */
+.email-tab-btn{padding:9px 14px;font-size:11px;font-weight:600;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text3);cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s;display:inline-flex;align-items:center;gap:5px;margin-bottom:-1px;}
+.email-tab-btn:hover{color:var(--navy);}
+.email-tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
+
+
+/* REPORT PAGE */
+.report-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.report-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:16px;}
+.report-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:20px;}
+.report-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.report-title i{color:var(--teal);font-size:17px;}
+.report-p{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:8px;}
+.report-list{display:flex;flex-direction:column;gap:7px;margin-top:8px;}
+.report-li{font-size:12px;color:var(--text2);display:flex;gap:8px;align-items:flex-start;}
+.report-li i{color:var(--teal);font-size:14px;margin-top:2px;flex-shrink:0;}
+.report-metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+.report-metric{background:var(--gray-lt);border:1px solid var(--gray);border-radius:8px;padding:12px;text-align:center;}
+.report-metric .num{font-size:22px;font-weight:800;color:var(--navy);}
+.report-metric .lbl{font-size:10px;color:var(--text3);margin-top:4px;}
+.report-output{white-space:pre-wrap;font-size:12px;line-height:1.65;color:var(--text2);background:#fff;border:1px solid var(--gray);border-radius:10px;padding:18px;min-height:280px;}
+.report-output strong{color:var(--navy);}
 @media print{
-  .sidebar,.topbar,.import-banner,.right-panel,.lead-list-panel{display:none!important;}
-  .main{width:100%!important;}
-  .page-wrap{display:block!important;}
-  #page-report{display:block!important;}
-  #page-leads,#page-clienti,#page-dashboard,#page-automazioni{display:none!important;}
-  .btn-ghost,.btn-teal{display:none!important;}
+  body{overflow:visible;height:auto;display:block;background:#fff;}
+  .sidebar,.topbar,.import-banner,.lead-list-panel,.right-panel,.report-actions{display:none!important;}
+  .main,.page-wrap,.page-scroll{display:block!important;overflow:visible!important;height:auto!important;padding:0!important;}
+  .page-wrap:not(#page-report){display:none!important;}
+  .report-card,.data-card,.kpi-card{break-inside:avoid;}
 }
+
 </style>
 </head>
 <body>
@@ -414,9 +425,9 @@ body{font-family:'Manrope',sans-serif;background:var(--gray-lt);color:var(--text
     <div class="nav-item" onclick="goPage('clienti',this)"><i class="ti ti-users"></i>Clienti Attivi</div>
     <div class="nav-item" onclick="goPage('dashboard',this)"><i class="ti ti-chart-bar"></i>Dashboard</div>
     <div class="nav-item" onclick="goPage('automazioni',this)"><i class="ti ti-settings-automation"></i>Automazioni</div>
-    <div class="nav-item" onclick="setNav(this)" style="opacity:.4;cursor:not-allowed;"><i class="ti ti-message-bolt"></i>Contenuti AI</div>
+    <div class="nav-item" onclick="setNav(this)"><i class="ti ti-message-bolt"></i>Contenuti AI</div>
     <div class="nav-item" onclick="goPage('report',this)"><i class="ti ti-report-analytics"></i>Report</div>
-    <div class="nav-item" onclick="setNav(this)" style="opacity:.4;cursor:not-allowed;"><i class="ti ti-settings"></i>Impostazioni</div>
+    <div class="nav-item" onclick="setNav(this)"><i class="ti ti-settings"></i>Impostazioni</div>
   </nav>
   <div class="sidebar-footer">
     <div class="user-row">
@@ -873,6 +884,60 @@ body{font-family:'Manrope',sans-serif;background:var(--gray-lt);color:var(--text
     </div>
   </div>
 
+
+  <!-- PAGE: REPORT -->
+  <div class="page-wrap" id="page-report">
+    <div class="page-scroll">
+      <div class="page-title">Report AI</div>
+      <div class="page-sub">Sintesi automatica del funnel, readiness, activation e azioni consigliate</div>
+
+      <div class="report-actions">
+        <button class="btn-primary" onclick="renderReport()"><i class="ti ti-refresh"></i>Genera report</button>
+        <button class="btn-ghost" onclick="copyReport()"><i class="ti ti-copy"></i>Copia testo report</button>
+        <button class="btn-ghost" onclick="window.print()"><i class="ti ti-printer"></i>Stampa / salva PDF</button>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="kpi-card"><div class="kpi-val" id="rp-total">0</div><div class="kpi-label">Lead analizzati</div><div class="kpi-delta">Dataset CRM</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="rp-alta">0</div><div class="kpi-label">Alta readiness</div><div class="kpi-delta" style="color:var(--green);">Sales activation</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="rp-media">0</div><div class="kpi-label">Media readiness</div><div class="kpi-delta" style="color:var(--amber);">Nurturing mirato</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="rp-bassa">0</div><div class="kpi-label">Bassa readiness</div><div class="kpi-delta" style="color:var(--red);">Educazione</div></div>
+      </div>
+
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="report-title"><i class="ti ti-file-analytics"></i>Executive Summary</div>
+          <div id="report-summary">
+            <div class="report-p">Clicca “Genera report” per creare una sintesi automatica basata sui dati caricati.</div>
+          </div>
+        </div>
+        <div class="report-card">
+          <div class="report-title"><i class="ti ti-list-check"></i>Priorità operative</div>
+          <div id="report-priorities">
+            <div class="report-p">Le priorità verranno calcolate in base a readiness, score e stato del funnel.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-card">
+        <div class="data-card-hdr">
+          <div class="data-card-title"><i class="ti ti-ranking"></i>Top Lead per Conversion Score</div>
+          <span style="font-size:11px;color:var(--text3);">aggiornato dai dati caricati</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Lead</th><th>Azienda</th><th>Readiness</th><th>Score</th><th>Azione AI</th></tr></thead>
+          <tbody id="report-top-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px;">Carica il CSV o genera il report demo</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="report-card">
+        <div class="report-title"><i class="ti ti-notebook"></i>Report testuale</div>
+        <div id="report-output" class="report-output">Il report testuale verrà generato qui.</div>
+      </div>
+    </div>
+  </div>
+
+
   <!-- ASSIGN MODAL -->
   <div class="modal-overlay" id="assign-modal">
     <div class="modal">
@@ -888,106 +953,6 @@ body{font-family:'Manrope',sans-serif;background:var(--gray-lt);color:var(--text
         <div class="modal-note"><label>Nota per il sales (opzionale)</label><textarea id="assign-note" placeholder="Es: Lead molto interessato alla reportistica. Chiamare entro oggi."></textarea></div>
       </div>
       <div class="modal-footer"><button class="btn-ghost" onclick="closeAssign()">Annulla</button><button class="btn-navy" onclick="confirmAssign()"><i class="ti ti-check"></i>Assegna</button></div>
-    </div>
-  </div>
-
-  <!-- PAGE: REPORT -->
-  <div class="page-wrap" id="page-report">
-    <div class="page-scroll">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
-        <div>
-          <div class="page-title">Report</div>
-          <div class="page-sub" style="margin-bottom:0;">Analisi completa del funnel, pipeline, sales e retention</div>
-        </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn-ghost" onclick="exportExcel()" id="btn-export-excel">
-            <i class="ti ti-file-spreadsheet"></i>Esporta Excel
-          </button>
-          <button class="btn-ghost" onclick="exportPDF()" id="btn-export-pdf">
-            <i class="ti ti-file-type-pdf"></i>Esporta PDF
-          </button>
-        </div>
-      </div>
-
-      <!-- Report date -->
-      <div style="font-size:11px;color:var(--text3);margin-bottom:20px;display:flex;align-items:center;gap:6px;">
-        <i class="ti ti-clock" style="font-size:13px;"></i>
-        Report generato il <span id="report-date">—</span> · <span id="report-lead-count">0</span> lead analizzati
-      </div>
-
-      <!-- 1. RIEPILOGO FUNNEL -->
-      <div class="report-section-title"><i class="ti ti-git-branch"></i>1. Riepilogo Funnel</div>
-      <div class="report-desc">Lead per fase del funnel, avanzamento e punti di perdita.</div>
-      <div class="report-funnel-grid" id="report-funnel-grid">
-        <div class="rf-empty">Carica il CSV per visualizzare il report funnel.</div>
-      </div>
-      <div class="data-card" style="margin-bottom:24px;">
-        <div class="data-card-hdr">
-          <div class="data-card-title"><i class="ti ti-table"></i>Dettaglio per Stage CRM</div>
-        </div>
-        <table class="data-table">
-          <thead><tr><th>Stage CRM</th><th>Lead</th><th>% sul totale</th><th>Score medio</th><th>Readiness prevalente</th><th>Azione AI consigliata</th></tr></thead>
-          <tbody id="report-stage-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px;">Carica il CSV per visualizzare i dati</td></tr></tbody>
-        </table>
-      </div>
-
-      <!-- 2. PIPELINE E CONVERSIONE -->
-      <div class="report-section-title"><i class="ti ti-currency-euro"></i>2. Pipeline e Conversione</div>
-      <div class="report-desc">Valore opportunità per fascia di readiness e stima impatto AI.</div>
-      <div class="kpi-strip" id="report-pipeline-kpi" style="margin-bottom:16px;">
-        <div class="kpi-card"><div class="kpi-val" id="rp-tot-lead">0</div><div class="kpi-label">Lead totali</div><div class="kpi-delta">↑ database CRM</div></div>
-        <div class="kpi-card"><div class="kpi-val" id="rp-pipeline-alta">€0</div><div class="kpi-label">Pipeline Alta readiness</div><div class="kpi-delta" style="color:var(--green);">↑ conversione alta</div></div>
-        <div class="kpi-card"><div class="kpi-val" id="rp-pipeline-tot">€0</div><div class="kpi-label">Pipeline totale stimato</div><div class="kpi-delta">↑ tutte le fasce</div></div>
-        <div class="kpi-card"><div class="kpi-val" id="rp-conv-rate">0%</div><div class="kpi-label">Conversion rate stimato AI</div><div class="kpi-delta" style="color:var(--teal);">↑ +35% vs baseline</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
-        <div class="data-card" style="margin-bottom:0;">
-          <div class="data-card-hdr"><div class="data-card-title"><i class="ti ti-chart-donut"></i>Distribuzione Readiness</div></div>
-          <div style="padding:16px;"><canvas id="rpt-chart-readiness" style="max-height:200px;"></canvas></div>
-        </div>
-        <div class="data-card" style="margin-bottom:0;">
-          <div class="data-card-hdr"><div class="data-card-title"><i class="ti ti-chart-bar"></i>Pipeline per fascia (€)</div></div>
-          <div style="padding:16px;"><canvas id="rpt-chart-pipeline" style="max-height:200px;"></canvas></div>
-        </div>
-      </div>
-
-      <!-- 3. ATTIVITÀ SALES -->
-      <div class="report-section-title"><i class="ti ti-users"></i>3. Attività Sales</div>
-      <div class="report-desc">Lead assegnati per sales, score medio e lead Alta readiness non ancora gestiti.</div>
-      <div class="kpi-strip" style="margin-bottom:16px;">
-        <div class="kpi-card"><div class="kpi-val" id="rp-assegnati">0</div><div class="kpi-label">Lead assegnati</div><div class="kpi-delta">↑ in gestione attiva</div></div>
-        <div class="kpi-card"><div class="kpi-val" id="rp-non-assegnati">0</div><div class="kpi-label">Alta readiness non assegnati</div><div class="kpi-delta" style="color:var(--amber);">⚠ da assegnare</div></div>
-        <div class="kpi-card"><div class="kpi-val" id="rp-score-medio">0</div><div class="kpi-label">Score medio portafoglio</div><div class="kpi-delta">↑ qualità media</div></div>
-        <div class="kpi-card"><div class="kpi-val" id="rp-hot-noass">0</div><div class="kpi-label">Lead Hot non assegnati</div><div class="kpi-delta" style="color:var(--red);">↑ priorità immediata</div></div>
-      </div>
-      <div class="data-card" style="margin-bottom:24px;">
-        <div class="data-card-hdr"><div class="data-card-title"><i class="ti ti-user-check"></i>Performance per Sales</div></div>
-        <table class="data-table">
-          <thead><tr><th>Sales</th><th>Lead assegnati</th><th>Score medio</th><th>Alta readiness</th><th>Pipeline (€)</th><th>Lead Hot</th></tr></thead>
-          <tbody id="report-sales-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px;">Nessuna assegnazione ancora effettuata</td></tr></tbody>
-        </table>
-      </div>
-
-      <!-- 4. RETENTION E UTILIZZO -->
-      <div class="report-section-title"><i class="ti ti-heart-rate-monitor"></i>4. Retention e Utilizzo</div>
-      <div class="report-desc">Lead con retention risk alto, activation score basso e professionisti da riattivare.</div>
-      <div class="kpi-strip" style="margin-bottom:16px;">
-        <div class="kpi-card"><div class="kpi-val" id="rp-ret-risk">0</div><div class="kpi-label">Retention risk alto</div><div class="kpi-delta" style="color:var(--red);">↑ intervento urgente</div></div>
-        <div class="kpi-card"><div class="kpi-val" id="rp-inattivi">0</div><div class="kpi-label">Lead inattivi >30 giorni</div><div class="kpi-delta" style="color:var(--amber);">↑ da riattivare</div></div>
-        <div class="kpi-card"><div class="kpi-val" id="rp-nurturing">0</div><div class="kpi-label">In nurturing automatico</div><div class="kpi-delta">→ Bassa readiness</div></div>
-        <div class="kpi-card"><div class="kpi-val" id="rp-hot-leads">0</div><div class="kpi-label">Lead Hot attivi</div><div class="kpi-delta" style="color:var(--green);">↑ priorità alta</div></div>
-      </div>
-      <div class="data-card" style="margin-bottom:24px;">
-        <div class="data-card-hdr">
-          <div class="data-card-title"><i class="ti ti-alert-triangle"></i>Lead a rischio — da contattare</div>
-          <span style="font-size:11px;color:var(--text3);">Bassa readiness + nessun contatto recente</span>
-        </div>
-        <table class="data-table">
-          <thead><tr><th>Nome</th><th>Azienda</th><th>Score</th><th>Readiness</th><th>Ultimo contatto</th><th>Hotness</th><th>Azione consigliata</th></tr></thead>
-          <tbody id="report-risk-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px;">Carica il CSV per visualizzare i lead a rischio</td></tr></tbody>
-        </table>
-      </div>
-
     </div>
   </div>
 
@@ -1136,7 +1101,7 @@ function goPage(page, navEl) {
   if(page==='dashboard') setTimeout(renderDashboardCharts,50);
   if(page==='clienti') renderClientiAttivi();
   if(page==='automazioni') updateAutoStats();
-  if(page==='report') setTimeout(renderReport,50);
+  if(page==='report') renderReport();
 }
 
 // ── ORIGINAL setNav (kept for compatibility) ──
@@ -1449,284 +1414,8 @@ function initScoreChart() {
   window.scoreChartInst = scoreChartInst;
 }
 
-// ── REPORT ──
-let rptCharts = {};
-
-function renderReport() {
-  const leads = csvLeads;
-  const tot = leads.length;
-  const now = new Date().toLocaleDateString('it-IT', {day:'2-digit',month:'2-digit',year:'numeric'});
-  document.getElementById('report-date').textContent = now;
-  document.getElementById('report-lead-count').textContent = tot;
-
-  if (!tot) return;
-
-  const alta  = leads.filter(l=>(l['Readiness']||'').trim()==='Alta');
-  const media = leads.filter(l=>(l['Readiness']||'').trim()==='Media');
-  const bassa = leads.filter(l=>(l['Readiness']||'').trim()==='Bassa');
-  const hot   = leads.filter(l=>(l['Hotness']||'').toLowerCase()==='hot');
-
-  // ── 1. FUNNEL GRID ──
-  const fasi = [
-    {label:'Demo',          color:'#00B9B6', filter: l=>stageIncludes(l,['demo','invito'])},
-    {label:'Demo\nFollow-up',color:'#7367F0',filter: l=>stageIncludes(l,['follow','followup'])},
-    {label:'Registrazione', color:'#608C97', filter: l=>stageIncludes(l,['registration','registr','new'])},
-    {label:'Scadenza Demo', color:'#B09C4F', filter: l=>stageIncludes(l,['scad','expir','demo end'])},
-    {label:'Test',          color:'#005467', filter: l=>stageIncludes(l,['test','trial','qualified','proposal'])},
-    {label:'Scadenza Test', color:'#D97706', filter: l=>stageIncludes(l,['test end','scad test','closing'])},
-    {label:'Attivi',        color:'#16A34A', filter: l=>stageIncludes(l,['won','active','closed won','attiv'])},
-  ];
-
-  // Fallback: distribute by readiness if stages not mapped
-  const stageCounts = fasi.map(f => leads.filter(f.filter).length);
-  const totalMapped = stageCounts.reduce((s,c)=>s+c,0);
-  const grid = document.getElementById('report-funnel-grid');
-
-  if (totalMapped === 0) {
-    // Use readiness as proxy
-    const proxy = [
-      {label:'Alta\nReadiness', count:alta.length, color:'#00B9B6'},
-      {label:'Media\nReadiness', count:media.length, color:'#D97706'},
-      {label:'Bassa\nReadiness', count:bassa.length, color:'#DC2626'},
-    ];
-    grid.innerHTML = proxy.map(f => {
-      const pct = tot ? Math.round(f.count/tot*100) : 0;
-      return `<div class="rf-stage" style="grid-column:span 2;">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;border-radius:8px 8px 0 0;background:${f.color};"></div>
-        <div class="rf-num">${f.count}</div>
-        <div class="rf-label">${f.label.replace('\n','<br>')}</div>
-        <div class="rf-pct" style="color:${f.color};">${pct}%</div>
-      </div>`;
-    }).join('') + `<div class="rf-stage">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;border-radius:8px 8px 0 0;background:var(--navy);"></div>
-        <div class="rf-num">${tot}</div><div class="rf-label">Totale</div><div class="rf-pct" style="color:var(--navy);">100%</div>
-      </div>`;
-  } else {
-    grid.innerHTML = fasi.map(f => {
-      const cnt = leads.filter(f.filter).length;
-      const pct = tot ? Math.round(cnt/tot*100) : 0;
-      return `<div class="rf-stage">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;border-radius:8px 8px 0 0;background:${f.color};"></div>
-        <div class="rf-num">${cnt}</div>
-        <div class="rf-label">${f.label.replace('\n','<br>')}</div>
-        <div class="rf-pct" style="color:${f.color};">${pct}%</div>
-      </div>`;
-    }).join('');
-  }
-
-  // Stage table
-  const stageCRM = {};
-  leads.forEach(l => {
-    const s = (l['Opp Stage']||'N/D').trim();
-    if (!stageCRM[s]) stageCRM[s] = [];
-    stageCRM[s].push(l);
-  });
-  const stageRows = Object.entries(stageCRM).sort((a,b)=>b[1].length-a[1].length).map(([stage,arr])=>{
-    const pct = Math.round(arr.length/tot*100);
-    const avgScore = Math.round(arr.reduce((s,l)=>s+parseInt(l['Conversion Score']||0),0)/arr.length);
-    const readPrev = ['Alta','Media','Bassa'].reduce((best,r)=>arr.filter(l=>l['Readiness']===r).length>arr.filter(l=>l['Readiness']===best).length?r:best,'Bassa');
-    const readColor = readPrev==='Alta'?'#16A34A':readPrev==='Media'?'#D97706':'#DC2626';
-    const readBg = readPrev==='Alta'?'#DCFCE7':readPrev==='Media'?'#FEF3C7':'#FEE2E2';
-    const azione = readPrev==='Alta'?'Sales Activation':readPrev==='Media'?'Onboarding Call':'Nurturing LLM';
-    return `<tr>
-      <td><strong style="color:var(--navy);">${stage}</strong></td>
-      <td style="font-weight:700;color:var(--teal-dp);">${arr.length}</td>
-      <td>${pct}%</td>
-      <td style="font-weight:600;">${avgScore}</td>
-      <td><span style="background:${readBg};color:${readColor};font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;">${readPrev}</span></td>
-      <td><span style="background:var(--teal-pale);color:var(--teal-dp);font-size:10px;font-weight:600;padding:2px 9px;border-radius:99px;">${azione}</span></td>
-    </tr>`;
-  }).join('');
-  document.getElementById('report-stage-tbody').innerHTML = stageRows || '<tr><td colspan="6" style="text-align:center;color:var(--text3);">Nessun dato disponibile</td></tr>';
-
-  // ── 2. PIPELINE ──
-  const pipeline = (arr) => arr.reduce((s,l)=>s+parseFloat(l['Opp Value']||0),0);
-  const pipAlta  = pipeline(alta);
-  const pipTot   = pipeline(leads);
-  const convRate = Math.min(95, Math.round((alta.length/Math.max(tot,1))*100*1.35));
-
-  document.getElementById('rp-tot-lead').textContent   = tot;
-  document.getElementById('rp-pipeline-alta').textContent = '€'+pipAlta.toLocaleString('it-IT');
-  document.getElementById('rp-pipeline-tot').textContent  = '€'+pipTot.toLocaleString('it-IT');
-  document.getElementById('rp-conv-rate').textContent     = convRate+'%';
-
-  // Charts
-  ['rpt-chart-readiness','rpt-chart-pipeline'].forEach(id=>{if(rptCharts[id]){rptCharts[id].destroy();delete rptCharts[id];}});
-  rptCharts['rpt-chart-readiness'] = new Chart(document.getElementById('rpt-chart-readiness'),{
-    type:'doughnut',
-    data:{labels:['Alta','Media','Bassa'],datasets:[{data:[alta.length,media.length,bassa.length],backgroundColor:['#00B9B6','#D97706','#DC2626'],borderWidth:0,hoverOffset:6}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{font:{family:'Manrope',size:11}}}}}
-  });
-  rptCharts['rpt-chart-pipeline'] = new Chart(document.getElementById('rpt-chart-pipeline'),{
-    type:'bar',
-    data:{labels:['Alta','Media','Bassa'],datasets:[{data:[pipAlta,pipeline(media),pipeline(bassa)],backgroundColor:['#00B9B6','#D97706','#DC2626'],borderRadius:5}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{family:'Manrope',size:11}}},y:{ticks:{font:{family:'Manrope',size:11},callback:v=>'€'+v.toLocaleString('it-IT')},grid:{color:'rgba(0,0,89,0.04)'}}}}
-  });
-
-  // ── 3. SALES ──
-  const salesData = {};
-  Object.entries(USERS).forEach(([k,u])=>{ salesData[k]={user:u,leads:[],scores:[],pipeline:0,alta:0,hot:0}; });
-  Object.entries(leadAssignments).forEach(([idx,asgn])=>{
-    const lead = csvLeads[parseInt(idx)];
-    if (!lead || !salesData[asgn.key]) return;
-    salesData[asgn.key].leads.push(lead);
-    salesData[asgn.key].scores.push(parseInt(lead['Conversion Score']||0));
-    salesData[asgn.key].pipeline += parseFloat(lead['Opp Value']||0);
-    if ((lead['Readiness']||'').trim()==='Alta') salesData[asgn.key].alta++;
-    if ((lead['Hotness']||'').toLowerCase()==='hot') salesData[asgn.key].hot++;
-  });
-  const totalAssigned = Object.values(salesData).reduce((s,d)=>s+d.leads.length,0);
-  const altaNonAss = alta.filter((_,i)=>!leadAssignments[csvLeads.indexOf(alta[i])]).length;
-  const hotNonAss  = hot.filter(l=>!leadAssignments[csvLeads.indexOf(l)]).length;
-  const allScores  = leads.map(l=>parseInt(l['Conversion Score']||0));
-  const avgScore   = allScores.length ? Math.round(allScores.reduce((s,v)=>s+v,0)/allScores.length) : 0;
-
-  document.getElementById('rp-assegnati').textContent    = totalAssigned;
-  document.getElementById('rp-non-assegnati').textContent = altaNonAss;
-  document.getElementById('rp-score-medio').textContent  = avgScore;
-  document.getElementById('rp-hot-noass').textContent    = hotNonAss;
-
-  const salesRows = Object.values(salesData).map(d=>{
-    const avg = d.scores.length ? Math.round(d.scores.reduce((s,v)=>s+v,0)/d.scores.length) : 0;
-    return `<tr>
-      <td><span style="display:inline-flex;align-items:center;gap:7px;font-weight:600;color:var(--navy);">
-        <span style="width:26px;height:26px;border-radius:50%;background:${d.user.color};display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">${d.user.avatar}</span>
-        ${d.user.name}
-      </span></td>
-      <td style="font-weight:700;color:var(--teal-dp);">${d.leads.length}</td>
-      <td>${avg || '—'}</td>
-      <td><span style="background:#DCFCE7;color:#16A34A;font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;">${d.alta}</span></td>
-      <td>€${d.pipeline.toLocaleString('it-IT')}</td>
-      <td>${d.hot ? `<span style="background:#FEE2E2;color:#DC2626;font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;">${d.hot} hot</span>` : '—'}</td>
-    </tr>`;
-  }).join('');
-  document.getElementById('report-sales-tbody').innerHTML = salesRows;
-
-  // ── 4. RETENTION ──
-  const inattivi = leads.filter(l=>{
-    const g = l['Giorni ultimo contatto']||'';
-    const n = parseInt(g); return n > 30;
-  });
-  const retRisk = leads.filter(l=>(l['Readiness']||'').trim()==='Bassa' && (l['Hotness']||'').toLowerCase()==='cold');
-  document.getElementById('rp-ret-risk').textContent  = retRisk.length;
-  document.getElementById('rp-inattivi').textContent  = inattivi.length;
-  document.getElementById('rp-nurturing').textContent = bassa.length;
-  document.getElementById('rp-hot-leads').textContent = hot.length;
-
-  const riskLeads = leads.filter(l=>(l['Readiness']||'').trim()==='Bassa').slice(0,15);
-  document.getElementById('report-risk-tbody').innerHTML = riskLeads.length ?
-    riskLeads.map(l=>`<tr>
-      <td><strong style="color:var(--navy);">${l['Contact name']||l['Account name']||'—'}</strong></td>
-      <td>${l['Account name']||'—'}</td>
-      <td style="font-weight:700;color:#DC2626;">${l['Conversion Score']||0}</td>
-      <td><span style="background:#FEE2E2;color:#DC2626;font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;">Bassa</span></td>
-      <td>${l['Giorni ultimo contatto']||'—'}</td>
-      <td><span style="font-weight:600;color:${(l['Hotness']||'').toLowerCase()==='hot'?'#DC2626':(l['Hotness']||'').toLowerCase()==='warm'?'#D97706':'#8080A0'};">${l['Hotness']||'—'}</span></td>
-      <td><span style="background:#FEF3C7;color:#D97706;font-size:10px;font-weight:600;padding:2px 9px;border-radius:99px;">Nurturing LLM</span></td>
-    </tr>`).join('') :
-    '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px;">Nessun lead a rischio rilevato</td></tr>';
-}
-
-function stageIncludes(lead, keywords) {
-  const s = (lead['Opp Stage']||'').toLowerCase();
-  return keywords.some(k => s.includes(k));
-}
-
-// ── EXPORT PDF ──
-function exportPDF() {
-  showToast('Preparazione PDF in corso...');
-  // Switch to report page visually for print
-  const style = document.createElement('style');
-  style.id = 'print-override';
-  style.innerHTML = `@media print { body * { visibility: hidden; } #page-report, #page-report * { visibility: visible; } #page-report { position: fixed; top: 0; left: 0; width: 100%; } .btn-ghost { display: none !important; } }`;
-  document.head.appendChild(style);
-  setTimeout(() => {
-    window.print();
-    setTimeout(() => {
-      const el = document.getElementById('print-override');
-      if (el) el.remove();
-    }, 1000);
-  }, 300);
-}
-
-// ── EXPORT EXCEL ──
-function exportExcel() {
-  if (!csvLeads.length) { showToast('Carica prima il CSV', true); return; }
-  showToast('Generazione Excel in corso...');
-
-  // Build CSV content for each section
-  const now = new Date().toLocaleDateString('it-IT');
-  const lines = [];
-
-  // Sheet 1: Lead completo
-  lines.push('EARNEXT — REPORT COMPLETO — ' + now);
-  lines.push('');
-  lines.push('TUTTI I LEAD');
-  const headers = ['Nome','Azienda','Ruolo','Città','Hotness','Stage CRM','Conversion Score','Value Perception','Readiness Score','Readiness','Azione AI','Giorni ultimo contatto','Valore Opportunità','Regole Attivate','Assegnato a'];
-  lines.push(headers.join(','));
-  csvLeads.forEach((l,i) => {
-    const asgn = leadAssignments[i];
-    lines.push([
-      q(l['Contact name']||l['Account name']||''),
-      q(l['Account name']||''),
-      q(l['Contact role']||''),
-      q(l['City']||''),
-      q(l['Hotness']||''),
-      q(l['Opp Stage']||''),
-      l['Conversion Score']||0,
-      l['Value Perception Score']||0,
-      l['Readiness Score']||0,
-      q(l['Readiness']||''),
-      q(l['Azione AI']||''),
-      q(l['Giorni ultimo contatto']||''),
-      l['Opp Value']||0,
-      q(l['Regole Attivate']||''),
-      q(asgn ? asgn.name : 'Non assegnato')
-    ].join(','));
-  });
-
-  lines.push('');
-  lines.push('CLIENTI ATTIVI (ALTA READINESS)');
-  lines.push(['Nome','Azienda','Score','Stage','Valore (€)','Assegnato a'].join(','));
-  csvLeads.filter(l=>(l['Readiness']||'').trim()==='Alta').forEach((l,i)=>{
-    const asgn = leadAssignments[csvLeads.indexOf(l)];
-    lines.push([q(l['Contact name']||l['Account name']||''),q(l['Account name']||''),l['Conversion Score']||0,q(l['Opp Stage']||''),l['Opp Value']||0,q(asgn?asgn.name:'Non assegnato')].join(','));
-  });
-
-  lines.push('');
-  lines.push('DISTRIBUZIONE READINESS');
-  lines.push(['Readiness','N° Lead','% sul totale'].join(','));
-  ['Alta','Media','Bassa'].forEach(r=>{
-    const cnt = csvLeads.filter(l=>(l['Readiness']||'').trim()===r).length;
-    lines.push([r, cnt, Math.round(cnt/csvLeads.length*100)+'%'].join(','));
-  });
-
-  lines.push('');
-  lines.push('SALES — LEAD ASSEGNATI');
-  lines.push(['Sales','Ruolo','Lead assegnati','Score medio','Alta readiness','Pipeline (€)'].join(','));
-  Object.entries(USERS).forEach(([k,u])=>{
-    const assigned = Object.entries(leadAssignments).filter(([,a])=>a.key===k).map(([idx])=>csvLeads[parseInt(idx)]).filter(Boolean);
-    const avg = assigned.length ? Math.round(assigned.reduce((s,l)=>s+parseInt(l['Conversion Score']||0),0)/assigned.length) : 0;
-    const alta = assigned.filter(l=>(l['Readiness']||'').trim()==='Alta').length;
-    const pip = assigned.reduce((s,l)=>s+parseFloat(l['Opp Value']||0),0);
-    lines.push([q(u.name),q(u.role),assigned.length,avg,alta,pip].join(','));
-  });
-
-  const blob = new Blob(['\uFEFF'+lines.join('\n')], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'Earnext_Report_' + new Date().toISOString().slice(0,10) + '.csv';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('✓ Excel (CSV) scaricato');
-}
-
-function q(s) { return '"' + String(s).replace(/"/g,'""') + '"'; }
-
 // ── FUNNEL EMAIL DATABASE (v3.0) ──
+const FUNNEL_EMAILS = {
   invito_demo: {
     trigger: "Trigger: Primo contatto — nessuna interazione precedente\nScore AI: < 45 (Bassa readiness)\nTiming: Prima email di contatto",
     oggetto: "Una demo di 30 minuti per scoprire Earnext",
@@ -2111,6 +1800,125 @@ document.addEventListener('DOMContentLoaded', function() {
     oldCopy.removeEventListener('click', ()=>{});
   }
 });
+
+// REPORT GENERATOR
+function getReportDataset(){
+  if(csvLeads && csvLeads.length){
+    return csvLeads;
+  }
+  return Object.values(leads).map(l => ({
+    'Contact name': l.name,
+    'Account name': l.sub.split('•')[0].trim(),
+    'Readiness': l.scoreBadges.read === 'ALTA' ? 'Alta' : (l.scoreBadges.read === 'MEDIA' ? 'Media' : 'Bassa'),
+    'Conversion Score': l.scores.conv,
+    'Value Perception Score': l.scores.vp,
+    'Readiness Score': l.scores.read,
+    'Azione AI': l.scores.read >= 70 ? 'Sales Activation' : (l.scores.read >= 50 ? 'Onboarding Call' : 'Nurturing LLM'),
+    'Opp Stage': l.status,
+    'Hotness': l.scores.conv >= 70 ? 'Hot' : (l.scores.conv >= 50 ? 'Warm' : 'Cold')
+  }));
+}
+
+function renderReport(){
+  const data = getReportDataset();
+  const total = data.length;
+  const alta = data.filter(l => (l['Readiness']||'').trim() === 'Alta').length;
+  const media = data.filter(l => (l['Readiness']||'').trim() === 'Media').length;
+  const bassa = data.filter(l => (l['Readiness']||'').trim() === 'Bassa').length;
+  const avgConv = total ? Math.round(data.reduce((s,l)=>s+parseInt(l['Conversion Score']||0),0)/total) : 0;
+  const avgVP = total ? Math.round(data.reduce((s,l)=>s+parseInt(l['Value Perception Score']||0),0)/total) : 0;
+  const salesAct = data.filter(l => (l['Azione AI']||'').toLowerCase().includes('sales')).length;
+  const nurturing = data.filter(l => (l['Azione AI']||'').toLowerCase().includes('nurturing')).length;
+  const onboarding = data.filter(l => (l['Azione AI']||'').toLowerCase().includes('onboarding')).length;
+
+  document.getElementById('rp-total').textContent = total;
+  document.getElementById('rp-alta').textContent = alta;
+  document.getElementById('rp-media').textContent = media;
+  document.getElementById('rp-bassa').textContent = bassa;
+
+  const altaPct = total ? Math.round((alta/total)*100) : 0;
+  const mediaPct = total ? Math.round((media/total)*100) : 0;
+  const bassaPct = total ? Math.round((bassa/total)*100) : 0;
+
+  document.getElementById('report-summary').innerHTML = `
+    <div class="report-p">Il sistema ha analizzato <strong>${total}</strong> lead/professionisti. Il <strong>${altaPct}%</strong> presenta readiness alta e dovrebbe essere indirizzato verso attività di sales activation.</div>
+    <div class="report-metric-row">
+      <div class="report-metric"><div class="num">${avgConv}</div><div class="lbl">Conversion Score medio</div></div>
+      <div class="report-metric"><div class="num">${avgVP}</div><div class="lbl">Value Perception media</div></div>
+      <div class="report-metric"><div class="num">${salesAct}</div><div class="lbl">Sales activation</div></div>
+    </div>
+  `;
+
+  document.getElementById('report-priorities').innerHTML = `
+    <div class="report-list">
+      <div class="report-li"><i class="ti ti-check"></i><span>Attivare rapidamente i lead con readiness alta: <strong>${alta}</strong> profili.</span></div>
+      <div class="report-li"><i class="ti ti-check"></i><span>Gestire i lead medi con contenuti mirati e onboarding: <strong>${media}</strong> profili.</span></div>
+      <div class="report-li"><i class="ti ti-check"></i><span>Inserire i lead freddi in nurturing educativo: <strong>${bassa}</strong> profili.</span></div>
+      <div class="report-li"><i class="ti ti-check"></i><span>Monitorare activation e utilizzo per ridurre il rischio churn post-vendita.</span></div>
+    </div>
+  `;
+
+  const top = [...data].sort((a,b)=>parseInt(b['Conversion Score']||0)-parseInt(a['Conversion Score']||0)).slice(0,8);
+  const tbody = document.getElementById('report-top-tbody');
+  tbody.innerHTML = top.map(l => {
+    const r = (l['Readiness']||'Bassa').trim();
+    const cls = r === 'Alta' ? 'p-hi' : (r === 'Media' ? 'p-me' : 'p-lo');
+    return `<tr>
+      <td><strong style="color:var(--navy);">${l['Contact name']||'—'}</strong></td>
+      <td>${l['Account name']||'—'}</td>
+      <td><span class="pill ${cls}">${r}</span></td>
+      <td><strong style="color:var(--teal-dp);">${l['Conversion Score']||0}</strong></td>
+      <td>${l['Azione AI']||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  const reportText =
+`REPORT AI CLIENT INTELLIGENCE — EARNEXT
+
+1. Executive Summary
+Il sistema ha analizzato ${total} lead/professionisti provenienti dal dataset CRM.
+La distribuzione della readiness evidenzia:
+- Alta readiness: ${alta} lead (${altaPct}%)
+- Media readiness: ${media} lead (${mediaPct}%)
+- Bassa readiness: ${bassa} lead (${bassaPct}%)
+
+Il Conversion Score medio è ${avgConv}/100, mentre la Value Perception media è ${avgVP}/100.
+
+2. Lettura strategica
+I lead con readiness alta rappresentano priorità commerciale immediata: hanno maggiore probabilità di conversione e richiedono intervento sales entro tempi brevi.
+I lead con readiness media devono essere accompagnati con contenuti mirati e follow-up consulenziale.
+I lead con readiness bassa vanno inseriti in un percorso di nurturing educativo, orientato alla comprensione del valore della piattaforma.
+
+3. Azioni raccomandate
+- Sales Activation: ${salesAct} lead
+- Onboarding / Call consulenziale: ${onboarding} lead
+- Nurturing educativo: ${nurturing} lead
+- Monitoraggio activation & usage per clienti già attivi
+
+4. Next Step
+Integrare il report nel processo commerciale settimanale, utilizzandolo come base per:
+- prioritizzazione sales
+- selezione email funnel
+- monitoraggio conversione
+- prevenzione churn post-attivazione
+
+Conclusione
+L’obiettivo del sistema non è automatizzare la relazione, ma identificare il momento corretto per renderla più efficace.`;
+
+  document.getElementById('report-output').textContent = reportText;
+  if(typeof addLog === 'function') addLog('✓ Report AI generato');
+}
+
+function copyReport(){
+  const el = document.getElementById('report-output');
+  const text = el ? el.innerText : '';
+  if(!text || text.includes('verrà generato')){
+    showToast('Genera prima il report', true);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(()=>showToast('✓ Report copiato negli appunti')).catch(()=>showToast('Impossibile copiare il report', true));
+}
+
 </script>
 </body>
 </html>
