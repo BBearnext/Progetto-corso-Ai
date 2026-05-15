@@ -379,6 +379,10 @@ body{font-family:'Manrope',sans-serif;background:var(--gray-lt);color:var(--text
 .li-bassa{background:#FEE2E2;color:var(--red);}
 /* nav badge green */
 .nav-badge-green{background:var(--green)!important;}
+/* ── EMAIL DUAL TAB ── */
+.email-tab-btn{padding:9px 14px;font-size:11px;font-weight:600;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text3);cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s;display:inline-flex;align-items:center;gap:5px;margin-bottom:-1px;}
+.email-tab-btn:hover{color:var(--navy);}
+.email-tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
 
 </style>
 </head>
@@ -666,12 +670,13 @@ body{font-family:'Manrope',sans-serif;background:var(--gray-lt);color:var(--text
     <!-- ======= RIGHT PANEL ======= -->
     <div class="right-panel">
 
+      <!-- Next Best Action -->
       <div class="rp-section">
         <div class="rp-title"><i class="ti ti-bolt"></i>AI — Next Best Action</div>
         <div class="nba-box">
           <div class="nba-label">Azione consigliata</div>
-          <div class="nba-action" id="nba-action">CONTATTO COMMERCIALE</div>
-          <div class="nba-desc" id="nba-desc">Il lead ha un'elevata readiness. Consigliato contatto entro 48h.</div>
+          <div class="nba-action" id="nba-action">—</div>
+          <div class="nba-desc" id="nba-desc">—</div>
         </div>
         <div class="nba-items">
           <div class="nba-item ni-teal"><i class="ti ti-phone"></i><span>Prenota call introduttiva</span></div>
@@ -680,21 +685,90 @@ body{font-family:'Manrope',sans-serif;background:var(--gray-lt);color:var(--text
         </div>
       </div>
 
-      <div class="rp-section">
-        <div class="rp-title"><i class="ti ti-mail-bolt"></i>Email suggerita dall'AI</div>
-        <div class="email-box">
-          <div class="email-header">
-            <div class="email-subject-label">Oggetto:</div>
-            <div class="email-subject" id="email-subject">Soluzioni avanzate per la gestione dei patrimoni complessi</div>
+      <!-- Email dual-tab panel -->
+      <div class="rp-section" style="padding-bottom:0;">
+        <div class="rp-title"><i class="ti ti-mail-bolt"></i>Email da inviare</div>
+        <!-- Tab switcher -->
+        <div style="display:flex;gap:0;border-bottom:1px solid var(--gray);margin-bottom:14px;">
+          <button class="email-tab-btn active" id="etab-ai" onclick="switchEmailTab('ai',this)">
+            <i class="ti ti-brain" style="font-size:13px;"></i> Email AI
+          </button>
+          <button class="email-tab-btn" id="etab-funnel" onclick="switchEmailTab('funnel',this)">
+            <i class="ti ti-git-branch" style="font-size:13px;"></i> Email Funnel
+          </button>
+        </div>
+
+        <!-- TAB: EMAIL AI (readiness-based) -->
+        <div id="email-pane-ai" class="email-tab-pane active">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:5px;">
+            <i class="ti ti-info-circle" style="font-size:12px;"></i>
+            Basata sul Readiness Score AI del lead
           </div>
-          <div class="email-body" id="email-body">Ciao Mario,<br><br>ho visto il tuo interesse per la pianificazione patrimoniale e la reportistica avanzata.<br><br>Ecco un caso studio che mostra come Earnext ha aiutato un Family Office a ottenere una visione integrata e strategie più efficaci.<br><br>Resto a disposizione per una breve call introduttiva.<br><br>A presto,<br>Team Earnext</div>
-          <div class="email-actions">
-            <button class="btn-use-email">Usa questa email</button>
-            <button class="btn-copy" title="Copia"><i class="ti ti-copy"></i></button>
+          <div class="email-box">
+            <div class="email-header">
+              <div class="email-subject-label">Oggetto:</div>
+              <div class="email-subject" id="email-subject">—</div>
+            </div>
+            <div class="email-body" id="email-body">—</div>
+            <div class="email-actions">
+              <button class="btn-use-email" onclick="copyEmailContent('ai')">Copia email AI</button>
+              <button class="btn-copy" onclick="copyEmailContent('ai')" title="Copia"><i class="ti ti-copy"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: EMAIL FUNNEL (stage-based) -->
+        <div id="email-pane-funnel" class="email-tab-pane" style="display:none;">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:5px;">
+            <i class="ti ti-info-circle" style="font-size:12px;"></i>
+            Basata sullo Stage CRM del lead
+          </div>
+          <!-- Stage selector -->
+          <div style="margin-bottom:10px;">
+            <select id="funnel-stage-select" onchange="updateFunnelEmail()" style="width:100%;padding:7px 10px;border:1px solid var(--gray);border-radius:7px;font-size:11px;font-family:'Manrope',sans-serif;color:var(--navy);outline:none;background:#fff;">
+              <option value="">— Seleziona fase funnel —</option>
+              <option value="invito_demo">1.1 Invito Demo</option>
+              <option value="sollecito_demo_1">1.2 Sollecito Demo (1)</option>
+              <option value="sollecito_demo_2">1.3 Ultimo contatto Demo</option>
+              <option value="followup_demo">2.1 Follow-up post Demo</option>
+              <option value="value_perception">2.2 Value Perception ★</option>
+              <option value="sollecito_fu_1">2.3 Sollecito Follow-up (1)</option>
+              <option value="sollecito_fu_2">2.4 Ultimo contatto Follow-up</option>
+              <option value="benvenuto_reg">3.1 Benvenuto Registrazione</option>
+              <option value="inattivo_onboard">3.2 Inattivo — Proposta Onboarding</option>
+              <option value="sollecito_onboard">3.3 Sollecito Onboarding</option>
+              <option value="scad_demo_5">4.1 Scadenza Demo — 5 giorni</option>
+              <option value="scad_demo_1">4.2 Scadenza Demo — 1 giorno</option>
+              <option value="scad_demo_0">4.3 Scadenza Demo — oggi</option>
+              <option value="primo_cliente">5.1 Primo cliente inserito</option>
+              <option value="call_test_1">5.2 Call Test (1)</option>
+              <option value="call_test_2">5.3 Ultimo contatto Test</option>
+              <option value="scad_test_5">6.1 Scadenza Test — 5 giorni</option>
+              <option value="scad_test_1">6.2 Scadenza Test — 1 giorno</option>
+              <option value="scad_test_0">6.3 Scadenza Test — oggi</option>
+              <option value="abbonamento_attivato">7.1 Abbonamento Attivato ★</option>
+              <option value="basso_utilizzo">7.2 Basso Utilizzo / Retention ★</option>
+            </select>
+          </div>
+          <!-- Trigger info -->
+          <div id="funnel-trigger-box" style="display:none;background:var(--teal-pale2);border-left:3px solid var(--teal);border-radius:0 6px 6px 0;padding:8px 12px;margin-bottom:10px;font-size:11px;color:var(--teal-dp);line-height:1.5;">
+            <div id="funnel-trigger-text">—</div>
+          </div>
+          <div class="email-box">
+            <div class="email-header">
+              <div class="email-subject-label">Oggetto:</div>
+              <div class="email-subject" id="funnel-email-subject">Seleziona una fase funnel</div>
+            </div>
+            <div class="email-body" id="funnel-email-body" style="min-height:80px;color:var(--text3);font-style:italic;">Seleziona una fase dal menu per vedere il testo dell'email.</div>
+            <div class="email-actions">
+              <button class="btn-use-email" onclick="copyEmailContent('funnel')">Copia email Funnel</button>
+              <button class="btn-copy" onclick="copyEmailContent('funnel')" title="Copia"><i class="ti ti-copy"></i></button>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- Benefici attesi -->
       <div class="rp-section">
         <div class="rp-title"><i class="ti ti-chart-arrows-vertical"></i>Benefici attesi</div>
         <div class="benefits">
@@ -1260,12 +1334,391 @@ function initScoreChart() {
   window.scoreChartInst = scoreChartInst;
 }
 
-/* Copy email */
-document.querySelector('.btn-copy').addEventListener('click', function() {
-  const text = document.getElementById('email-body').innerText;
-  navigator.clipboard.writeText(text).catch(()=>{});
-  this.innerHTML = '<i class="ti ti-check" style="color:var(--teal);"></i>';
-  setTimeout(()=>{ this.innerHTML = '<i class="ti ti-copy"></i>'; }, 2000);
+// ── FUNNEL EMAIL DATABASE (v3.0) ──
+const FUNNEL_EMAILS = {
+  invito_demo: {
+    trigger: "Trigger: Primo contatto — nessuna interazione precedente\nScore AI: < 45 (Bassa readiness)\nTiming: Prima email di contatto",
+    oggetto: "Una demo di 30 minuti per scoprire Earnext",
+    corpo: `Buongiorno [Nome],
+
+le scrivo per proporle una breve demo di Earnext, la piattaforma di wealth planning per family office, consulenti indipendenti e professionisti patrimoniali.
+
+In 30 minuti le mostreremo come aggregare automaticamente gli asset patrimoniali di un cliente, generare report professionali e migliorare la qualità della relazione consulenziale attraverso una visione patrimoniale chiara, aggiornata e condivisibile.
+
+Può prenotare direttamente uno slot nel nostro calendario:
+👉 https://www.earnext.com/it/contact
+
+Oppure mi indichi la sua disponibilità e provvedo io a organizzare.
+
+Cordiali saluti,`
+  },
+  sollecito_demo_1: {
+    trigger: "Trigger: Nessuna risposta dopo 7 giorni\nScore AI: Score invariato — bassa engagement\nTiming: 7 giorni senza risposta",
+    oggetto: "Earnext — ancora disponibili per una demo",
+    corpo: `Buongiorno [Nome],
+
+le rinnovo l'invito a scoprire Earnext con una breve demo.
+
+La piattaforma è pensata per aiutare i professionisti patrimoniali a offrire ai propri clienti una visione chiara e aggiornata di tutti gli asset, riducendo il tempo operativo e migliorando la qualità della relazione consulenziale.
+
+Dopo la demo potrà testare gratuitamente la piattaforma per 30 giorni, con supporto dedicato.
+
+👉 Prenoti una demo: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  sollecito_demo_2: {
+    trigger: "Trigger: Nessuna risposta dopo ulteriori 7 giorni\nScore AI: Score basso — lead freddo\nTiming: Ultimo contatto — chiude il ciclo",
+    oggetto: "Earnext — può esplorarlo anche in autonomia",
+    corpo: `Buongiorno [Nome],
+
+questa è la mia ultima email prima di lasciarle spazio.
+
+Se preferisce esplorare la piattaforma in autonomia, può registrarsi gratuitamente qui:
+👉 Registrazione: https://app.earnext.com/register-pro
+
+Se invece preferisce una guida, siamo disponibili per una demo quando sarà il momento giusto per lei.
+
+La aspettiamo.
+
+Cordiali saluti,`
+  },
+  followup_demo: {
+    trigger: "Trigger: Demo completata\nScore AI: Score in crescita — media/alta readiness\nTiming: Entro 24h dalla demo — allegare i 3 documenti",
+    oggetto: "Grazie per la demo — ecco i prossimi passi",
+    corpo: `Buongiorno [Nome],
+
+la ringrazio per il tempo dedicato e per l'interesse mostrato durante la demo.
+
+In allegato trova:
+• La presentazione della piattaforma
+• La lista degli intermediari collegati e in fase di collegamento
+• Un esempio di report patrimoniale
+
+Per iniziare il test gratuito si registri qui:
+👉 https://app.earnext.com/register-pro
+
+Avrà a disposizione:
+• 30 giorni per esplorare il cliente demo
+• Fino a 3 clienti in test con 30 giorni di prova gratuita ciascuno
+• Supporto dedicato durante tutto il periodo
+• Possibilità di aggiungere utenti delegati gratuitamente
+
+Sono disponibile per una call se desidera approfondire un aspetto specifico.
+
+Cordiali saluti,`
+  },
+  value_perception: {
+    trigger: "Trigger: Demo completata — nessuna registrazione dopo 3 giorni\nScore AI: Score medio — value perception da rafforzare\nTiming: 3-4 giorni dopo la demo ★ EMAIL NUOVA v3.0",
+    oggetto: "Earnext — trasformare i dati patrimoniali in consulenza",
+    corpo: `Buongiorno [Nome],
+
+dopo la demo, volevamo lasciarle un punto di sintesi sul valore principale di Earnext.
+
+La piattaforma non è pensata solo per aggregare dati patrimoniali, ma per aiutare il professionista a trasformare informazioni frammentate in una visione chiara, aggiornata e utile nella relazione con il cliente finale.
+
+In particolare, Earnext consente di:
+• centralizzare asset finanziari e non finanziari in un'unica vista
+• generare report patrimoniali professionali e personalizzabili
+• supportare simulazioni e pianificazione per obiettivi
+• rendere più efficace e strutturato il dialogo consulenziale
+
+Se desidera, possiamo organizzare una breve call per approfondire il caso d'uso più vicino alla sua attività.
+
+👉 Prenoti una call: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  sollecito_fu_1: {
+    trigger: "Trigger: Nessuna registrazione dopo 7 giorni dal follow-up\nScore AI: Score in calo — engagement assente\nTiming: 7 giorni senza registrazione",
+    oggetto: "Earnext — possiamo aiutarla nella registrazione",
+    corpo: `Buongiorno [Nome],
+
+spero tutto bene.
+
+Se lo desidera, possiamo fissare una call di un'ora per accompagnarla nella registrazione e nei primi passi sulla piattaforma.
+
+👉 Richieda supporto operativo: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  sollecito_fu_2: {
+    trigger: "Trigger: Nessuna risposta dopo l'intero ciclo follow-up\nScore AI: Score basso — lead freddo\nTiming: Ultimo contatto — chiude il ciclo",
+    oggetto: "Earnext — ultima email da parte nostra",
+    corpo: `Buongiorno [Nome],
+
+non voglio disturbarla ulteriormente, quindi questa sarà la mia ultima email.
+
+Se in futuro vorrà esplorare la piattaforma, può registrarsi in autonomia:
+👉 https://app.earnext.com/register-pro
+
+O contattarci quando sarà il momento giusto per lei. Saremo qui.
+
+Cordiali saluti,`
+  },
+  benvenuto_reg: {
+    trigger: "Trigger: Registrazione completata\nScore AI: Score in crescita — primo segnale di attivazione\nTiming: Immediata alla registrazione ★ DA IMPLEMENTARE",
+    oggetto: "Benvenuto in Earnext — iniziamo insieme",
+    corpo: `Buongiorno [Nome],
+
+benvenuto in Earnext. Siamo felici di averla a bordo.
+
+Per aiutarla a partire nel modo migliore, le proponiamo una breve call in cui le mostreremo come:
+• Esplorare il cliente demo già disponibile in piattaforma
+• Inserire il primo cliente in test e visualizzarne automaticamente il patrimonio
+• Caricare un portafoglio finanziario e generare il primo report
+
+Avrà 30 giorni di prova gratuita per ogni cliente inserito in test.
+
+Ci indichi la sua disponibilità per una breve sessione di onboarding:
+👉 https://www.earnext.com/it/contact
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  inattivo_onboard: {
+    trigger: "Trigger: Nessun login nei primi 7 giorni\nScore AI: Score fermo — activation a rischio\nTiming: 7 giorni di inattività dopo registrazione",
+    oggetto: "Earnext — una call per iniziare al meglio",
+    corpo: `Buongiorno [Nome],
+
+le ricordiamo che siamo disponibili per una breve call di supporto per mostrarle come:
+• Esplorare il cliente demo
+• Inserire il primo cliente in test e visualizzarne automaticamente il patrimonio
+• Caricare un portafoglio finanziario
+
+Il cliente demo è disponibile per 30 giorni dalla registrazione — le consigliamo di esplorarlo prima che scada.
+
+👉 Prenoti una sessione di onboarding: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  sollecito_onboard: {
+    trigger: "Trigger: Ancora nessun login dopo 14 giorni\nScore AI: Score basso — rischio abbandono\nTiming: 7 giorni dopo il precedente — ultimo tentativo",
+    oggetto: "Earnext — siamo qui quando è pronto",
+    corpo: `Buongiorno [Nome],
+
+la contattiamo un'ultima volta per ricordarle che siamo disponibili per una call di supporto, per mostrarle le funzionalità principali e rispondere a qualsiasi domanda.
+
+Se questo non è il momento ideale, nessun problema: la aspettiamo quando sarà pronto a iniziare.
+
+Cordiali saluti,`
+  },
+  scad_demo_5: {
+    trigger: "Trigger: Nessun cliente reale caricato — 5 giorni alla scadenza\nScore AI: Score basso — activation non avviata\nTiming: Automatica 5 giorni prima ★ DA IMPLEMENTARE",
+    oggetto: "Earnext — 5 giorni per esplorare il cliente demo",
+    corpo: `Buongiorno [Nome],
+
+le ricordiamo che ha ancora 5 giorni per esplorare il cliente demo su Earnext.
+
+Non ha ancora inserito un cliente in test? È il momento giusto per iniziare: avrà 30 giorni di prova gratuita per vedere il valore della piattaforma su un caso reale.
+
+👉 Acceda ora e inserisca il primo cliente: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  scad_demo_1: {
+    trigger: "Trigger: Nessun cliente reale caricato — 1 giorno alla scadenza\nScore AI: Score basso — urgenza massima\nTiming: Automatica 1 giorno prima ★ DA IMPLEMENTARE",
+    oggetto: "Earnext — domani scade il cliente demo",
+    corpo: `Buongiorno [Nome],
+
+domani il periodo di visualizzazione del cliente demo su Earnext terminerà.
+
+Se non ha ancora inserito un cliente in test, può farlo adesso: avrà 30 giorni di prova gratuita per valutare la piattaforma su un caso reale.
+
+👉 Acceda ora: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  scad_demo_0: {
+    trigger: "Trigger: Scadenza demo — nessun cliente reale caricato\nScore AI: Score molto basso — lead a rischio abbandono\nTiming: Automatica giorno stesso ★ DA IMPLEMENTARE",
+    oggetto: "Earnext — il cliente demo è scaduto",
+    corpo: `Buongiorno [Nome],
+
+il periodo di visualizzazione del cliente demo su Earnext è terminato oggi.
+
+Per continuare a esplorare la piattaforma, inserisca un cliente in test: avrà 30 giorni di prova gratuita su un caso patrimoniale reale.
+
+👉 Acceda ora: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  primo_cliente: {
+    trigger: "Trigger: Inserimento primo cliente reale in test\nScore AI: Score in forte crescita — activation avviata\nTiming: Immediata all'inserimento ★ DA IMPLEMENTARE",
+    oggetto: "Earnext — il test è iniziato",
+    corpo: `Buongiorno [Nome],
+
+ha inserito il suo primo cliente in test su Earnext. Ottimo inizio.
+
+Da questo momento ha 30 giorni di prova gratuita. Se attiverà l'abbonamento entro la scadenza, non verrà addebitato nessun costo di set-up.
+
+Vuole una guida per esplorare le funzionalità principali? Siamo disponibili per una breve call dedicata.
+
+👉 Prenoti una call di supporto: https://www.earnext.com/it/contact
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  call_test_1: {
+    trigger: "Trigger: Nessuna interazione dopo 7 giorni dall'inserimento cliente\nScore AI: Score medio — conversion readiness da aumentare\nTiming: 7 giorni senza risposta",
+    oggetto: "Earnext — una call per sfruttare al meglio il test",
+    corpo: `Buongiorno [Nome],
+
+le ricordiamo che se attiverà l'abbonamento per il cliente in test entro la scadenza, non verrà addebitato nessun costo di set-up.
+
+Siamo disponibili per una call di supporto per mostrarle le funzionalità principali e rispondere a tutte le sue domande.
+
+👉 Prenoti una call: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  call_test_2: {
+    trigger: "Trigger: Nessuna risposta dopo l'intero ciclo test\nScore AI: Score in calo — lead a rischio\nTiming: 7 giorni dopo il sollecito — ultimo tentativo",
+    oggetto: "Earnext — siamo disponibili quando vuole",
+    corpo: `Buongiorno [Nome],
+
+se questo non è il momento ideale, nessun problema: la aspettiamo quando sarà pronta a valutare il servizio.
+
+Ricordi che attivando l'abbonamento entro la scadenza del test non verrà addebitato nessun costo di set-up.
+
+Cordiali saluti,`
+  },
+  scad_test_5: {
+    trigger: "Trigger: 5 giorni alla scadenza del test\nScore AI: Score alto se utilizza la piattaforma\nTiming: Automatica 5 giorni prima",
+    oggetto: "Earnext — 5 giorni per attivare l'abbonamento senza set-up fee",
+    corpo: `Buongiorno [Nome],
+
+il periodo di prova per il cliente [Nome Cliente] su Earnext terminerà tra 5 giorni.
+
+Attivi l'abbonamento entro le 23:59 del [Data] per continuare a usufruire dei vantaggi della piattaforma senza nessun costo di set-up.
+
+👉 Attivi l'abbonamento: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  scad_test_1: {
+    trigger: "Trigger: 1 giorno alla scadenza del test\nScore AI: Score alto — urgenza massima\nTiming: Automatica 1 giorno prima",
+    oggetto: "Earnext — domani scade il test. Attivi oggi senza set-up fee",
+    corpo: `Buongiorno [Nome],
+
+il periodo di prova per il cliente [Nome Cliente] su Earnext termina domani.
+
+Attivi l'abbonamento entro le 23:59 del [Data] per continuare senza interruzioni e senza nessun costo di set-up.
+
+👉 Attivi l'abbonamento: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  scad_test_0: {
+    trigger: "Trigger: Scadenza test\nScore AI: Momento decisivo — conversion o abbandono\nTiming: Automatica giorno stesso",
+    oggetto: "Earnext — il periodo di prova per [Nome Cliente] è terminato",
+    corpo: `Buongiorno [Nome],
+
+il periodo di prova per il cliente [Nome Cliente] su Earnext è terminato oggi.
+
+Per continuare a usufruire della piattaforma, attivi l'abbonamento per questo cliente.
+
+👉 Attivi l'abbonamento: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  abbonamento_attivato: {
+    trigger: "Trigger: Abbonamento attivato\nScore AI: Score alto — cliente attivo\nTiming: Immediata dopo attivazione ★ EMAIL NUOVA v3.0",
+    oggetto: "Earnext — abbonamento attivato, prossimi passi",
+    corpo: `Buongiorno [Nome],
+
+la ringraziamo per aver attivato l'abbonamento Earnext.
+
+Da questo momento può utilizzare la piattaforma per supportare in modo continuativo la relazione con i suoi clienti attraverso:
+• Aggregazione patrimoniale automatica
+• Report professionali personalizzabili
+• Simulazioni e pianificazione per obiettivi
+• Monitoraggio nel tempo
+
+Per aiutarla a ottenere il massimo valore fin dai primi giorni, le proponiamo una breve sessione operativa dedicata ai prossimi passi.
+
+👉 Prenoti una sessione operativa: https://www.earnext.com/it/contact
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  basso_utilizzo: {
+    trigger: "Trigger: Login < 2 volte in 15 giorni dopo abbonamento\nScore AI: Activation score basso — retention a rischio\nTiming: 15 giorni dopo attivazione ★ EMAIL NUOVA v3.0",
+    oggetto: "Earnext — possiamo aiutarla ad attivare meglio la piattaforma?",
+    corpo: `Buongiorno [Nome],
+
+volevamo assicurarci che stia ottenendo il massimo valore dalla piattaforma.
+
+Molti professionisti ottengono i risultati migliori quando iniziano a:
+• Caricare più clienti e visualizzarne il patrimonio completo
+• Creare report patrimoniali da condividere con i clienti
+• Utilizzare le simulazioni per supportare la pianificazione
+• Costruire una visione più chiara e strutturata nella relazione consulenziale
+
+Se lo desidera, possiamo organizzare una sessione dedicata per aiutarla a impostare il flusso di lavoro più adatto alla sua attività.
+
+👉 Richieda supporto operativo: https://www.earnext.com/it/contact
+
+Cordiali saluti,
+Il team Earnext`
+  }
+};
+
+// ── EMAIL TAB SWITCHING ──
+function switchEmailTab(tab, btn) {
+  document.querySelectorAll('.email-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('email-pane-ai').style.display    = tab==='ai'     ? 'block' : 'none';
+  document.getElementById('email-pane-funnel').style.display = tab==='funnel' ? 'block' : 'none';
+}
+
+function updateFunnelEmail() {
+  const key = document.getElementById('funnel-stage-select').value;
+  const triggerBox = document.getElementById('funnel-trigger-box');
+  if (!key || !FUNNEL_EMAILS[key]) {
+    triggerBox.style.display = 'none';
+    document.getElementById('funnel-email-subject').textContent = 'Seleziona una fase funnel';
+    document.getElementById('funnel-email-body').innerHTML = '<span style="color:var(--text3);font-style:italic;">Seleziona una fase dal menu per vedere il testo.</span>';
+    return;
+  }
+  const em = FUNNEL_EMAILS[key];
+  // Get current lead name for personalization
+  const leadName = document.getElementById('lead-name') ? document.getElementById('lead-name').textContent.split(' ')[0] : '[Nome]';
+  const bodyPersonalized = em.corpo.replace(/\[Nome\]/g, leadName !== '—' ? leadName : '[Nome]');
+  document.getElementById('funnel-email-subject').textContent = em.oggetto;
+  document.getElementById('funnel-email-body').innerHTML = bodyPersonalized.replace(/\n/g,'<br>');
+  triggerBox.style.display = 'block';
+  document.getElementById('funnel-trigger-text').innerHTML = em.trigger.replace(/\n/g,'<br>');
+}
+
+function copyEmailContent(type) {
+  let subj, body;
+  if (type === 'ai') {
+    subj = document.getElementById('email-subject').textContent;
+    body = document.getElementById('email-body').innerText;
+  } else {
+    subj = document.getElementById('funnel-email-subject').textContent;
+    body = document.getElementById('funnel-email-body').innerText;
+  }
+  if (!subj || subj === '—' || subj === 'Seleziona una fase funnel') {
+    showToast('Nessuna email da copiare', true);
+    return;
+  }
+  navigator.clipboard.writeText('Oggetto: ' + subj + '\n\n' + body).catch(()=>{});
+  showToast('✓ Email copiata negli appunti');
+}
+
+// Override old copy button listener if present
+document.addEventListener('DOMContentLoaded', function() {
+  const oldCopy = document.querySelector('.btn-copy');
+  if (oldCopy) {
+    oldCopy.removeEventListener('click', ()=>{});
+  }
 });
 </script>
 </body>
