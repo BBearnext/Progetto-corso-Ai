@@ -1,0 +1,2434 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Earnext — AI Lead & Client Intelligence System</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --teal:#00B9B6;--teal-lt:#80DCDB;--teal-pale:#E6F8F8;--teal-pale2:#EAF9F9;
+  --navy:#000059;--navy-dk:#00003B;--navy-mid:#0D0D6B;
+  --gray:#E0E0EB;--gray-lt:#F4F4F8;--gray-mid:#B0B0C0;
+  --violet:#470A57;--slate:#608C97;--teal-dp:#005467;
+  --lavender:#7367F0;--mustard:#B09C4F;
+  --green:#16A34A;--amber:#D97706;--red:#DC2626;
+  --text:#000059;--text2:#4A4A6A;--text3:#8080A0;
+  --white:#fff;--sidebar-w:200px;--right-w:300px;
+}
+body{font-family:'Manrope',sans-serif;background:var(--gray-lt);color:var(--text);height:100vh;display:flex;overflow:hidden;}
+
+/* ======= SIDEBAR ======= */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--navy-dk);
+  display:flex;flex-direction:column;
+  height:100vh;overflow:hidden;
+}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sidebar-logo .logo-text{font-size:18px;font-weight:800;color:#fff;letter-spacing:.08em;}
+.sidebar-logo .logo-text span{color:var(--teal);}
+.sidebar-logo .logo-sub{font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.14em;text-transform:uppercase;margin-top:2px;}
+.nav-items{flex:1;padding:12px 0;overflow-y:auto;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 18px;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.05);}
+.nav-item.active{color:#fff;background:rgba(0,185,182,.12);border-left-color:var(--teal);}
+.nav-item i{font-size:18px;flex-shrink:0;}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--teal);color:#fff;}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,.08);}
+.user-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.user-name{font-size:12px;font-weight:600;color:#fff;}
+.user-role{font-size:10px;color:rgba(255,255,255,.4);}
+.ai-assistant-btn{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;background:rgba(0,185,182,.15);border:1px solid rgba(0,185,182,.3);cursor:pointer;transition:all .15s;}
+.ai-assistant-btn:hover{background:rgba(0,185,182,.25);}
+.ai-assistant-btn span{font-size:12px;color:rgba(255,255,255,.8);font-weight:500;}
+.ai-assistant-btn i{font-size:16px;color:var(--teal);}
+.beta-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--teal);color:#fff;margin-left:auto;}
+
+/* ======= MAIN AREA ======= */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* Top bar */
+.topbar{
+  background:#fff;border-bottom:1px solid var(--gray);
+  padding:0 24px;height:52px;display:flex;align-items:center;
+  justify-content:space-between;flex-shrink:0;
+}
+.topbar-breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text3);}
+.topbar-breadcrumb .bc-current{color:var(--navy);font-weight:600;}
+.topbar-breadcrumb i{font-size:14px;}
+.topbar-actions{display:flex;gap:8px;}
+.btn-ghost{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--gray);background:#fff;color:var(--navy);cursor:pointer;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:6px;transition:border-color .15s;}
+.btn-ghost:hover{border-color:var(--teal);}
+.btn-primary{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:700;border:none;background:var(--teal);color:#fff;cursor:pointer;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:6px;transition:background .15s;}
+.btn-primary:hover{background:var(--teal-dp);}
+
+/* Content area */
+.content-wrap{flex:1;display:flex;overflow:hidden;}
+
+/* Center content */
+.center{flex:1;overflow-y:auto;padding:20px 20px 20px 20px;}
+
+/* Lead header card */
+.lead-header{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:20px 24px;margin-bottom:16px;}
+.lead-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;}
+.lead-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
+.lead-info{flex:1;}
+.lead-name-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.lead-name{font-size:22px;font-weight:700;color:var(--navy);}
+.lead-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:#DCFCE7;color:var(--green);}
+.lead-sub{font-size:13px;color:var(--text2);margin-bottom:8px;}
+.lead-sub span{color:var(--text3);margin:0 6px;}
+.lead-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.lead-tag{font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--gray);color:var(--text2);background:#fff;}
+.lead-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:12px;}
+.lm-row{display:flex;flex-direction:column;gap:2px;}
+.lm-label{color:var(--text3);font-size:11px;}
+.lm-value{color:var(--navy);font-weight:600;}
+.lead-actions{display:flex;gap:8px;align-items:flex-start;flex-shrink:0;}
+
+/* Score cards */
+.score-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.score-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:16px 18px;}
+.sc-label{font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:500;}
+.sc-main{display:flex;align-items:baseline;gap:6px;margin-bottom:4px;}
+.sc-val{font-size:28px;font-weight:700;color:var(--navy);}
+.sc-max{font-size:12px;color:var(--text3);}
+.sc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.badge-alto{background:#DCFCE7;color:var(--green);}
+.badge-medio{background:#FEF3C7;color:var(--amber);}
+.badge-basso{background:#FEE2E2;color:var(--red);}
+.sc-bar{height:5px;background:var(--gray);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+.sc-bar-fill{height:100%;border-radius:99px;transition:width .6s ease;}
+.sc-desc{font-size:11px;color:var(--text3);line-height:1.4;}
+
+/* Tab navigation */
+.tab-nav{display:flex;gap:0;border-bottom:1px solid var(--gray);margin-bottom:16px;background:#fff;border-radius:10px 10px 0 0;border:1px solid var(--gray);border-bottom:none;padding:0 8px;}
+.tab-btn{padding:12px 16px;font-size:13px;font-weight:600;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text3);cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s;white-space:nowrap;margin-bottom:-1px;}
+.tab-btn:hover{color:var(--navy);}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
+.tab-pane{display:none;}.tab-pane.active{display:block;}
+
+/* Panoramica grid */
+.pan-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.pan-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:18px 20px;}
+.pan-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.pan-title i{color:var(--teal);font-size:16px;}
+
+/* Behavior list */
+.beh-list{display:flex;flex-direction:column;gap:8px;}
+.beh-row{display:flex;align-items:center;gap:10px;font-size:12px;}
+.beh-row i{font-size:16px;color:var(--gray-mid);flex-shrink:0;}
+.beh-label{color:var(--text2);flex:1;}
+.beh-val{font-weight:600;color:var(--navy);}
+.beh-check{color:var(--green);font-size:16px;}
+
+/* Interest bars */
+.int-list{display:flex;flex-direction:column;gap:10px;}
+.int-row{display:flex;flex-direction:column;gap:4px;}
+.int-label-row{display:flex;justify-content:space-between;font-size:12px;}
+.int-label{color:var(--text2);}
+.int-pct{font-weight:700;color:var(--navy);}
+.int-bar{height:6px;background:var(--gray);border-radius:99px;overflow:hidden;}
+.int-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--teal-lt));}
+
+/* AI Summary */
+.ai-summary-box{background:linear-gradient(135deg,#EAF9F9,#F0EFF8);border:1px solid var(--teal-lt);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.7;}
+.ai-summary-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.ai-summary-title i{color:var(--teal);font-size:16px;}
+
+/* Platform usage strip */
+.platform-strip{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:16px 20px;margin-top:14px;}
+.platform-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:14px;}
+.platform-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.plat-item{display:flex;flex-direction:column;gap:4px;}
+.plat-icon-wrap{width:36px;height:36px;border-radius:8px;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;margin-bottom:4px;}
+.plat-icon-wrap i{font-size:18px;color:var(--teal);}
+.plat-val{font-size:16px;font-weight:700;color:var(--navy);}
+.plat-label{font-size:10px;color:var(--text3);}
+.plat-sub{font-size:10px;color:var(--text3);}
+
+/* Comportamento tab */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--gray);}
+.tl-item:last-child{border-bottom:none;}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:4px;}
+.tl-body .tl-title{font-size:12px;font-weight:600;color:var(--navy);}
+.tl-body .tl-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.tl-body .tl-time{font-size:10px;color:var(--gray-mid);margin-top:3px;}
+
+/* Interazioni tab */
+.int-table{width:100%;border-collapse:collapse;font-size:12px;}
+.int-table th{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;padding:9px 12px;border-bottom:1px solid var(--gray);text-align:left;}
+.int-table td{padding:10px 12px;border-bottom:1px solid var(--gray);color:var(--text2);vertical-align:middle;}
+.int-table tr:last-child td{border-bottom:none;}
+.int-table tr:hover td{background:var(--teal-pale2);}
+
+/* Utilizzo Piattaforma tab */
+.util-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.util-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:18px;}
+.util-card-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:14px;}
+.feat-usage{display:flex;flex-direction:column;gap:8px;}
+.feat-row{display:flex;align-items:center;gap:10px;font-size:12px;}
+.feat-name{flex:1;color:var(--text2);}
+.feat-bar{width:80px;height:5px;background:var(--gray);border-radius:99px;overflow:hidden;}
+.feat-fill{height:100%;border-radius:99px;background:var(--teal);}
+.feat-count{font-weight:600;color:var(--navy);min-width:30px;text-align:right;}
+
+/* Architettura AI strip */
+.arch-strip{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:16px 20px;margin-top:14px;}
+.arch-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:14px;}
+.arch-flow{display:flex;align-items:center;gap:0;}
+.arch-node{flex:1;text-align:center;padding:12px 8px;border:1px solid var(--gray);background:#fff;}
+.arch-node:first-child{border-radius:8px 0 0 8px;}
+.arch-node:last-child{border-radius:0 8px 8px 0;border-left:none;}
+.arch-node.mid{border-left:none;border-right:none;background:var(--teal-pale);}
+.arch-node-num{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+.arch-node-title{font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.arch-node-items{font-size:10px;color:var(--text2);line-height:1.7;}
+.arch-node.mid .arch-node-title{color:var(--teal-dp);}
+.arch-arr{padding:0 6px;color:var(--gray);font-size:18px;flex-shrink:0;}
+
+/* Pills */
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:10px;font-weight:600;}
+.p-hi{background:var(--teal-pale);color:var(--teal-dp);}
+.p-me{background:#FEF3C7;color:var(--amber);}
+.p-lo{background:#FEE2E2;color:var(--red);}
+
+/* ======= RIGHT PANEL ======= */
+.right-panel{width:var(--right-w);flex-shrink:0;background:#fff;border-left:1px solid var(--gray);overflow-y:auto;display:flex;flex-direction:column;}
+
+.rp-section{padding:18px 18px 14px;border-bottom:1px solid var(--gray);}
+.rp-section:last-child{border-bottom:none;}
+.rp-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.rp-title i{font-size:16px;color:var(--teal);}
+
+/* Next best action */
+.nba-box{background:linear-gradient(135deg,var(--teal-pale2),#F3F0FD);border:1px solid var(--teal-lt);border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+.nba-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+.nba-action{font-size:14px;font-weight:700;color:var(--teal-dp);margin-bottom:6px;}
+.nba-desc{font-size:11px;color:var(--text2);line-height:1.5;}
+.nba-items{display:flex;flex-direction:column;gap:7px;}
+.nba-item{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--text2);padding:8px 10px;border:1px solid var(--gray);border-radius:7px;cursor:pointer;transition:border-color .15s;}
+.nba-item:hover{border-color:var(--teal);}
+.nba-item i{font-size:16px;flex-shrink:0;}
+.ni-teal i{color:var(--teal);}
+.ni-violet i{color:var(--lavender);}
+.ni-navy i{color:var(--navy);}
+
+/* Email AI */
+.email-box{border:1px solid var(--gray);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+.email-header{background:var(--gray-lt);padding:10px 12px;border-bottom:1px solid var(--gray);}
+.email-subject-label{font-size:10px;color:var(--text3);margin-bottom:3px;}
+.email-subject{font-size:12px;font-weight:600;color:var(--navy);}
+.email-body{padding:12px;font-size:12px;color:var(--text2);line-height:1.7;max-height:160px;overflow-y:auto;}
+.email-actions{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--gray);}
+.btn-use-email{flex:1;padding:9px;border-radius:7px;font-size:12px;font-weight:700;border:none;background:var(--navy);color:#fff;cursor:pointer;font-family:'Manrope',sans-serif;transition:background .15s;}
+.btn-use-email:hover{background:var(--teal);}
+.btn-copy{width:36px;height:36px;border-radius:7px;border:1px solid var(--gray);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:border-color .15s;}
+.btn-copy:hover{border-color:var(--teal);}
+.btn-copy i{font-size:16px;color:var(--text3);}
+
+/* Benefits */
+.benefits{display:flex;flex-direction:column;gap:6px;}
+.ben-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);}
+.ben-check{color:var(--teal);font-size:14px;flex-shrink:0;}
+
+/* Lead switcher */
+.lead-switcher{padding:12px 16px;border-bottom:1px solid var(--gray);background:var(--gray-lt);display:flex;gap:6px;flex-wrap:wrap;}
+.ls-btn{padding:5px 12px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid var(--gray);background:#fff;color:var(--text2);cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s;}
+.ls-btn:hover{border-color:var(--teal);color:var(--teal);}
+.ls-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* ── IMPORT BANNER ── */
+.import-banner{background:linear-gradient(135deg,var(--navy-dk),#1a1a7a);border-bottom:2px solid var(--teal);padding:12px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.import-banner.hidden{display:none;}
+.ib-icon{width:36px;height:36px;border-radius:8px;background:rgba(0,185,182,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ib-icon i{font-size:20px;color:var(--teal);}
+.ib-text{flex:1;}
+.ib-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.ib-sub{font-size:11px;color:rgba(255,255,255,.5);}
+.btn-import{padding:8px 18px;border-radius:7px;font-size:12px;font-weight:700;background:var(--teal);color:#fff;border:none;cursor:pointer;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:7px;}
+.btn-dismiss{padding:8px 14px;border-radius:7px;font-size:12px;font-weight:600;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);cursor:pointer;font-family:'Manrope',sans-serif;}
+/* ── PAGES ── */
+.page-wrap{display:none;flex:1;overflow:hidden;}
+.page-wrap.active{display:flex;}
+.page-scroll{flex:1;overflow-y:auto;padding:24px;}
+.page-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.page-sub{font-size:14px;color:var(--text3);margin-bottom:24px;}
+/* ── KPI STRIP ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--teal-lt));}
+.kpi-val{font-size:28px;font-weight:700;color:var(--navy);line-height:1;}
+.kpi-label{font-size:11px;color:var(--text3);margin-top:6px;}
+.kpi-delta{font-size:11px;color:var(--teal);margin-top:4px;font-weight:600;}
+/* ── DATA CARD ── */
+.data-card{background:#fff;border:1px solid var(--gray);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+.data-card-hdr{padding:16px 20px;border-bottom:1px solid var(--gray);display:flex;align-items:center;justify-content:space-between;}
+.data-card-title{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.data-card-title i{color:var(--teal);font-size:16px;}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;padding:10px 16px;border-bottom:1px solid var(--gray);text-align:left;background:var(--gray-lt);}
+.data-table td{padding:11px 16px;border-bottom:1px solid var(--gray);color:var(--text2);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:var(--teal-pale2);}
+/* ── DASH CHARTS ── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.chart-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:20px;}
+.chart-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.chart-card-title i{color:var(--teal);font-size:16px;}
+.chart-wrap{position:relative;width:100%;height:220px;}
+.sales-rank{display:flex;flex-direction:column;gap:10px;}
+.sr-row{display:flex;align-items:center;gap:12px;}
+.sr-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.sr-name{font-size:12px;font-weight:600;color:var(--navy);flex:1;}
+.sr-count{font-size:13px;font-weight:700;color:var(--teal-dp);min-width:24px;text-align:right;}
+.sr-bar-wrap{width:80px;height:5px;background:var(--gray);border-radius:99px;overflow:hidden;}
+.sr-bar{height:100%;border-radius:99px;}
+/* ── AUTOMAZIONI ── */
+.auto-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.auto-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:20px;}
+.auto-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.auto-card-title i{color:var(--teal);font-size:16px;}
+.rule-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--gray);border-radius:8px;margin-bottom:8px;transition:border-color .15s;}
+.rule-row:hover{border-color:var(--teal);}
+.rule-icon{font-size:20px;flex-shrink:0;}
+.rule-cond-text{font-size:12px;color:var(--text2);flex:1;line-height:1.4;}
+.rule-cond-text strong{color:var(--navy);}
+.rule-arrow{font-size:16px;color:var(--gray-mid);flex-shrink:0;}
+.rule-out{font-size:11px;font-weight:600;padding:4px 12px;border-radius:99px;flex-shrink:0;}
+.ro-sales{background:var(--teal-pale);color:var(--teal-dp);}
+.ro-nurture{background:#FEF3C7;color:var(--amber);}
+.ro-risk{background:#FEE2E2;color:var(--red);}
+.ro-premium{background:#F3F0FD;color:var(--lavender);}
+.ro-upsell{background:#DCFCE7;color:var(--green);}
+.toggle{position:relative;width:36px;height:20px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--gray);border-radius:99px;transition:.2s;}
+.toggle-slider:before{content:'';position:absolute;height:14px;width:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;}
+.toggle input:checked+.toggle-slider{background:var(--teal);}
+.toggle input:checked+.toggle-slider:before{transform:translateX(16px);}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.stat-box{padding:14px 16px;background:var(--gray-lt);border:1px solid var(--gray);border-radius:8px;text-align:center;}
+.stat-val{font-size:22px;font-weight:700;color:var(--navy);}
+.stat-label{font-size:11px;color:var(--text3);margin-top:4px;}
+/* ── ASSIGN MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:#fff;border-radius:14px;width:420px;overflow:hidden;transform:translateY(12px);transition:transform .2s;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-hdr{padding:20px 24px 16px;border-bottom:1px solid var(--gray);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:15px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.modal-title i{color:var(--teal);font-size:18px;}
+.modal-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--gray);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.modal-close:hover{border-color:var(--teal);}
+.modal-close i{font-size:16px;color:var(--text3);}
+.modal-body{padding:16px 24px;}
+.modal-lead-info{background:var(--teal-pale);border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+.modal-lead-name{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.modal-lead-sub{font-size:12px;color:var(--teal-dp);}
+.modal-section-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+.sales-grid-modal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.sales-card-modal{padding:12px 10px;border:1px solid var(--gray);border-radius:8px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+.sales-card-modal:hover{border-color:var(--teal);}
+.sales-card-modal.selected{border-color:var(--teal);background:var(--teal-pale);}
+.sc-av-modal{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;}
+.modal-note label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:6px;}
+.modal-note textarea{width:100%;padding:10px 12px;border:1px solid var(--gray);border-radius:8px;font-size:12px;font-family:'Manrope',sans-serif;color:var(--navy);resize:none;outline:none;height:70px;}
+.modal-note textarea:focus{border-color:var(--teal);}
+.modal-footer{padding:14px 24px;border-top:1px solid var(--gray);display:flex;gap:8px;justify-content:flex-end;}
+.btn-navy{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:700;border:none;background:var(--navy);color:#fff;cursor:pointer;font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:6px;}
+.btn-navy:hover{background:var(--teal);}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy-dk);border:1px solid var(--teal);border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:12px;font-size:13px;color:#fff;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s ease;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast i{font-size:20px;color:var(--teal);}
+/* ── ASSIGNED BADGE ── */
+.assigned-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;margin-left:6px;}
+/* ── CSV LEAD LIST ── */
+.lead-list-panel{width:240px;flex-shrink:0;background:#fff;border-right:1px solid var(--gray);display:flex;flex-direction:column;overflow:hidden;display:none;}
+.lead-list-panel.visible{display:flex;}
+.llp-header{padding:14px 16px;border-bottom:1px solid var(--gray);display:flex;align-items:center;justify-content:space-between;}
+.llp-title{font-size:12px;font-weight:700;color:var(--navy);}
+.llp-count{font-size:11px;color:var(--text3);}
+.llp-search{padding:10px 12px;border-bottom:1px solid var(--gray);}
+.llp-search input{width:100%;padding:7px 10px;border:1px solid var(--gray);border-radius:6px;font-size:12px;font-family:'Manrope',sans-serif;color:var(--navy);outline:none;}
+.llp-search input:focus{border-color:var(--teal);}
+.llp-filters{padding:8px 12px;border-bottom:1px solid var(--gray);display:flex;gap:5px;flex-wrap:wrap;}
+.filter-btn{padding:3px 10px;border-radius:99px;font-size:10px;font-weight:600;border:1px solid var(--gray);background:#fff;color:var(--text3);cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s;}
+.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.filter-btn.f-alta.active{background:var(--green);border-color:var(--green);}
+.filter-btn.f-media.active{background:var(--amber);border-color:var(--amber);}
+.filter-btn.f-bassa.active{background:var(--red);border-color:var(--red);}
+.lead-items-list{flex:1;overflow-y:auto;}
+.lead-item-csv{padding:12px 14px;border-bottom:1px solid var(--gray);cursor:pointer;transition:background .1s;}
+.lead-item-csv:hover{background:var(--teal-pale2);}
+.lead-item-csv.active{background:var(--teal-pale);border-left:3px solid var(--teal);}
+.li-name-csv{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-sub-csv{font-size:11px;color:var(--text3);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-footer-csv{display:flex;align-items:center;justify-content:space-between;}
+.li-score-csv{font-size:12px;font-weight:700;color:var(--teal-dp);}
+.li-badge-csv{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.li-alta{background:#DCFCE7;color:var(--green);}
+.li-media{background:#FEF3C7;color:var(--amber);}
+.li-bassa{background:#FEE2E2;color:var(--red);}
+/* nav badge green */
+.nav-badge-green{background:var(--green)!important;}
+/* ── EMAIL DUAL TAB ── */
+.email-tab-btn{padding:9px 14px;font-size:11px;font-weight:600;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text3);cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s;display:inline-flex;align-items:center;gap:5px;margin-bottom:-1px;}
+.email-tab-btn:hover{color:var(--navy);}
+.email-tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
+
+
+/* REPORT PAGE */
+.report-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.report-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:16px;}
+.report-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:20px;}
+.report-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.report-title i{color:var(--teal);font-size:17px;}
+.report-p{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:8px;}
+.report-list{display:flex;flex-direction:column;gap:7px;margin-top:8px;}
+.report-li{font-size:12px;color:var(--text2);display:flex;gap:8px;align-items:flex-start;}
+.report-li i{color:var(--teal);font-size:14px;margin-top:2px;flex-shrink:0;}
+.report-metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+.report-metric{background:var(--gray-lt);border:1px solid var(--gray);border-radius:8px;padding:12px;text-align:center;}
+.report-metric .num{font-size:22px;font-weight:800;color:var(--navy);}
+.report-metric .lbl{font-size:10px;color:var(--text3);margin-top:4px;}
+.report-output{white-space:pre-wrap;font-size:12px;line-height:1.65;color:var(--text2);background:#fff;border:1px solid var(--gray);border-radius:10px;padding:18px;min-height:280px;}
+.report-output strong{color:var(--navy);}
+@media print{
+  body{overflow:visible;height:auto;display:block;background:#fff;}
+  .sidebar,.topbar,.import-banner,.lead-list-panel,.right-panel,.report-actions{display:none!important;}
+  .main,.page-wrap,.page-scroll{display:block!important;overflow:visible!important;height:auto!important;padding:0!important;}
+  .page-wrap:not(#page-report){display:none!important;}
+  .report-card,.data-card,.kpi-card{break-inside:avoid;}
+}
+
+
+/* HOME PAGE */
+.home-hero{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:26px 28px;margin-bottom:18px;}
+.home-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+.home-title{font-size:28px;font-weight:800;color:var(--navy);margin-bottom:10px;}
+.home-desc{font-size:14px;color:var(--text2);line-height:1.7;max-width:820px;}
+.home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.home-card{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:18px 20px;}
+.home-card i{font-size:24px;color:var(--teal);margin-bottom:10px;}
+.home-card-title{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:8px;}
+.home-card-text{font-size:12px;color:var(--text2);line-height:1.6;}
+
+
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --teal:#00B9B6;--teal-lt:#80DCDB;--teal-pale:#E6F8F8;--teal-pale2:#EAF9F9;
+  --navy:#000059;--navy-dk:#00003B;
+  --gray:#E0E0EB;--gray-lt:#F7F7FB;
+  --violet:#470A57;--slate:#608C97;--teal-dp:#005467;
+  --lavender:#7367F0;--mustard:#B09C4F;
+  --text:#000059;--text2:#4A4A6A;--text3:#8080A0;
+  --white:#fff;
+  --r:10px;--rs:8px;
+}
+
+
+/* LANDING / AI STRATEGY PAGE */
+.hero{
+  background:linear-gradient(150deg,#EAF9F9 0%,#F7F7FB 55%,#EEEDF8 100%);
+  padding:80px 48px 72px;
+  border-bottom:1px solid var(--gray);
+}
+.hero-inner{max-width:700px;}
+.hero-label{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:22px;}
+.hero-label-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);}
+.hero h1{font-size:42px;font-weight:700;color:var(--navy);line-height:1.16;margin-bottom:20px;}
+.hero h1 em{font-style:normal;color:var(--teal);}
+.hero p{font-size:16px;color:var(--text2);line-height:1.72;margin-bottom:36px;max-width:560px;}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:52px;}
+.btn-primary{padding:14px 30px;border-radius:var(--r);font-size:14px;font-weight:700;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:'Manrope',sans-serif;text-decoration:none;transition:background .15s;}
+.btn-primary:hover{background:var(--teal);}
+.btn-secondary{padding:14px 26px;border-radius:var(--r);font-size:14px;font-weight:600;background:#fff;color:var(--navy);border:1px solid var(--gray);cursor:pointer;font-family:'Manrope',sans-serif;text-decoration:none;transition:border-color .15s;}
+.btn-secondary:hover{border-color:var(--teal);}
+.hero-kpis{display:flex;gap:48px;padding-top:36px;border-top:1px solid #C8ECEC;flex-wrap:wrap;}
+.hkpi .hkv{font-size:30px;font-weight:700;color:var(--navy);}
+.hkpi .hkv em{font-style:normal;color:var(--teal);}
+.hkpi .hkl{font-size:12px;color:var(--text3);margin-top:5px;}
+
+/* ======= GENERIC SECTION ======= */
+.section{padding:72px 48px;}
+.section-inner{max-width:1060px;margin:0 auto;}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.sec-h2{font-size:30px;font-weight:700;color:var(--navy);line-height:1.28;margin-bottom:12px;}
+.sec-sub{font-size:15px;color:var(--text2);line-height:1.7;max-width:560px;margin-bottom:48px;}
+
+/* ======= HOW IT WORKS ======= */
+.flow{display:flex;flex-direction:column;gap:0;max-width:680px;}
+.flow-step{display:flex;gap:22px;padding:22px 0;border-bottom:1px solid var(--gray);}
+.flow-step:last-child{border-bottom:none;}
+.step-num{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.step-body .sb-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.step-body .sb-desc{font-size:13px;color:var(--text2);line-height:1.65;}
+.step-body .sb-tag{display:inline-block;margin-top:10px;font-size:10px;font-weight:700;padding:3px 11px;border-radius:99px;background:var(--teal-pale);color:var(--teal-dp);}
+
+/* ======= FEATURE GRID ======= */
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.feat-card{padding:24px 26px;border-radius:var(--r);border:1px solid var(--gray);background:#fff;transition:border-color .15s,transform .15s;}
+.feat-card:hover{border-color:var(--teal);transform:translateY(-2px);}
+.feat-icon{width:44px;height:44px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+.feat-icon i{font-size:22px;}
+.feat-card h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:7px;}
+.feat-card p{font-size:13px;color:var(--text2);line-height:1.65;}
+.feat-card .fc-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;display:inline-block;margin-top:12px;}
+.fi-teal{background:var(--teal-pale);}.fi-teal i{color:var(--teal);}
+.fi-navy{background:#EEEDF8;}.fi-navy i{color:var(--navy);}
+.fi-violet{background:#F3F0FD;}.fi-violet i{color:var(--lavender);}
+.fi-slate{background:#EEF2F8;}.fi-slate i{color:var(--slate);}
+
+/* ======= SEGMENTATION (sfondo grigio, stile sito) ======= */
+.seg-section{background:var(--gray-lt);padding:72px 48px;border-top:1px solid var(--gray);border-bottom:1px solid var(--gray);}
+.seg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px;}
+.seg-card{padding:20px 22px;border-radius:var(--r);border:1px solid var(--gray);background:#fff;transition:border-color .15s,transform .15s;}
+.seg-card:hover{border-color:var(--teal);transform:translateY(-2px);}
+.seg-icon{font-size:24px;color:var(--teal);margin-bottom:12px;display:block;}
+.seg-card h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.seg-card p{font-size:12px;color:var(--text2);line-height:1.6;}
+.seg-card .sc-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--teal-pale);color:var(--teal-dp);display:inline-block;margin-top:10px;}
+.seg-wide{grid-column:span 2;background:linear-gradient(135deg,#EAF9F9 0%,#F3F0FD 100%);border-color:var(--teal);}
+.seg-wide .sc-tag{background:var(--teal);color:#fff;}
+
+/* ======= IMPACT ======= */
+.impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px;}
+.impact-card{padding:24px 20px;border-radius:var(--r);border:1px solid var(--gray);background:#fff;text-align:center;transition:border-color .15s,transform .15s;}
+.impact-card:hover{border-color:var(--teal);transform:translateY(-2px);}
+.impact-card .ic-val{font-size:34px;font-weight:700;color:var(--navy);line-height:1;}
+.impact-card .ic-val em{font-style:normal;color:var(--teal);}
+.impact-card .ic-label{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.45;}
+.impact-card .ic-sub{font-size:10px;color:var(--teal);font-weight:700;margin-top:6px;}
+.impact-card.accent{background:var(--teal-pale);border-color:var(--teal);}
+
+/* ======= SECURITY STRIP (identico alla sezione sicurezza del sito) ======= */
+.security-section{padding:72px 48px;background:#fff;border-top:1px solid var(--gray);}
+.security-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:40px;}
+.sec-block h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sec-block h4 i{font-size:18px;color:var(--teal);}
+.sec-block ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.sec-block ul li{font-size:13px;color:var(--text2);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.sec-block ul li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:6px;}
+.sec-block ul li strong{color:var(--navy);}
+
+/* ======= QUOTE BAND ======= */
+.quote-band{background:var(--navy);padding:64px 48px;}
+.quote-band blockquote{font-size:19px;font-style:italic;color:#fff;line-height:1.75;max-width:680px;border-left:3px solid var(--teal);padding-left:28px;}
+.quote-band cite{font-size:12px;color:var(--teal-lt);font-style:normal;font-weight:700;display:block;margin-top:16px;}
+
+/* ======= CTA FINALE ======= */
+.cta-section{padding:80px 48px;background:linear-gradient(150deg,#EAF9F9 0%,#F7F7FB 60%,#EEEDF8 100%);text-align:center;border-top:1px solid var(--gray);}
+.cta-section .sec-label{justify-content:center;display:flex;margin-bottom:12px;}
+.cta-section h2{font-size:32px;font-weight:700;color:var(--navy);margin-bottom:14px;line-height:1.28;}
+.cta-section p{font-size:15px;color:var(--text2);margin-bottom:32px;line-height:1.65;max-width:520px;margin-left:auto;margin-right:auto;}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+
+/* AI STRATEGY PAGE EMBED FIXES */
+#page-strategy .hero{border-radius:10px;border:1px solid var(--gray);margin-bottom:18px;}
+#page-strategy .section,#page-strategy .seg-section,#page-strategy .security-section,#page-strategy .quote-band,#page-strategy .cta-section{border-radius:10px;margin-bottom:18px;border:1px solid var(--gray);}
+#page-strategy .section-inner{max-width:1060px;}
+#page-strategy .btn-primary,#page-strategy .btn-secondary{display:inline-flex;align-items:center;}
+.strategy-note{background:#fff;border:1px solid var(--gray);border-radius:10px;padding:16px 20px;margin-bottom:18px;font-size:12px;color:var(--text2);line-height:1.65;}
+.strategy-note strong{color:var(--navy);}
+
+</style>
+</head>
+<body>
+
+<!-- ======= SIDEBAR ======= -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">EAR<span>N</span>EXT</div>
+    <div class="logo-sub">Wealthtech Platform</div>
+  </div>
+  <nav class="nav-items">
+    <div class="nav-item active" onclick="goPage('strategy',this)"><i class="ti ti-layout-dashboard"></i>AI Strategy</div>
+    <div class="nav-item" onclick="goPage('leads',this)"><i class="ti ti-brain"></i>Lead Intelligence<span class="nav-badge">3</span></div>
+    <div class="nav-item" onclick="goPage('clienti',this)"><i class="ti ti-users"></i>Clienti Attivi</div>
+    <div class="nav-item" onclick="goPage('dashboard',this)"><i class="ti ti-chart-bar"></i>Dashboard</div>
+    <div class="nav-item" onclick="goPage('automazioni',this)"><i class="ti ti-settings-automation"></i>Automazioni</div>
+    <div class="nav-item" onclick="setNav(this)"><i class="ti ti-message-bolt"></i>Contenuti AI</div>
+    <div class="nav-item" onclick="goPage('report',this)"><i class="ti ti-report-analytics"></i>Report</div>
+    <div class="nav-item" onclick="setNav(this)"><i class="ti ti-settings"></i>Impostazioni</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-row">
+      <div class="user-avatar" style="background:#00B9B6;">BB</div>
+      <div><div class="user-name">Beverly Bertolino</div><div class="user-role">Manager</div></div>
+    </div>
+    <div class="ai-assistant-btn">
+      <i class="ti ti-robot"></i>
+      <span>AI Assistant</span>
+      <span class="beta-tag">BETA</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ======= MAIN ======= -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-breadcrumb">
+      <span>AI Strategy</span>
+      <i class="ti ti-chevron-right"></i>
+      <span class="bc-current">Overview</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-ghost" onclick="document.getElementById('csv-file').click()"><i class="ti ti-upload"></i>Carica CSV</button>
+      <button class="btn-ghost" id="btn-prev" onclick="navLead(-1)" style="display:none"><i class="ti ti-chevron-left"></i>Precedente</button>
+      <button class="btn-ghost" id="btn-next" onclick="navLead(1)"  style="display:none"><i class="ti ti-chevron-right"></i>Successivo</button>
+    </div>
+  </div>
+
+  <!-- Import banner -->
+  <div class="import-banner" id="import-banner">
+    <div class="ib-icon"><i class="ti ti-file-spreadsheet"></i></div>
+    <div class="ib-text">
+      <div class="ib-title">Carica i dati reali da Salesflare</div>
+      <div class="ib-sub">Importa il file <strong style="color:var(--teal-lt);">*_CRM.csv</strong> generato da <strong style="color:var(--teal-lt);">earnext_ai.py</strong></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-import" onclick="document.getElementById('csv-file').click()"><i class="ti ti-upload"></i>Carica CSV</button>
+      <button class="btn-dismiss" onclick="dismissBanner()">Usa demo</button>
+    </div>
+  </div>
+  <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="handleCSV(this)">
+
+
+
+  <!-- PAGE: AI STRATEGY / LANDING -->
+  <div class="page-wrap active" id="page-strategy">
+    <div class="page-scroll">
+      <div class="strategy-note">
+        <strong>AI Strategy Overview.</strong> Questa pagina introduce il razionale strategico del sistema.
+        Le sezioni operative restano separate: Lead Intelligence, Dashboard, Automazioni e Report.
+      </div>
+      
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-label"><span class="hero-label-dot"></span>Nuovo · AI Strategy · WealthTech</div>
+    <h1>Converti di più.<br>Attiva meglio.<br><em>Con l'intelligenza artificiale.</em></h1>
+    <p>Earnext porta l'AI al centro del ciclo cliente: dal primo contatto alla piena adozione della piattaforma. Comprendi il valore percepito, anticipa la readiness e intervieni al momento giusto — in automatico.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="goPage(\'leads\', document.querySelector(\'.nav-item[onclick*=\\\'leads\\\']\'))">Apri Lead Intelligence</button>
+      <a href="#come-funziona" class="btn-secondary">Scopri come funziona</a>
+    </div>
+    <div class="hero-kpis">
+      <div class="hkpi"><div class="hkv">+<em>35%</em></div><div class="hkl">Conversion rate stimato</div></div>
+      <div class="hkpi"><div class="hkv">+<em>50%</em></div><div class="hkl">Efficienza team sales</div></div>
+      <div class="hkpi"><div class="hkv"><em>72%</em></div><div class="hkl">Activation rate attuale</div></div>
+      <div class="hkpi"><div class="hkv"><em>€1,1M</em></div><div class="hkl">Ricavi incrementali stimati</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COME FUNZIONA ===== -->
+<section class="section" id="come-funziona">
+  <div class="section-inner">
+    <div class="sec-label">Come funziona</div>
+    <h2 class="sec-h2">Dal lead al professionista attivo.<br>In un flusso continuo e intelligente.</h2>
+    <p class="sec-sub">Il sistema AI accompagna ogni professionista lungo l'intero ciclo di valore — dalla scoperta della piattaforma fino al pieno utilizzo nella relazione con il cliente finale.</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="sb-title">Analisi comportamentale</div>
+          <div class="sb-desc">Il sistema legge pagine visitate, tempo sul sito, email aperte e interazioni digitali per costruire un profilo di interesse reale — non solo demografico. Ogni comportamento diventa un segnale.</div>
+          <span class="sb-tag">Behavioral & Intent Analysis</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="sb-title">Score di readiness in tempo reale</div>
+          <div class="sb-desc">Ogni lead riceve un punteggio 0–100 che misura maturità, comprensione del valore e urgenza. Non solo la probabilità di convertire, ma quando farlo — per intervenire al momento giusto.</div>
+          <span class="sb-tag">Readiness Model · Score 0–100</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="sb-title">Azione AI automatica</div>
+          <div class="sb-desc">Bassa readiness → nurturing personalizzato via LLM. Media → contenuti educativi mirati. Alta → attivazione sales con next best action suggerita automaticamente al team commerciale.</div>
+          <span class="sb-tag">AI Decision Engine</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="sb-title">Attivazione e retention post-vendita</div>
+          <div class="sb-desc">Post-vendita, il sistema monitora utilizzo, clienti caricati e profondità d'uso. Interviene con onboarding personalizzato e segnala i professionisti a rischio churn prima che sia troppo tardi.</div>
+          <span class="sb-tag">Activation & Usage Layer</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FUNZIONALITÀ AI ===== -->
+<section class="section" style="background:var(--gray-lt);border-top:1px solid var(--gray);border-bottom:1px solid var(--gray);padding-top:72px;padding-bottom:72px;">
+  <div class="section-inner">
+    <div class="sec-label">Funzionalità AI</div>
+    <h2 class="sec-h2">Tutto ciò che serve.<br>In un sistema integrato.</h2>
+    <p class="sec-sub">Quattro moduli che lavorano insieme per massimizzare il valore generato in ogni fase del ciclo cliente Earnext.</p>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon fi-teal"><i class="ti ti-chart-dots" aria-hidden="true"></i></div>
+        <h3>Lead scoring predittivo</h3>
+        <p>Modello Random Forest addestrato sui dati reali di conversione Earnext. Aggiornato in real-time ad ogni nuova interazione del lead con la piattaforma, il sito e le email.</p>
+        <span class="fc-tag" style="background:var(--teal-pale);color:var(--teal-dp);">Score 0–100 · Real-time</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-navy"><i class="ti ti-users-group" aria-hidden="true"></i></div>
+        <h3>Segmentazione per bisogno</h3>
+        <p>K-means clustering che classifica i lead non per temperatura ma per bisogno percepito reale: Operational Pain, Reporting Driven, Advisory Evolution, Complex Wealth, Digital Skeptic.</p>
+        <span class="fc-tag" style="background:#EEEDF8;color:var(--navy);">5 segmenti comportamentali</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-violet"><i class="ti ti-message-bolt" aria-hidden="true"></i></div>
+        <h3>Comunicazioni generative</h3>
+        <p>LLM personalizza ogni email, contenuto educativo e messaggio sales in base al segmento, alla fonte di acquisizione e al comportamento specifico del lead. Zero template generici.</p>
+        <span class="fc-tag" style="background:#F3F0FD;color:var(--lavender);">LLM · Generative AI</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-slate"><i class="ti ti-refresh" aria-hidden="true"></i></div>
+        <h3>Feedback loop continuo</h3>
+        <p>I dati dei lead convertiti rientrano nei modelli predittivi. Il sistema migliora progressivamente nel tempo, allineando marketing e sales su un'unica fonte di verità.</p>
+        <span class="fc-tag" style="background:#EEF2F8;color:var(--slate);">Self-improving · Continuo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SEGMENTAZIONE ===== -->
+<section class="seg-section">
+  <div class="section-inner">
+    <div class="sec-label">Segmentazione</div>
+    <h2 class="sec-h2">Il messaggio giusto<br>per ogni professionista.</h2>
+    <p class="sec-sub" style="margin-bottom:0;">L'AI identifica il bisogno reale di ogni lead e adatta strategia e contenuto di conseguenza — in automatico, senza intervento manuale.</p>
+    <div class="seg-grid">
+      <div class="seg-card">
+        <i class="ti ti-settings-automation seg-icon" aria-hidden="true"></i>
+        <h4>Operational pain</h4>
+        <p>Cerca efficienza e automazione dei processi operativi. Focus su risparmio di tempo e riduzione degli errori manuali.</p>
+        <span class="sc-tag">Efficienza</span>
+      </div>
+      <div class="seg-card">
+        <i class="ti ti-chart-bar seg-icon" aria-hidden="true"></i>
+        <h4>Reporting driven</h4>
+        <p>Priorità alla dashboard, alla reportistica completa e alla presentazione professionale ai clienti finali.</p>
+        <span class="sc-tag">Analytics</span>
+      </div>
+      <div class="seg-card">
+        <i class="ti ti-briefcase seg-icon" aria-hidden="true"></i>
+        <h4>Advisory evolution</h4>
+        <p>Vuole migliorare la qualità della consulenza patrimoniale e la profondità della relazione con il cliente finale.</p>
+        <span class="sc-tag">Consulenza</span>
+      </div>
+      <div class="seg-card">
+        <i class="ti ti-building-bank seg-icon" aria-hidden="true"></i>
+        <h4>Complex wealth</h4>
+        <p>Gestisce patrimoni articolati multi-asset e multi-giurisdizionali. Alta priorità, alto potenziale di utilizzo.</p>
+        <span class="sc-tag">Patrimonio</span>
+      </div>
+      <div class="seg-card seg-wide">
+        <i class="ti ti-lock seg-icon" style="color:var(--violet);" aria-hidden="true"></i>
+        <h4>Digital skeptic</h4>
+        <p>Interesse elevato ma bassa fiducia nel digitale. Richiede un nurturing graduale con supporto umano dedicato e contenuti educativi che costruiscano fiducia nel tempo — il segmento più da presidiare.</p>
+        <span class="sc-tag">Priorità alta · Fiducia bassa</span>
+      </div>
+      <div class="seg-card" style="background:var(--teal-pale);border-color:var(--teal);">
+        <i class="ti ti-cpu seg-icon" aria-hidden="true"></i>
+        <h4>Classificazione automatica</h4>
+        <p>L'AI assegna ogni lead al segmento corretto in tempo reale, basandosi su comportamento digitale e profilo professionale. Nessun intervento manuale richiesto.</p>
+        <span class="sc-tag" style="background:var(--teal);color:#fff;">AI automatica · Real-time</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== IMPATTO ===== -->
+<section class="section">
+  <div class="section-inner">
+    <div class="sec-label">Impatto stimato</div>
+    <h2 class="sec-h2">Risultati misurabili,<br>non solo promesse.</h2>
+    <p class="sec-sub" style="margin-bottom:0;">Basato sul modello operativo Earnext e sui dati reali del CRM (Earnext_AI_Operational_Model.xlsx).</p>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="ic-val">+<em>35%</em></div>
+        <div class="ic-label">Conversion rate professionisti</div>
+        <div class="ic-sub">↑ lead scoring predittivo</div>
+      </div>
+      <div class="impact-card">
+        <div class="ic-val">−<em>40%</em></div>
+        <div class="ic-label">Lead persi o non gestiti</div>
+        <div class="ic-sub">↑ riattivazione automatica</div>
+      </div>
+      <div class="impact-card">
+        <div class="ic-val">+<em>28%</em></div>
+        <div class="ic-label">Retention piattaforma</div>
+        <div class="ic-sub">↑ activation & usage layer</div>
+      </div>
+      <div class="impact-card accent">
+        <div class="ic-val"><em>€1,1M</em></div>
+        <div class="ic-label">Ricavi incrementali stimati</div>
+        <div class="ic-sub">↑ impatto sistema AI</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SICUREZZA ===== -->
+<section class="security-section">
+  <div class="section-inner">
+    <div class="sec-label">Infrastruttura certificata</div>
+    <h2 class="sec-h2">Sicurezza, Privacy e Confidenzialità</h2>
+    <p class="sec-sub">Earnext è progettata per garantire i più alti standard di sicurezza e riservatezza — anche nel sistema AI.</p>
+    <div class="security-grid">
+      <div class="sec-block">
+        <h4><i class="ti ti-shield-check" aria-hidden="true"></i>Sicurezza</h4>
+        <ul>
+          <li>Certificazione <strong>ISO/IEC 27001</strong></li>
+          <li><strong>Crittografia</strong> e backup cifrati</li>
+          <li>Monitoraggio e protezione attiva</li>
+          <li>Modelli AI su dati anonimi e aggregati</li>
+        </ul>
+      </div>
+      <div class="sec-block">
+        <h4><i class="ti ti-lock" aria-hidden="true"></i>Privacy</h4>
+        <ul>
+          <li>Conformità <strong>GDPR rafforzata</strong></li>
+          <li>Iscrizione <strong>TULPS</strong> per dati patrimoniali</li>
+          <li>Dati conservati in UE, cifrati end-to-end</li>
+          <li>Consenso esplicito per ogni elaborazione AI</li>
+        </ul>
+      </div>
+      <div class="sec-block">
+        <h4><i class="ti ti-eye-off" aria-hidden="true"></i>Confidenzialità</h4>
+        <ul>
+          <li><strong>Ruoli e permessi</strong> personalizzabili</li>
+          <li>Audit trail completo e tracciabilità</li>
+          <li>Nessun uso commerciale dei dati</li>
+          <li>Supervisione umana su ogni azione AI</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== QUOTE ===== -->
+<div class="quote-band">
+  <div style="max-width:1060px;margin:0 auto;">
+    <blockquote>
+      "Il valore della piattaforma non si esprime nella semplice vendita del software, ma nella capacità del professionista di utilizzarla per migliorare la relazione con il proprio cliente."
+      <cite>— Earnext · Customer Value Activation Model</cite>
+    </blockquote>
+  </div>
+</div>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+  <div class="section-inner">
+    <div class="sec-label">Inizia oggi</div>
+    <h2>Porta l'AI nella tua strategia<br>di acquisizione e attivazione.</h2>
+    <p>Richiedi una demo personalizzata e scopri come Earnext AI può trasformare il tuo processo di conversione e retention dei professionisti del patrimonio.</p>
+    <div class="cta-btns">
+      <button class="btn-primary" onclick="goPage(\'leads\', document.querySelector(\'.nav-item[onclick*=\\\'leads\\\']\'))">Analizza i lead</button>
+      <button class="btn-secondary" onclick="goPage(\'dashboard\', document.querySelector(\'.nav-item[onclick*=\\\'dashboard\\\']\'))">Vai alla dashboard</button>
+    </div>
+  </div>
+</section>
+
+
+    </div>
+  </div>
+
+  <!-- PAGE: HOME -->
+  <div class="page-wrap" id="page-home">
+    <div class="page-scroll">
+      <div class="home-hero">
+        <div class="home-kicker">Earnext AI Client Intelligence</div>
+        <div class="home-title">Da lead a valore reale</div>
+        <div class="home-desc">
+          Sistema di supporto decisionale per analizzare professionisti, readiness commerciale,
+          attivazione piattaforma e azioni consigliate lungo il funnel B2B-B2C.
+        </div>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="kpi-card"><div class="kpi-val" id="home-total">3</div><div class="kpi-label">Lead demo / CRM</div><div class="kpi-delta">Lead Intelligence</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="home-high">2</div><div class="kpi-label">Alta readiness</div><div class="kpi-delta" style="color:var(--green);">Sales activation</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="home-mid">0</div><div class="kpi-label">Media readiness</div><div class="kpi-delta" style="color:var(--amber);">Onboarding call</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="home-low">1</div><div class="kpi-label">Bassa readiness</div><div class="kpi-delta" style="color:var(--red);">Nurturing</div></div>
+      </div>
+
+      <div class="home-grid">
+        <div class="home-card">
+          <i class="ti ti-brain"></i>
+          <div class="home-card-title">Lead Intelligence</div>
+          <div class="home-card-text">Analizza Conversion Score, Value Perception, Readiness e suggerisce la prossima azione commerciale.</div>
+        </div>
+        <div class="home-card">
+          <i class="ti ti-settings-automation"></i>
+          <div class="home-card-title">Automation Layer</div>
+          <div class="home-card-text">Collega trigger CRM e comportamento digitale a email, onboarding, sales activation e nurturing.</div>
+        </div>
+        <div class="home-card">
+          <i class="ti ti-report-analytics"></i>
+          <div class="home-card-title">Report AI</div>
+          <div class="home-card-text">Genera una sintesi executive con KPI, priorità operative e top lead per conversion score.</div>
+        </div>
+      </div>
+
+      <div class="data-card">
+        <div class="data-card-hdr">
+          <div class="data-card-title"><i class="ti ti-route"></i>Funnel operativo</div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Fase</th><th>Obiettivo</th><th>Azione AI</th></tr></thead>
+          <tbody>
+            <tr><td>Awareness</td><td>Far riconoscere il problema</td><td>Email educational</td></tr>
+            <tr><td>Value Perception</td><td>Far comprendere il valore Earnext</td><td>Use case / demo mirata</td></tr>
+            <tr><td>Readiness</td><td>Capire quando attivare il sales</td><td>Sales activation</td></tr>
+            <tr><td>Activation</td><td>Guidare l'utilizzo della piattaforma</td><td>Onboarding e supporto</td></tr>
+            <tr><td>Retention</td><td>Ridurre churn e aumentare valore</td><td>Report, alert e upselling</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PAGE: LEAD INTELLIGENCE -->
+  <div class="page-wrap" id="page-leads">
+  <!-- Lead list CSV panel (shown after import) -->
+  <div class="lead-list-panel" id="lead-list-panel">
+    <div class="llp-header"><span class="llp-title">Lead</span><span class="llp-count" id="llp-count">0 totali</span></div>
+    <div class="llp-search"><input type="text" placeholder="Cerca nome, azienda..." oninput="filterLeads(this.value)" id="search-input"></div>
+    <div class="llp-filters">
+      <button class="filter-btn active" onclick="setLeadFilter('tutti',this)">Tutti</button>
+      <button class="filter-btn f-alta"  onclick="setLeadFilter('Alta',this)">Alta</button>
+      <button class="filter-btn f-media" onclick="setLeadFilter('Media',this)">Media</button>
+      <button class="filter-btn f-bassa" onclick="setLeadFilter('Bassa',this)">Bassa</button>
+    </div>
+    <div class="lead-items-list" id="lead-items-list"></div>
+  </div>
+
+  <div class="content-wrap">
+
+    <!-- Center -->
+    <div class="center">
+
+      <!-- Lead header -->
+      <div class="lead-header">
+        <div class="lead-top">
+          <div class="lead-avatar" id="lead-avatar">MR</div>
+          <div class="lead-info">
+            <div class="lead-name-row">
+              <div class="lead-name" id="lead-name">Mario Rossi</div>
+              <span class="lead-status" id="lead-status">Lead Attivo</span>
+            </div>
+            <div class="lead-sub" id="lead-sub">Family Office<span>•</span>Milano, Italia<span>•</span>50–200 mln € AUM</div>
+            <div class="lead-tags" id="lead-tags">
+              <span class="lead-tag">Webinar</span>
+              <span class="lead-tag">Pianificazione</span>
+              <span class="lead-tag">Reportistica</span>
+              <span class="lead-tag">+1</span>
+            </div>
+          </div>
+          <div class="lead-actions">
+            <button class="btn-ghost"><i class="ti ti-dots"></i>Azioni</button>
+            <button class="btn-primary" onclick="openAssign()"><i class="ti ti-user-check"></i>Assegna a Sales</button>
+          </div>
+        </div>
+        <div class="lead-meta">
+          <div class="lm-row"><div class="lm-label">Lead ID</div><div class="lm-value" id="lead-id">LEAD-2025-0187</div></div>
+          <div class="lm-row"><div class="lm-label">Data acquisizione</div><div class="lm-value" id="lead-date">12/05/2025</div></div>
+          <div class="lm-row"><div class="lm-label">Ultimo contatto</div><div class="lm-value" id="lead-last">2 giorni fa</div></div>
+        </div>
+      </div>
+
+      <!-- Score cards -->
+      <div class="score-row">
+        <div class="score-card">
+          <div class="sc-label">Conversion Score</div>
+          <div class="sc-main"><span class="sc-val" id="s-conv">84</span><span class="sc-max">/100</span><span class="sc-badge badge-alto" id="b-conv">ALTO</span></div>
+          <div class="sc-bar"><div class="sc-bar-fill" id="bar-conv" style="width:84%;background:var(--teal);"></div></div>
+          <div class="sc-desc" id="d-conv">Alta probabilità di diventare cliente</div>
+        </div>
+        <div class="score-card">
+          <div class="sc-label">Value Perception</div>
+          <div class="sc-main"><span class="sc-val" id="s-vp">72</span><span class="sc-max">/100</span><span class="sc-badge badge-alto" id="b-vp">ALTA</span></div>
+          <div class="sc-bar"><div class="sc-bar-fill" id="bar-vp" style="width:72%;background:var(--teal);"></div></div>
+          <div class="sc-desc" id="d-vp">Ha compreso il valore della piattaforma</div>
+        </div>
+        <div class="score-card">
+          <div class="sc-label">Readiness</div>
+          <div class="sc-main"><span class="sc-val" id="s-read">78</span><span class="sc-max">/100</span><span class="sc-badge badge-alto" id="b-read">ALTA</span></div>
+          <div class="sc-bar"><div class="sc-bar-fill" id="bar-read" style="width:78%;background:var(--teal);"></div></div>
+          <div class="sc-desc" id="d-read">Pronto per un contatto commerciale</div>
+        </div>
+        <div class="score-card">
+          <div class="sc-label">Activation Score</div>
+          <div class="sc-main"><span class="sc-val" id="s-act">62</span><span class="sc-max">/100</span><span class="sc-badge badge-medio" id="b-act">MEDIO</span></div>
+          <div class="sc-bar"><div class="sc-bar-fill" id="bar-act" style="width:62%;background:var(--amber);"></div></div>
+          <div class="sc-desc" id="d-act">Utilizzo in crescita ma non costante</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="showTab('panoramica',this)">Panoramica</button>
+        <button class="tab-btn" onclick="showTab('comportamento',this)">Comportamento</button>
+        <button class="tab-btn" onclick="showTab('interazioni',this)">Interazioni</button>
+        <button class="tab-btn" onclick="showTab('piattaforma',this)">Utilizzo Piattaforma</button>
+        <button class="tab-btn" onclick="showTab('note',this)">Note</button>
+      </div>
+
+      <!-- TAB: PANORAMICA -->
+      <div id="tab-panoramica" class="tab-pane active">
+        <div class="pan-grid">
+          <div class="pan-card">
+            <div class="pan-title"><i class="ti ti-activity"></i>Comportamento Digitale</div>
+            <div class="beh-list" id="beh-list">
+              <div class="beh-row"><i class="ti ti-file-text"></i><span class="beh-label">Pagine visitate</span><span class="beh-val">18</span></div>
+              <div class="beh-row"><i class="ti ti-clock"></i><span class="beh-label">Tempo sul sito</span><span class="beh-val">24 min</span></div>
+              <div class="beh-row"><i class="ti ti-mail-opened"></i><span class="beh-label">Email aperte</span><span class="beh-val">7</span></div>
+              <div class="beh-row"><i class="ti ti-pointer"></i><span class="beh-label">Email cliccate</span><span class="beh-val">3</span></div>
+              <div class="beh-row"><i class="ti ti-presentation"></i><span class="beh-label">Demo richiesta</span><i class="ti ti-circle-check beh-check"></i></div>
+              <div class="beh-row"><i class="ti ti-calendar"></i><span class="beh-label">Ultima attività</span><span class="beh-val">2 giorni fa</span></div>
+            </div>
+          </div>
+          <div class="pan-card">
+            <div class="pan-title"><i class="ti ti-target"></i>Interesse Principale</div>
+            <div class="int-list" id="int-list">
+              <div class="int-row"><div class="int-label-row"><span class="int-label">Pianificazione patrimoniale</span><span class="int-pct">85%</span></div><div class="int-bar"><div class="int-fill" style="width:85%;"></div></div></div>
+              <div class="int-row"><div class="int-label-row"><span class="int-label">Reportistica avanzata</span><span class="int-pct">70%</span></div><div class="int-bar"><div class="int-fill" style="width:70%;"></div></div></div>
+              <div class="int-row"><div class="int-label-row"><span class="int-label">Aggregazione patrimoni</span><span class="int-pct">60%</span></div><div class="int-bar"><div class="int-fill" style="width:60%;"></div></div></div>
+              <div class="int-row"><div class="int-label-row"><span class="int-label">Analisi performance</span><span class="int-pct">40%</span></div><div class="int-bar"><div class="int-fill" style="width:40%;"></div></div></div>
+            </div>
+          </div>
+          <div class="pan-card">
+            <div class="pan-title"><i class="ti ti-sparkles"></i>AI Summary</div>
+            <div class="ai-summary-box" id="ai-summary">
+              Mario ha mostrato un forte interesse per la pianificazione patrimoniale e la reportistica avanzata. Ha richiesto una demo e ha interagito più volte con contenuti di approfondimento. È un lead maturo e pronto per essere coinvolto dal team sales.
+            </div>
+          </div>
+        </div>
+        <div class="platform-strip">
+          <div class="platform-title">Utilizzo Piattaforma (per Clienti Attivi)</div>
+          <div class="platform-grid" id="plat-grid">
+            <div class="plat-item"><div class="plat-icon-wrap"><i class="ti ti-users"></i></div><div class="plat-val">12</div><div class="plat-label">Clienti caricati</div><div class="plat-sub">Di cui attivi: 9</div></div>
+            <div class="plat-item"><div class="plat-icon-wrap"><i class="ti ti-login"></i></div><div class="plat-val">8</div><div class="plat-label">Accessi (30 gg)</div><div class="plat-sub">Ultimo: 2 giorni fa</div></div>
+            <div class="plat-item"><div class="plat-icon-wrap"><i class="ti ti-apps"></i></div><div class="plat-val">7/12</div><div class="plat-label">Funzionalità usate</div><div class="plat-sub">Più usate: Report, Portafogli</div></div>
+            <div class="plat-item"><div class="plat-icon-wrap"><i class="ti ti-calculator"></i></div><div class="plat-val">5</div><div class="plat-label">Simulazioni create</div><div class="plat-sub">Ultima: 1 settimana fa</div></div>
+            <div class="plat-item"><div class="plat-icon-wrap"><i class="ti ti-file-report"></i></div><div class="plat-val">3</div><div class="plat-label">Report generati</div><div class="plat-sub">Ultimo: 3 giorni fa</div></div>
+          </div>
+        </div>
+        <div class="arch-strip">
+          <div class="arch-title">Come funziona il sistema AI</div>
+          <div class="arch-flow">
+            <div class="arch-node"><div class="arch-node-num">1. Input dati</div><div class="arch-node-title">CRM</div><div class="arch-node-items">Comportamento digitale<br>Interazioni email<br>Utilizzo piattaforma</div></div>
+            <div class="arch-arr"><i class="ti ti-arrow-right"></i></div>
+            <div class="arch-node mid"><div class="arch-node-num">2. AI Analysis</div><div class="arch-node-title">Modelli predittivi</div><div class="arch-node-items">Machine Learning<br>NLP (contenuti)<br>Generative AI</div></div>
+            <div class="arch-arr"><i class="ti ti-arrow-right"></i></div>
+            <div class="arch-node"><div class="arch-node-num">3. Output</div><div class="arch-node-title">Intelligence</div><div class="arch-node-items">Conversion Score<br>Readiness<br>Retention Risk</div></div>
+            <div class="arch-arr"><i class="ti ti-arrow-right"></i></div>
+            <div class="arch-node mid"><div class="arch-node-num">4. Next Best Action</div><div class="arch-node-title">Azione suggerita</div><div class="arch-node-items">Contenuti personalizzati<br>Automazioni<br>Attivazione Sales</div></div>
+            <div class="arch-arr"><i class="ti ti-arrow-right"></i></div>
+            <div class="arch-node"><div class="arch-node-num">5. Feedback Loop</div><div class="arch-node-title">Apprendimento</div><div class="arch-node-items">Risultati reali<br>Miglioramento modelli<br>Allineamento Mktg-Sales</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: COMPORTAMENTO -->
+      <div id="tab-comportamento" class="tab-pane">
+        <div class="comp-grid">
+          <div class="pan-card">
+            <div class="pan-title"><i class="ti ti-timeline"></i>Cronologia attività recenti</div>
+            <div class="timeline">
+              <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><div class="tl-title">Demo richiesta tramite sito</div><div class="tl-sub">Pagina: /demo — form completato</div><div class="tl-time">2 giorni fa</div></div></div>
+              <div class="tl-item"><div class="tl-dot" style="background:var(--lavender);"></div><div class="tl-body"><div class="tl-title">Email aperta: Case study Family Office</div><div class="tl-sub">Click su link: "Scopri il caso studio"</div><div class="tl-time">4 giorni fa</div></div></div>
+              <div class="tl-item"><div class="tl-dot" style="background:var(--slate);"></div><div class="tl-body"><div class="tl-title">Visita pagina Pianificazione Patrimoniale</div><div class="tl-sub">Tempo: 8 min — scroll 90%</div><div class="tl-time">5 giorni fa</div></div></div>
+              <div class="tl-item"><div class="tl-dot" style="background:var(--mustard);"></div><div class="tl-body"><div class="tl-title">Partecipazione webinar</div><div class="tl-sub">"Wealth Planning per Family Office" — 45 min</div><div class="tl-time">8 giorni fa</div></div></div>
+              <div class="tl-item"><div class="tl-dot" style="background:var(--teal);"></div><div class="tl-body"><div class="tl-title">Prima visita sito</div><div class="tl-sub">Sorgente: LinkedIn Ad — landing page</div><div class="tl-time">12/05/2025</div></div></div>
+            </div>
+          </div>
+          <div class="pan-card">
+            <div class="pan-title"><i class="ti ti-chart-line"></i>Punteggio nel tempo</div>
+            <div style="position:relative;height:200px;">
+              <canvas id="scoreChart" role="img" aria-label="Andamento score nel tempo">Andamento Conversion Score nelle ultime settimane.</canvas>
+            </div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: INTERAZIONI -->
+      <div id="tab-interazioni" class="tab-pane">
+        <div class="pan-card" style="margin-bottom:0;">
+          <div class="pan-title"><i class="ti ti-messages"></i>Storico interazioni</div>
+          <table class="int-table">
+            <thead><tr><th>Data</th><th>Tipo</th><th>Contenuto</th><th>Durata/Azione</th><th>Score impact</th></tr></thead>
+            <tbody id="int-tbody">
+              <tr><td>11/05/2025</td><td><span class="pill p-hi">Demo</span></td><td>Richiesta demo online</td><td>Form completato</td><td style="color:var(--green);font-weight:700;">+20 pt</td></tr>
+              <tr><td>09/05/2025</td><td><span class="pill" style="background:#F3F0FD;color:var(--lavender);">Email</span></td><td>Case study: Family Office Milano</td><td>Aperta + 2 click</td><td style="color:var(--green);font-weight:700;">+8 pt</td></tr>
+              <tr><td>08/05/2025</td><td><span class="pill p-hi">Sito</span></td><td>Pagina Pianificazione Patrimoniale</td><td>8 min, scroll 90%</td><td style="color:var(--green);font-weight:700;">+5 pt</td></tr>
+              <tr><td>07/05/2025</td><td><span class="pill p-hi">Sito</span></td><td>Pagina Abbonamenti</td><td>3 min</td><td style="color:var(--green);font-weight:700;">+3 pt</td></tr>
+              <tr><td>04/05/2025</td><td><span class="pill" style="background:#FEF3C7;color:var(--amber);">Webinar</span></td><td>Wealth Planning per Family Office</td><td>45 min</td><td style="color:var(--green);font-weight:700;">+15 pt</td></tr>
+              <tr><td>12/04/2025</td><td><span class="pill p-hi">Sito</span></td><td>Prima visita — landing page</td><td>2 min</td><td style="color:var(--green);font-weight:700;">+5 pt</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB: UTILIZZO PIATTAFORMA -->
+      <div id="tab-piattaforma" class="tab-pane">
+        <div class="util-grid">
+          <div class="util-card">
+            <div class="util-card-title">Funzionalità utilizzate</div>
+            <div class="feat-usage">
+              <div class="feat-row"><span class="feat-name">Reportistica</span><div class="feat-bar"><div class="feat-fill" style="width:90%;"></div></div><span class="feat-count">18×</span></div>
+              <div class="feat-row"><span class="feat-name">Portafogli clienti</span><div class="feat-bar"><div class="feat-fill" style="width:75%;"></div></div><span class="feat-count">15×</span></div>
+              <div class="feat-row"><span class="feat-name">Simulazioni</span><div class="feat-bar"><div class="feat-fill" style="width:50%;"></div></div><span class="feat-count">5×</span></div>
+              <div class="feat-row"><span class="feat-name">Aggregazione asset</span><div class="feat-bar"><div class="feat-fill" style="width:35%;"></div></div><span class="feat-count">7×</span></div>
+              <div class="feat-row"><span class="feat-name">Dashboard clienti</span><div class="feat-bar"><div class="feat-fill" style="width:20%;"></div></div><span class="feat-count">4×</span></div>
+            </div>
+          </div>
+          <div class="util-card">
+            <div class="util-card-title">KPI utilizzo piattaforma</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="padding:12px;border-radius:8px;background:var(--teal-pale);border:1px solid var(--teal-lt);"><div style="font-size:10px;color:var(--teal-dp);">Clienti caricati</div><div style="font-size:20px;font-weight:700;color:var(--navy);">12</div></div>
+              <div style="padding:12px;border-radius:8px;background:var(--gray-lt);border:1px solid var(--gray);"><div style="font-size:10px;color:var(--text3);">Accessi 30gg</div><div style="font-size:20px;font-weight:700;color:var(--navy);">8</div></div>
+              <div style="padding:12px;border-radius:8px;background:var(--gray-lt);border:1px solid var(--gray);"><div style="font-size:10px;color:var(--text3);">Simulazioni</div><div style="font-size:20px;font-weight:700;color:var(--navy);">5</div></div>
+              <div style="padding:12px;border-radius:8px;background:var(--gray-lt);border:1px solid var(--gray);"><div style="font-size:10px;color:var(--text3);">Report PDF</div><div style="font-size:20px;font-weight:700;color:var(--navy);">3</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: NOTE -->
+      <div id="tab-note" class="tab-pane">
+        <div class="pan-card">
+          <div class="pan-title"><i class="ti ti-notes"></i>Note sul lead</div>
+          <textarea id="note-area" style="width:100%;height:160px;border:1px solid var(--gray);border-radius:8px;padding:12px;font-family:'Manrope',sans-serif;font-size:13px;color:var(--text2);resize:vertical;outline:none;" placeholder="Aggiungi note sul lead...">Lead di alta qualità proveniente dal webinar di maggio. Ha mostrato interesse specifico per la gestione multi-asset e la reportistica personalizzata. Seguire entro 48h con call introduttiva.</textarea>
+          <div style="margin-top:10px;display:flex;justify-content:flex-end;"><button class="btn-primary" style="font-size:12px;"><i class="ti ti-device-floppy"></i>Salva nota</button></div>
+        </div>
+      </div>
+
+    </div><!-- /center -->
+
+    <!-- ======= RIGHT PANEL ======= -->
+    <div class="right-panel">
+
+      <!-- Next Best Action -->
+      <div class="rp-section">
+        <div class="rp-title"><i class="ti ti-bolt"></i>AI — Next Best Action</div>
+        <div class="nba-box">
+          <div class="nba-label">Azione consigliata</div>
+          <div class="nba-action" id="nba-action">—</div>
+          <div class="nba-desc" id="nba-desc">—</div>
+        </div>
+        <div class="nba-items">
+          <div class="nba-item ni-teal"><i class="ti ti-phone"></i><span>Prenota call introduttiva</span></div>
+          <div class="nba-item ni-violet"><i class="ti ti-file-description"></i><span>Invia case study personalizzato</span></div>
+          <div class="nba-item ni-navy"><i class="ti ti-mail"></i><span>Invia email personalizzata</span></div>
+        </div>
+      </div>
+
+      <!-- Email dual-tab panel -->
+      <div class="rp-section" style="padding-bottom:0;">
+        <div class="rp-title"><i class="ti ti-mail-bolt"></i>Email da inviare</div>
+        <!-- Tab switcher -->
+        <div style="display:flex;gap:0;border-bottom:1px solid var(--gray);margin-bottom:14px;">
+          <button class="email-tab-btn active" id="etab-ai" onclick="switchEmailTab('ai',this)">
+            <i class="ti ti-brain" style="font-size:13px;"></i> Email AI
+          </button>
+          <button class="email-tab-btn" id="etab-funnel" onclick="switchEmailTab('funnel',this)">
+            <i class="ti ti-git-branch" style="font-size:13px;"></i> Email Funnel
+          </button>
+        </div>
+
+        <!-- TAB: EMAIL AI (readiness-based) -->
+        <div id="email-pane-ai" class="email-tab-pane active">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:5px;">
+            <i class="ti ti-info-circle" style="font-size:12px;"></i>
+            Basata sul Readiness Score AI del lead
+          </div>
+          <div class="email-box">
+            <div class="email-header">
+              <div class="email-subject-label">Oggetto:</div>
+              <div class="email-subject" id="email-subject">—</div>
+            </div>
+            <div class="email-body" id="email-body">—</div>
+            <div class="email-actions">
+              <button class="btn-use-email" onclick="copyEmailContent('ai')">Copia email AI</button>
+              <button class="btn-copy" onclick="copyEmailContent('ai')" title="Copia"><i class="ti ti-copy"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: EMAIL FUNNEL (stage-based) -->
+        <div id="email-pane-funnel" class="email-tab-pane" style="display:none;">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:5px;">
+            <i class="ti ti-info-circle" style="font-size:12px;"></i>
+            Basata sullo Stage CRM del lead
+          </div>
+          <!-- Stage selector -->
+          <div style="margin-bottom:10px;">
+            <select id="funnel-stage-select" onchange="updateFunnelEmail()" style="width:100%;padding:7px 10px;border:1px solid var(--gray);border-radius:7px;font-size:11px;font-family:'Manrope',sans-serif;color:var(--navy);outline:none;background:#fff;">
+              <option value="">— Seleziona fase funnel —</option>
+              <option value="invito_demo">1.1 Invito Demo</option>
+              <option value="sollecito_demo_1">1.2 Sollecito Demo (1)</option>
+              <option value="sollecito_demo_2">1.3 Ultimo contatto Demo</option>
+              <option value="followup_demo">2.1 Follow-up post Demo</option>
+              <option value="value_perception">2.2 Value Perception ★</option>
+              <option value="sollecito_fu_1">2.3 Sollecito Follow-up (1)</option>
+              <option value="sollecito_fu_2">2.4 Ultimo contatto Follow-up</option>
+              <option value="benvenuto_reg">3.1 Benvenuto Registrazione</option>
+              <option value="inattivo_onboard">3.2 Inattivo — Proposta Onboarding</option>
+              <option value="sollecito_onboard">3.3 Sollecito Onboarding</option>
+              <option value="scad_demo_5">4.1 Scadenza Demo — 5 giorni</option>
+              <option value="scad_demo_1">4.2 Scadenza Demo — 1 giorno</option>
+              <option value="scad_demo_0">4.3 Scadenza Demo — oggi</option>
+              <option value="primo_cliente">5.1 Primo cliente inserito</option>
+              <option value="call_test_1">5.2 Call Test (1)</option>
+              <option value="call_test_2">5.3 Ultimo contatto Test</option>
+              <option value="scad_test_5">6.1 Scadenza Test — 5 giorni</option>
+              <option value="scad_test_1">6.2 Scadenza Test — 1 giorno</option>
+              <option value="scad_test_0">6.3 Scadenza Test — oggi</option>
+              <option value="abbonamento_attivato">7.1 Abbonamento Attivato ★</option>
+              <option value="basso_utilizzo">7.2 Basso Utilizzo / Retention ★</option>
+            </select>
+          </div>
+          <!-- Trigger info -->
+          <div id="funnel-trigger-box" style="display:none;background:var(--teal-pale2);border-left:3px solid var(--teal);border-radius:0 6px 6px 0;padding:8px 12px;margin-bottom:10px;font-size:11px;color:var(--teal-dp);line-height:1.5;">
+            <div id="funnel-trigger-text">—</div>
+          </div>
+          <div class="email-box">
+            <div class="email-header">
+              <div class="email-subject-label">Oggetto:</div>
+              <div class="email-subject" id="funnel-email-subject">Seleziona una fase funnel</div>
+            </div>
+            <div class="email-body" id="funnel-email-body" style="min-height:80px;color:var(--text3);font-style:italic;">Seleziona una fase dal menu per vedere il testo dell'email.</div>
+            <div class="email-actions">
+              <button class="btn-use-email" onclick="copyEmailContent('funnel')">Copia email Funnel</button>
+              <button class="btn-copy" onclick="copyEmailContent('funnel')" title="Copia"><i class="ti ti-copy"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Benefici attesi -->
+      <div class="rp-section">
+        <div class="rp-title"><i class="ti ti-chart-arrows-vertical"></i>Benefici attesi</div>
+        <div class="benefits">
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Aumento conversion rate</span></div>
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Maggiore attivazione e utilizzo</span></div>
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Riduzione churn</span></div>
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Migliore produttività del team</span></div>
+          <div class="ben-item"><i class="ti ti-check ben-check"></i><span>Allineamento marketing-sales</span></div>
+        </div>
+      </div>
+
+    </div><!-- /right-panel -->
+
+  </div><!-- /content-wrap -->
+  </div><!-- /page-leads -->
+
+  <!-- PAGE: CLIENTI ATTIVI -->
+  <div class="page-wrap" id="page-clienti">
+    <div class="page-scroll">
+      <div class="page-title">Clienti Attivi</div>
+      <div class="page-sub">Lead con Readiness Alta — pronti per il contatto commerciale</div>
+      <div class="kpi-strip">
+        <div class="kpi-card"><div class="kpi-val" id="ca-total">0</div><div class="kpi-label">Clienti attivi totali</div><div class="kpi-delta">↑ Alta readiness</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="ca-assegnati">0</div><div class="kpi-label">Già assegnati</div><div class="kpi-delta">↑ in gestione</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="ca-pipeline">€0</div><div class="kpi-label">Pipeline stimato</div><div class="kpi-delta">↑ valore opportunità</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="ca-avg">0</div><div class="kpi-label">Score medio</div><div class="kpi-delta">↑ conversion score</div></div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-hdr"><div class="data-card-title"><i class="ti ti-users-group"></i>Lead con Alta Readiness</div><span style="font-size:11px;color:var(--text3);">ordinati per score</span></div>
+        <table class="data-table"><thead><tr><th>Nome</th><th>Azienda</th><th>Ruolo</th><th>Città</th><th>Stage</th><th>Score</th><th>Azione AI</th><th>Assegnato a</th></tr></thead>
+        <tbody id="ca-tbody"><tr><td colspan="8" style="text-align:center;color:var(--text3);padding:24px;">Carica il CSV per vedere i clienti attivi</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: DASHBOARD -->
+  <div class="page-wrap" id="page-dashboard">
+    <div class="page-scroll">
+      <div class="page-title">Dashboard AI</div>
+      <div class="page-sub">Panoramica score, pipeline e distribuzione readiness</div>
+      <div class="kpi-strip">
+        <div class="kpi-card"><div class="kpi-val" id="db-total">0</div><div class="kpi-label">Lead totali</div><div class="kpi-delta">↑ database CRM</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="db-alta">0</div><div class="kpi-label">Alta readiness</div><div class="kpi-delta" style="color:var(--green);">→ Sales Activation</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="db-media">0</div><div class="kpi-label">Media readiness</div><div class="kpi-delta" style="color:var(--amber);">→ Onboarding Call</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="db-bassa">0</div><div class="kpi-label">Bassa readiness</div><div class="kpi-delta" style="color:var(--red);">→ Nurturing LLM</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="chart-card"><div class="chart-card-title"><i class="ti ti-chart-donut"></i>Distribuzione Readiness</div><div class="chart-wrap"><canvas id="chartReadiness"></canvas></div></div>
+        <div class="chart-card"><div class="chart-card-title"><i class="ti ti-chart-bar"></i>Score top 10 lead</div><div class="chart-wrap"><canvas id="chartScores"></canvas></div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="chart-card"><div class="chart-card-title"><i class="ti ti-flame"></i>Distribuzione Hotness</div><div class="chart-wrap"><canvas id="chartHotness"></canvas></div></div>
+        <div class="chart-card"><div class="chart-card-title"><i class="ti ti-user-star"></i>Lead assegnati per sales</div><div class="sales-rank" id="sales-rank"><div style="font-size:12px;color:var(--text3);padding:20px 0;">Nessun lead assegnato ancora.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: AUTOMAZIONI -->
+  <div class="page-wrap" id="page-automazioni">
+    <div class="page-scroll">
+      <div class="page-title">Automazioni AI</div>
+      <div class="page-sub">Regole attive del Decision Engine — attiva o disattiva ogni flusso</div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-val" id="auto-attive">5</div><div class="stat-label">Regole attive</div></div>
+        <div class="stat-box"><div class="stat-val" id="auto-proc">0</div><div class="stat-label">Lead processati</div></div>
+        <div class="stat-box"><div class="stat-val" id="auto-azioni">0</div><div class="stat-label">Azioni suggerite</div></div>
+      </div>
+      <div class="auto-grid">
+        <div class="auto-card">
+          <div class="auto-card-title"><i class="ti ti-bolt"></i>Regole di scoring</div>
+          <div class="rule-row"><i class="rule-icon ti ti-clock" style="color:var(--teal);"></i><div class="rule-cond-text"><strong>Contatto recente ≤14gg + Demo</strong> richiesta</div><span class="rule-arrow">→</span><span class="rule-out ro-sales">Sales Activation</span><div style="flex-shrink:0;"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,0)"><span class="toggle-slider"></span></label></div></div>
+          <div class="rule-row"><i class="rule-icon ti ti-flame" style="color:var(--red);"></i><div class="rule-cond-text"><strong>Hotness Hot</strong> + Score ≥70</div><span class="rule-arrow">→</span><span class="rule-out ro-sales">Priorità immediata</span><div style="flex-shrink:0;"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,1)"><span class="toggle-slider"></span></label></div></div>
+          <div class="rule-row"><i class="rule-icon ti ti-mail-opened" style="color:var(--lavender);"></i><div class="rule-cond-text"><strong>Email + pagine avanzate</strong> visitate</div><span class="rule-arrow">→</span><span class="rule-out ro-premium">Contenuti premium</span><div style="flex-shrink:0;"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,2)"><span class="toggle-slider"></span></label></div></div>
+          <div class="rule-row"><i class="rule-icon ti ti-zzz" style="color:var(--mustard);"></i><div class="rule-cond-text">Nessun contatto <strong>da oltre 60 giorni</strong></div><span class="rule-arrow">→</span><span class="rule-out ro-nurture">Nurturing LLM</span><div style="flex-shrink:0;"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,3)"><span class="toggle-slider"></span></label></div></div>
+          <div class="rule-row"><i class="rule-icon ti ti-trending-up" style="color:var(--green);"></i><div class="rule-cond-text">Fonte <strong>Referral</strong> → priorità alta automatica</div><span class="rule-arrow">→</span><span class="rule-out ro-upsell">Alta priorità</span><div style="flex-shrink:0;"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,4)"><span class="toggle-slider"></span></label></div></div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-card-title"><i class="ti ti-alert-triangle"></i>Regole di retention risk</div>
+          <div class="rule-row"><i class="rule-icon ti ti-chart-line-down" style="color:var(--red);"></i><div class="rule-cond-text">Molti clienti caricati + <strong>utilizzo in calo</strong></div><span class="rule-arrow">→</span><span class="rule-out ro-risk">Retention alert</span><div style="flex-shrink:0;"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,5)"><span class="toggle-slider"></span></label></div></div>
+          <div class="rule-row"><i class="rule-icon ti ti-star" style="color:var(--teal);"></i><div class="rule-cond-text">Alto utilizzo + <strong>simulazioni attive</strong></div><span class="rule-arrow">→</span><span class="rule-out ro-upsell">Upselling</span><div style="flex-shrink:0;"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,6)"><span class="toggle-slider"></span></label></div></div>
+          <div class="rule-row"><i class="rule-icon ti ti-currency-euro" style="color:var(--mustard);"></i><div class="rule-cond-text">Valore opportunità <strong>superiore a €1.000</strong></div><span class="rule-arrow">→</span><span class="rule-out ro-sales">Escalation</span><div style="flex-shrink:0;"><label class="toggle"><input type="checkbox" checked onchange="toggleRule(this,7)"><span class="toggle-slider"></span></label></div></div>
+        </div>
+      </div>
+      <div class="data-card">
+        <div class="data-card-hdr"><div class="data-card-title"><i class="ti ti-list-check"></i>Log attività AI</div><button class="btn-ghost" onclick="clearLog()" style="font-size:11px;padding:5px 10px;">Svuota log</button></div>
+        <div id="auto-log" style="padding:16px 20px;font-size:12px;color:var(--text3);min-height:80px;">Nessuna attività registrata. Carica il CSV per avviare il sistema.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PAGE: REPORT -->
+  <div class="page-wrap" id="page-report">
+    <div class="page-scroll">
+      <div class="page-title">Report AI</div>
+      <div class="page-sub">Sintesi automatica del funnel, readiness, activation e azioni consigliate</div>
+
+      <div class="report-actions">
+        <button class="btn-primary" onclick="renderReport()"><i class="ti ti-refresh"></i>Genera report</button>
+        <button class="btn-ghost" onclick="copyReport()"><i class="ti ti-copy"></i>Copia testo report</button>
+        <button class="btn-ghost" onclick="window.print()"><i class="ti ti-printer"></i>Stampa / salva PDF</button>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="kpi-card"><div class="kpi-val" id="rp-total">0</div><div class="kpi-label">Lead analizzati</div><div class="kpi-delta">Dataset CRM</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="rp-alta">0</div><div class="kpi-label">Alta readiness</div><div class="kpi-delta" style="color:var(--green);">Sales activation</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="rp-media">0</div><div class="kpi-label">Media readiness</div><div class="kpi-delta" style="color:var(--amber);">Nurturing mirato</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="rp-bassa">0</div><div class="kpi-label">Bassa readiness</div><div class="kpi-delta" style="color:var(--red);">Educazione</div></div>
+      </div>
+
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="report-title"><i class="ti ti-file-analytics"></i>Executive Summary</div>
+          <div id="report-summary">
+            <div class="report-p">Clicca “Genera report” per creare una sintesi automatica basata sui dati caricati.</div>
+          </div>
+        </div>
+        <div class="report-card">
+          <div class="report-title"><i class="ti ti-list-check"></i>Priorità operative</div>
+          <div id="report-priorities">
+            <div class="report-p">Le priorità verranno calcolate in base a readiness, score e stato del funnel.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-card">
+        <div class="data-card-hdr">
+          <div class="data-card-title"><i class="ti ti-ranking"></i>Top Lead per Conversion Score</div>
+          <span style="font-size:11px;color:var(--text3);">aggiornato dai dati caricati</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Lead</th><th>Azienda</th><th>Readiness</th><th>Score</th><th>Azione AI</th></tr></thead>
+          <tbody id="report-top-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px;">Carica il CSV o genera il report demo</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="report-card">
+        <div class="report-title"><i class="ti ti-notebook"></i>Report testuale</div>
+        <div id="report-output" class="report-output">Il report testuale verrà generato qui.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ASSIGN MODAL -->
+  <div class="modal-overlay" id="assign-modal">
+    <div class="modal">
+      <div class="modal-hdr"><div class="modal-title"><i class="ti ti-user-check"></i>Assegna lead a un sales</div><button class="modal-close" onclick="closeAssign()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body">
+        <div class="modal-lead-info"><div class="modal-lead-name" id="assign-lead-name">—</div><div class="modal-lead-sub" id="assign-lead-sub">—</div></div>
+        <div class="modal-section-label">Seleziona il sales</div>
+        <div class="sales-grid-modal">
+          <div class="sales-card-modal" id="scm-cs" onclick="selectSales('cs',this)"><div class="sc-av-modal" style="background:#00B9B6;">CS</div><div style="font-size:11px;font-weight:600;color:var(--navy);">Client Service</div><div style="font-size:10px;color:var(--text3);">Support</div></div>
+          <div class="sales-card-modal" id="scm-renzo" onclick="selectSales('renzo',this)"><div class="sc-av-modal" style="background:#7367F0;">RM</div><div style="font-size:11px;font-weight:600;color:var(--navy);">Renzo Moretti</div><div style="font-size:10px;color:var(--text3);">Sales</div></div>
+          <div class="sales-card-modal" id="scm-paolo" onclick="selectSales('paolo',this)"><div class="sc-av-modal" style="background:#608C97;">PB</div><div style="font-size:11px;font-weight:600;color:var(--navy);">Paolo Baroni</div><div style="font-size:10px;color:var(--text3);">Sales</div></div>
+        </div>
+        <div class="modal-note"><label>Nota per il sales (opzionale)</label><textarea id="assign-note" placeholder="Es: Lead molto interessato alla reportistica. Chiamare entro oggi."></textarea></div>
+      </div>
+      <div class="modal-footer"><button class="btn-ghost" onclick="closeAssign()">Annulla</button><button class="btn-navy" onclick="confirmAssign()"><i class="ti ti-check"></i>Assegna</button></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"><i class="ti ti-circle-check"></i><span id="toast-msg">OK</span></div>
+
+</div><!-- /main -->
+
+
+<script>
+/* ===== LEAD DATA ===== */
+const leads = {
+  mario: {
+    avatar:'MR', name:'Mario Rossi', status:'Lead Attivo', statusCls:'badge-alto',
+    sub:'Family Office • Milano, Italia • 50–200 mln € AUM',
+    tags:['Webinar','Pianificazione','Reportistica','+1'],
+    id:'LEAD-2025-0187', date:'12/05/2025', last:'2 giorni fa',
+    scores:{conv:84,vp:72,read:78,act:62},
+    scoreBadges:{conv:'ALTO',vp:'ALTA',read:'ALTA',act:'MEDIO'},
+    scoreColors:{conv:'var(--teal)',vp:'var(--teal)',read:'var(--teal)',act:'var(--amber)'},
+    scoreBadgeCls:{conv:'badge-alto',vp:'badge-alto',read:'badge-alto',act:'badge-medio'},
+    scoreDescs:{conv:'Alta probabilità di diventare cliente',vp:'Ha compreso il valore della piattaforma',read:'Pronto per un contatto commerciale',act:'Utilizzo in crescita ma non costante'},
+    beh:[['Pagine visitate','18'],['Tempo sul sito','24 min'],['Email aperte','7'],['Email cliccate','3'],['Demo richiesta','✓'],['Ultima attività','2 giorni fa']],
+    summary:'Mario ha mostrato un forte interesse per la pianificazione patrimoniale e la reportistica avanzata. Ha richiesto una demo e ha interagito più volte con contenuti di approfondimento. È un lead maturo e pronto per essere coinvolto dal team sales.',
+    nba:'CONTATTO COMMERCIALE', nbadesc:'Il lead ha un\'elevata readiness. Consigliato contatto entro 48h.',
+    emailSubject:'Soluzioni avanzate per la gestione dei patrimoni complessi',
+    emailBody:'Ciao Mario,\n\nho visto il tuo interesse per la pianificazione patrimoniale e la reportistica avanzata.\n\nEcco un caso studio che mostra come Earnext ha aiutato un Family Office a ottenere una visione integrata e strategie più efficaci.\n\nResto a disposizione per una breve call introduttiva.\n\nA presto,\nTeam Earnext',
+    scoreHistory:[45,52,58,62,70,78,84]
+  },
+  anna: {
+    avatar:'AV', name:'Anna Verdi', status:'Lead Attivo', statusCls:'badge-alto',
+    sub:'Consulente Indipendente • Roma, Italia • 20–50 mln € AUM',
+    tags:['Referral','Advisory','Reporting'],
+    id:'LEAD-2025-0143', date:'03/04/2025', last:'5 giorni fa',
+    scores:{conv:71,vp:65,read:68,act:55},
+    scoreBadges:{conv:'ALTO',vp:'ALTA',read:'MEDIA',act:'MEDIO'},
+    scoreColors:{conv:'var(--teal)',vp:'var(--teal)',read:'var(--amber)',act:'var(--amber)'},
+    scoreBadgeCls:{conv:'badge-alto',vp:'badge-alto',read:'badge-medio',act:'badge-medio'},
+    scoreDescs:{conv:'Buona probabilità di conversione',vp:'Comprende il valore, qualche dubbio sui costi',read:'Quasi pronta per una call commerciale',act:'Utilizzo regolare ma non profondo'},
+    beh:[['Pagine visitate','9'],['Tempo sul sito','18 min'],['Email aperte','3'],['Email cliccate','1'],['Demo richiesta','✓'],['Ultima attività','5 giorni fa']],
+    summary:'Anna ha interagito con contenuti di advisory e reportistica. Ha richiesto la demo e mostrato interesse per come Earnext supporta la relazione con i clienti finali. È un lead con buona maturità che necessita di un ultimo spunto educativo prima della call.',
+    nba:'ONBOARDING CALL', nbadesc:'Lead con media readiness. Invia contenuti educativi mirati e prenota una call esplorativa.',
+    emailSubject:'Come Earnext migliora la relazione con i tuoi clienti',
+    emailBody:'Ciao Anna,\n\ngrazie per l\'interesse mostrato per Earnext.\n\nHo selezionato per te un case study su come un consulente indipendente ha migliorato la qualità delle sue presentazioni patrimoniali.\n\nSarei felice di mostrarti la piattaforma in una breve call di 20 minuti.\n\nA presto,\nTeam Earnext',
+    scoreHistory:[30,38,45,52,58,65,71]
+  },
+  luca: {
+    avatar:'LB', name:'Luca Bianchi', status:'Lead Freddo', statusCls:'badge-basso',
+    sub:'Commercialista • Torino, Italia • < 10 mln € AUM',
+    tags:['Ads','Risparmio','Automazione'],
+    id:'LEAD-2025-0201', date:'20/05/2025', last:'12 giorni fa',
+    scores:{conv:42,vp:35,read:38,act:20},
+    scoreBadges:{conv:'BASSO',vp:'BASSA',read:'BASSA',act:'BASSO'},
+    scoreColors:{conv:'var(--red)',vp:'var(--red)',read:'var(--red)',act:'var(--red)'},
+    scoreBadgeCls:{conv:'badge-basso',vp:'badge-basso',read:'badge-basso',act:'badge-basso'},
+    scoreDescs:{conv:'Probabilità di conversione ancora bassa',vp:'Non ha ancora compreso il valore pieno',read:'Non ancora pronto per un contatto commerciale',act:'Piattaforma poco esplorata'},
+    beh:[['Pagine visitate','4'],['Tempo sul sito','6 min'],['Email aperte','1'],['Email cliccate','0'],['Demo richiesta','✗'],['Ultima attività','12 giorni fa']],
+    summary:'Luca ha visitato poche pagine con scarso engagement. Non ha aperto le email di follow-up né richiesto la demo. È un lead in fase molto iniziale che necessita di un nurturing educativo progressivo prima di qualsiasi contatto commerciale.',
+    nba:'NURTURING AUTOMATICO', nbadesc:'Lead con bassa readiness. Attiva sequenza email educativa personalizzata via AI.',
+    emailSubject:'Scopri come Earnext semplifica la gestione patrimoniale',
+    emailBody:'Ciao Luca,\n\ngestire i patrimoni dei tuoi clienti richiede tempo e strumenti adeguati.\n\nEarnext è la piattaforma wealthtech che aiuta i commercialisti a offrire una visione patrimoniale completa e aggiornata in automatico.\n\nTi lascio una guida rapida su come funziona.\n\nA presto,\nTeam Earnext',
+    scoreHistory:[10,15,20,25,30,36,42]
+  }
+};
+
+let currentLead = 'mario';
+
+function switchLead(key, btn) {
+  document.querySelectorAll('.ls-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentLead = key;
+  const d = leads[key];
+
+  document.getElementById('lead-avatar').textContent = d.avatar;
+  document.getElementById('lead-name').textContent = d.name;
+  const st = document.getElementById('lead-status');
+  st.textContent = d.status;
+  st.className = 'lead-status';
+  if(d.statusCls==='badge-alto') st.style.cssText='background:#DCFCE7;color:var(--green);';
+  else if(d.statusCls==='badge-medio') st.style.cssText='background:#FEF3C7;color:var(--amber);';
+  else st.style.cssText='background:#FEE2E2;color:var(--red);';
+
+  document.getElementById('lead-sub').textContent = d.sub;
+  const tagsEl = document.getElementById('lead-tags');
+  tagsEl.innerHTML = d.tags.map(t=>`<span class="lead-tag">${t}</span>`).join('');
+  document.getElementById('lead-id').textContent = d.id;
+  document.getElementById('lead-date').textContent = d.date;
+  document.getElementById('lead-last').textContent = d.last;
+
+  ['conv','vp','read','act'].forEach(k => {
+    document.getElementById('s-'+k).textContent = d.scores[k];
+    document.getElementById('b-'+k).textContent = d.scoreBadges[k];
+    document.getElementById('b-'+k).className = 'sc-badge ' + d.scoreBadgeCls[k];
+    document.getElementById('bar-'+k).style.width = d.scores[k] + '%';
+    document.getElementById('bar-'+k).style.background = d.scoreColors[k];
+    document.getElementById('d-'+k).textContent = d.scoreDescs[k];
+  });
+
+  document.getElementById('ai-summary').textContent = d.summary;
+  document.getElementById('nba-action').textContent = d.nba;
+  document.getElementById('nba-desc').textContent = d.nbadesc;
+  document.getElementById('email-subject').textContent = d.emailSubject;
+  document.getElementById('email-body').innerHTML = d.emailBody.replace(/\n/g,'<br>');
+
+  if(window.scoreChartInst) {
+    window.scoreChartInst.data.datasets[0].data = d.scoreHistory;
+    window.scoreChartInst.update();
+  }
+}
+
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='comportamento') setTimeout(initScoreChart, 50);
+}
+
+function setNav(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+
+// ── GLOBAL STATE ──
+let csvLeads = [], filteredCsvLeads = [], csvCurrentIdx = 0, csvActiveFilter = 'tutti';
+const leadAssignments = {};
+const USERS = {
+  cs:    { name:'Client Service', role:'Support', avatar:'CS', color:'#00B9B6' },
+  renzo: { name:'Renzo Moretti',  role:'Sales',   avatar:'RM', color:'#7367F0' },
+  paolo: { name:'Paolo Baroni',   role:'Sales',   avatar:'PB', color:'#608C97' },
+};
+let ruleStates = [true,true,true,true,true,true,true,true];
+let dbCharts = {};
+const autoLogEntries = [];
+
+// ── PAGE NAVIGATION ──
+function goPage(page, navEl) {
+  document.querySelectorAll('.page-wrap').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pageEl = document.getElementById('page-'+page);
+  if(pageEl) pageEl.classList.add('active');
+  if(navEl) navEl.classList.add('active');
+
+  const bc1 = document.querySelector('.topbar-breadcrumb span:first-child');
+  const bc2 = document.querySelector('.topbar-breadcrumb .bc-current');
+  const labels = {
+    strategy:['AI Strategy','Overview'],
+    home:['Home','Overview'],
+    leads:['Lead Intelligence','Profilo Lead'],
+    clienti:['Clienti Attivi','Alta Readiness'],
+    dashboard:['Dashboard','KPI'],
+    automazioni:['Automazioni','Decision Engine'],
+    report:['Report','Executive Summary']
+  };
+  if(labels[page] && bc1 && bc2){ bc1.textContent = labels[page][0]; bc2.textContent = labels[page][1]; }
+
+  document.getElementById('btn-prev').style.display = (page==='leads' && csvLeads.length) ? 'flex':'none';
+  document.getElementById('btn-next').style.display = (page==='leads' && csvLeads.length) ? 'flex':'none';
+  if(page==='dashboard') setTimeout(renderDashboardCharts,50);
+  if(page==='clienti') renderClientiAttivi();
+  if(page==='automazioni') updateAutoStats();
+  if(page==='report') renderReport();
+  if(page==='home') updateHomeStats();
+}
+
+// ── ORIGINAL setNav (kept for compatibility) ──
+function setNav(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── CSV IMPORT ──
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if(lines.length<2) return [];
+  const headers = lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).map(line=>{
+    const vals=[]; let inQ=false,cur='';
+    for(const ch of line){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){vals.push(cur.trim());cur='';}else cur+=ch;}
+    vals.push(cur.trim());
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=(vals[i]||'').replace(/^"|"$/g,''));
+    return obj;
+  }).filter(r=>r['Account name']||r['Contact name']);
+}
+
+function handleCSV(input) {
+  const file=input.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const leads=parseCSV(e.target.result);
+    if(!leads.length){showToast('File CSV vuoto o non valido',true);return;}
+    loadCSVLeads(leads,file.name);
+  };
+  reader.readAsText(file,'UTF-8');
+  input.value='';
+}
+
+function loadCSVLeads(leads,filename) {
+  csvLeads=leads.sort((a,b)=>parseInt(b['Conversion Score']||0)-parseInt(a['Conversion Score']||0));
+  filteredCsvLeads=[...csvLeads];
+  document.getElementById('import-banner').classList.add('hidden');
+  document.getElementById('lead-list-panel').classList.add('visible');
+  document.getElementById('btn-prev').style.display='flex';
+  document.getElementById('btn-next').style.display='flex';
+  document.getElementById('llp-count').textContent=csvLeads.length+' totali';
+  // Update nav badge
+  const nb=document.querySelector('#page-leads').closest('.page-wrap');
+  document.querySelectorAll('.nav-badge').forEach(b=>b.textContent=csvLeads.length);
+  const alta=csvLeads.filter(l=>(l['Readiness']||'').trim()==='Alta').length;
+  renderCsvLeadList();
+  selectCsvLead(0);
+  addLog('✓ Caricati '+csvLeads.length+' lead da '+filename);
+  showToast('✓ '+csvLeads.length+' lead caricati');
+  updateAutoStats();
+}
+
+function renderCsvLeadList() {
+  const c=document.getElementById('lead-items-list'); c.innerHTML='';
+  filteredCsvLeads.forEach((lead,i)=>{
+    const r=(lead['Readiness']||'Bassa').trim();
+    const score=parseInt(lead['Conversion Score']||0);
+    const name=lead['Contact name']||lead['Account name']||'—';
+    const sub=lead['Contact role']||lead['Account name']||'—';
+    const asgn=leadAssignments[csvLeads.indexOf(lead)];
+    const div=document.createElement('div');
+    div.className='lead-item-csv'; div.dataset.idx=i;
+    div.innerHTML=`<div class="li-name-csv">${name}</div><div class="li-sub-csv">${sub}</div>
+      <div class="li-footer-csv"><span class="li-score-csv">${score}/100</span><span class="li-badge-csv li-${r.toLowerCase()}">${r}</span></div>
+      ${asgn?`<div style="font-size:10px;color:var(--slate);margin-top:3px;">→ ${asgn.name}</div>`:''}`;
+    div.onclick=()=>selectCsvLead(i);
+    c.appendChild(div);
+  });
+}
+
+function selectCsvLead(idx) {
+  if(!filteredCsvLeads.length)return;
+  idx=Math.max(0,Math.min(idx,filteredCsvLeads.length-1));
+  csvCurrentIdx=idx;
+  document.querySelectorAll('.lead-item-csv').forEach((el,i)=>el.classList.toggle('active',i===idx));
+  const lead=filteredCsvLeads[idx];
+  populateLeadFromCSV(lead);
+  const items=document.querySelectorAll('.lead-item-csv');
+  if(items[idx])items[idx].scrollIntoView({block:'nearest'});
+}
+
+function navLead(dir){selectCsvLead(csvCurrentIdx+dir);}
+
+function filterLeads(q) {
+  const qu=q.toLowerCase();
+  filteredCsvLeads=csvLeads.filter(l=>{
+    const n=((l['Contact name']||'')+' '+(l['Account name']||'')).toLowerCase();
+    return(!qu||n.includes(qu))&&(csvActiveFilter==='tutti'||(l['Readiness']||'').trim()===csvActiveFilter);
+  });
+  document.getElementById('llp-count').textContent=filteredCsvLeads.length+' totali';
+  renderCsvLeadList();
+  if(filteredCsvLeads.length)selectCsvLead(0);
+}
+
+function setLeadFilter(f,btn) {
+  csvActiveFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filterLeads(document.getElementById('search-input')?document.getElementById('search-input').value:'');
+}
+
+function populateLeadFromCSV(lead) {
+  const name=(lead['Contact name']||lead['Account name']||'—').trim();
+  const role=(lead['Contact role']||'').trim();
+  const city=(lead['City']||'').trim();
+  const country=(lead['Country']||'').trim();
+  const r=(lead['Readiness']||'Bassa').trim();
+  const conv=parseInt(lead['Conversion Score']||0);
+  const vp=parseInt(lead['Value Perception Score']||0);
+  const read=parseInt(lead['Readiness Score']||0);
+  const act=Math.round(conv*0.74);
+  const stage=(lead['Opp Stage']||'—').trim();
+  const source=(lead['Lead Source']||'—').trim();
+  const last=(lead['Giorni ultimo contatto']||'—').trim();
+  const emailS=(lead['Email Oggetto']||'').trim();
+  const emailB=(lead['Email Corpo']||'').trim();
+  const hotness=(lead['Hotness']||'—').trim();
+  const action=(lead['Azione AI']||'—').trim();
+  const regole=(lead['Regole Attivate']||'—').trim();
+
+  const initials=name.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
+  document.getElementById('lead-avatar').textContent=initials||'??';
+  document.getElementById('lead-name').textContent=name;
+  const st=document.getElementById('lead-status');
+  if(r==='Alta'){st.textContent='Lead Attivo';st.style.cssText='background:#DCFCE7;color:var(--green);';}
+  else if(r==='Media'){st.textContent='In nurturing';st.style.cssText='background:#FEF3C7;color:var(--amber);';}
+  else{st.textContent='Lead Freddo';st.style.cssText='background:#FEE2E2;color:var(--red);';}
+
+  document.getElementById('lead-sub').innerHTML=[role,city,country].filter(Boolean).join('<span> · </span>')||'—';
+  const tagsEl=document.getElementById('lead-tags');
+  tagsEl.innerHTML=[source,hotness,stage].filter(t=>t&&t!=='—').map(t=>`<span class="lead-tag">${t}</span>`).join('');
+
+  const oldB=document.getElementById('assign-badge-header');if(oldB)oldB.remove();
+  const aIdx=csvLeads.indexOf(filteredCsvLeads[csvCurrentIdx]);
+  if(leadAssignments[aIdx]){
+    const u=USERS[leadAssignments[aIdx].key];
+    const badge=document.createElement('span');
+    badge.id='assign-badge-header';badge.className='assigned-badge';
+    badge.style.cssText=`background:${u.color}20;color:${u.color};`;
+    badge.innerHTML=`<i class="ti ti-user" style="font-size:11px;"></i>${u.name}`;
+    document.getElementById('lead-name').insertAdjacentElement('afterend',badge);
+  }
+
+  document.getElementById('lead-id').textContent=lead['Account id']||'CSV-'+Date.now();
+  document.getElementById('lead-date').textContent=lead['Creation date']||'—';
+  document.getElementById('lead-last').textContent=last;
+
+  const sc=r==='Alta'?'#00B9B6':r==='Media'?'#D97706':'#DC2626';
+  const bc=r==='Alta'?'badge-alto':r==='Media'?'badge-medio':'badge-basso';
+  const bt=r==='Alta'?'ALTO':r==='Media'?'MEDIO':'BASSO';
+
+  const scores={conv,vp,read,act};
+  const badges={conv:bt,vp:bt,read:bt,act:r==='Alta'?'ALTO':r==='Media'?'MEDIO':'BASSO'};
+  const bCls={conv:bc,vp:bc,read:bc,act:bc};
+  const colors={conv:sc,vp:sc,read:sc,act:r==='Alta'?'#00B9B6':r==='Media'?'#D97706':'#DC2626'};
+  const descs={
+    conv:r==='Alta'?'Alta probabilità di diventare cliente':r==='Media'?'Buona probabilità, in maturazione':'Lead in fase iniziale',
+    vp:r==='Alta'?'Ha compreso il valore della piattaforma':r==='Media'?'Interesse presente, valore parzialmente compreso':'Non ha ancora compreso il valore',
+    read:r==='Alta'?'Pronto per un contatto commerciale':r==='Media'?'Necessita ulteriore nurturing':'Non pronto per contatto commerciale',
+    act:r==='Alta'?'Utilizzo in crescita':r==='Media'?'Utilizzo discontinuo':'Utilizzo molto limitato'
+  };
+  ['conv','vp','read','act'].forEach(k=>{
+    document.getElementById('s-'+k).textContent=scores[k];
+    document.getElementById('b-'+k).textContent=badges[k];
+    document.getElementById('b-'+k).className='sc-badge '+bCls[k];
+    document.getElementById('bar-'+k).style.width=scores[k]+'%';
+    document.getElementById('bar-'+k).style.background=colors[k];
+    document.getElementById('d-'+k).textContent=descs[k];
+  });
+
+  document.getElementById('ai-summary').textContent=
+    action==='Sales Activation'?`${name} mostra alta readiness e hotness ${hotness.toLowerCase()}. Stage CRM: ${stage}. Contattato ${last}. Azione consigliata: contatto commerciale entro 48h.`:
+    action==='Onboarding Call'?`${name} è in fase di valutazione. Stage CRM: ${stage}. Invia contenuti educativi mirati e prenota una call esplorativa.`:
+    `${name} è in fase iniziale. Poca interazione recente. Attiva sequenza di nurturing automatico con email educative personalizzate.`;
+
+  document.getElementById('nba-action').textContent=action;
+  document.getElementById('nba-desc').textContent=r==='Alta'?'Il lead ha alta readiness. Contatto commerciale entro 48h.':r==='Media'?'Interesse presente. Invia contenuti educativi mirati.':'Lead freddo. Attiva nurturing automatico via LLM.';
+  document.getElementById('email-subject').textContent=emailS||'—';
+  document.getElementById('email-body').innerHTML=(emailB||'—').replace(/\n/g,'<br>');
+
+  if(window.scoreChartInst){
+    const history=[Math.max(0,conv-40),Math.max(0,conv-30),Math.max(0,conv-20),Math.max(0,conv-12),Math.max(0,conv-6),Math.max(0,conv-2),conv];
+    window.scoreChartInst.data.datasets[0].data=history;
+    window.scoreChartInst.update();
+  }
+}
+
+// ── CLIENTI ATTIVI ──
+function renderClientiAttivi() {
+  const alta=csvLeads.filter(l=>(l['Readiness']||'').trim()==='Alta');
+  document.getElementById('ca-total').textContent=alta.length;
+  const assegnati=alta.filter(l=>leadAssignments[csvLeads.indexOf(l)]).length;
+  document.getElementById('ca-assegnati').textContent=assegnati;
+  const pipeline=alta.reduce((s,l)=>s+parseFloat(l['Opp Value']||0),0);
+  document.getElementById('ca-pipeline').textContent='€'+pipeline.toLocaleString('it-IT');
+  const avgScore=alta.length?Math.round(alta.reduce((s,l)=>s+parseInt(l['Conversion Score']||0),0)/alta.length):0;
+  document.getElementById('ca-avg').textContent=avgScore;
+  const tbody=document.getElementById('ca-tbody');
+  if(!alta.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:24px;">Nessun lead con Alta readiness</td></tr>';return;}
+  tbody.innerHTML=alta.sort((a,b)=>parseInt(b['Conversion Score']||0)-parseInt(a['Conversion Score']||0)).map(lead=>{
+    const aIdx=csvLeads.indexOf(lead);
+    const asgn=leadAssignments[aIdx];
+    const u=asgn?USERS[asgn.key]:null;
+    const score=parseInt(lead['Conversion Score']||0);
+    return `<tr>
+      <td><strong style="color:var(--navy);">${lead['Contact name']||'—'}</strong></td>
+      <td>${lead['Account name']||'—'}</td><td>${lead['Contact role']||'—'}</td><td>${lead['City']||'—'}</td>
+      <td><span class="pill p-hi">${lead['Opp Stage']||'—'}</span></td>
+      <td><strong style="color:var(--teal-dp);">${score}</strong></td>
+      <td><span class="pill p-hi">${lead['Azione AI']||'—'}</span></td>
+      <td>${u?`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;background:${u.color}20;color:${u.color};">${u.name}</span>`:'<span style="color:var(--text3);font-size:11px;">Non assegnato</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── DASHBOARD CHARTS ──
+function renderDashboardCharts() {
+  const tot=csvLeads.length;
+  const alta=csvLeads.filter(l=>(l['Readiness']||'').trim()==='Alta').length;
+  const media=csvLeads.filter(l=>(l['Readiness']||'').trim()==='Media').length;
+  const bassa=csvLeads.filter(l=>(l['Readiness']||'').trim()==='Bassa').length;
+  document.getElementById('db-total').textContent=tot;
+  document.getElementById('db-alta').textContent=alta;
+  document.getElementById('db-media').textContent=media;
+  document.getElementById('db-bassa').textContent=bassa;
+  ['chartReadiness','chartScores','chartHotness'].forEach(id=>{if(dbCharts[id]){dbCharts[id].destroy();delete dbCharts[id];}});
+  dbCharts['chartReadiness']=new Chart(document.getElementById('chartReadiness'),{type:'doughnut',data:{labels:['Alta','Media','Bassa'],datasets:[{data:[alta,media,bassa],backgroundColor:['#00B9B6','#D97706','#DC2626'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{family:'Manrope',size:11}}}}}});
+  const top10=csvLeads.slice(0,10);
+  dbCharts['chartScores']=new Chart(document.getElementById('chartScores'),{type:'bar',data:{labels:top10.map(l=>(l['Contact name']||l['Account name']||'—').split(' ')[0]),datasets:[{data:top10.map(l=>parseInt(l['Conversion Score']||0)),backgroundColor:top10.map(l=>(l['Readiness']||'').trim()==='Alta'?'#00B9B6':(l['Readiness']||'').trim()==='Media'?'#D97706':'#DC2626'),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{family:'Manrope',size:10}}},y:{max:100,ticks:{font:{family:'Manrope',size:10}},grid:{color:'rgba(0,0,89,0.04)'}}}}});
+  const hot=csvLeads.filter(l=>(l['Hotness']||'').toLowerCase()==='hot').length;
+  const warm=csvLeads.filter(l=>(l['Hotness']||'').toLowerCase()==='warm').length;
+  const cold=csvLeads.filter(l=>(l['Hotness']||'').toLowerCase()==='cold').length;
+  dbCharts['chartHotness']=new Chart(document.getElementById('chartHotness'),{type:'bar',data:{labels:['Hot','Warm','Cold','N/A'],datasets:[{data:[hot,warm,cold,tot-hot-warm-cold],backgroundColor:['#DC2626','#D97706','#608C97','#B0B0C0'],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{family:'Manrope',size:11}}},y:{ticks:{font:{family:'Manrope',size:11}},grid:{color:'rgba(0,0,89,0.04)'}}}}});
+  const counts={cs:0,renzo:0,paolo:0};
+  Object.values(leadAssignments).forEach(a=>{if(counts[a.key]!==undefined)counts[a.key]++;});
+  const maxC=Math.max(...Object.values(counts),1);
+  document.getElementById('sales-rank').innerHTML=Object.entries(USERS).map(([k,u])=>`<div class="sr-row"><div class="sr-av" style="background:${u.color};">${u.avatar}</div><div class="sr-name">${u.name}<br><span style="font-size:10px;color:var(--text3);">${u.role}</span></div><div class="sr-bar-wrap"><div class="sr-bar" style="width:${Math.round((counts[k]/maxC)*100)}%;background:${u.color};"></div></div><div class="sr-count">${counts[k]}</div></div>`).join('');
+}
+
+// ── AUTOMAZIONI ──
+function toggleRule(el,idx){ruleStates[idx]=el.checked;document.getElementById('auto-attive').textContent=ruleStates.filter(Boolean).length;addLog(`${el.checked?'✓ Attivata':'✗ Disattivata'} regola #${idx+1}`);showToast(`Regola ${el.checked?'attivata':'disattivata'}`);}
+function updateAutoStats(){document.getElementById('auto-proc').textContent=csvLeads.length;document.getElementById('auto-azioni').textContent=csvLeads.filter(l=>l['Regole Attivate']&&l['Regole Attivate']!=='—').length;}
+function addLog(msg){const ts=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});autoLogEntries.unshift(`<div style="padding:6px 0;border-bottom:1px solid var(--gray);display:flex;gap:10px;"><span style="color:var(--text3);flex-shrink:0;">${ts}</span><span>${msg}</span></div>`);if(autoLogEntries.length>20)autoLogEntries.pop();document.getElementById('auto-log').innerHTML=autoLogEntries.join('');}
+function clearLog(){autoLogEntries.length=0;document.getElementById('auto-log').innerHTML='<span style="color:var(--text3);">Log svuotato.</span>';}
+
+// ── ASSIGN ──
+let selectedSalesKey=null;
+function openAssign(){
+  if(!csvLeads.length&&!leads){showToast('Carica prima il CSV');return;}
+  const lead=filteredCsvLeads.length?filteredCsvLeads[csvCurrentIdx]:null;
+  const name=lead?(lead['Contact name']||lead['Account name']||'—'):document.getElementById('lead-name').textContent;
+  document.getElementById('assign-lead-name').textContent=name;
+  document.getElementById('assign-lead-sub').textContent=lead?([lead['Contact role'],lead['City']].filter(Boolean).join(' · ')||'—'):'—';
+  document.getElementById('assign-note').value='';
+  selectedSalesKey=null;
+  document.querySelectorAll('.sales-card-modal').forEach(c=>c.classList.remove('selected'));
+  const aIdx=lead?csvLeads.indexOf(lead):-1;
+  if(aIdx>=0&&leadAssignments[aIdx]){selectedSalesKey=leadAssignments[aIdx].key;const el=document.getElementById('scm-'+selectedSalesKey);if(el)el.classList.add('selected');}
+  document.getElementById('assign-modal').classList.add('open');
+}
+function closeAssign(){document.getElementById('assign-modal').classList.remove('open');}
+function selectSales(key,el){selectedSalesKey=key;document.querySelectorAll('.sales-card-modal').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+function confirmAssign(){
+  if(!selectedSalesKey){showToast('Seleziona un sales prima di procedere');return;}
+  const u=USERS[selectedSalesKey];
+  if(filteredCsvLeads.length){
+    const aIdx=csvLeads.indexOf(filteredCsvLeads[csvCurrentIdx]);
+    leadAssignments[aIdx]={key:selectedSalesKey,name:u.name};
+    renderCsvLeadList();selectCsvLead(csvCurrentIdx);
+    addLog(`Lead "${filteredCsvLeads[csvCurrentIdx]['Contact name']||filteredCsvLeads[csvCurrentIdx]['Account name']}" assegnato a ${u.name}`);
+  }
+  closeAssign();showToast('✓ Lead assegnato a '+u.name);
+}
+document.getElementById('assign-modal').addEventListener('click',function(e){if(e.target===this)closeAssign();});
+
+// ── UTILS ──
+function dismissBanner(){document.getElementById('import-banner').classList.add('hidden');}
+function showToast(msg,isError=false){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.style.borderColor=isError?'#DC2626':'var(--teal)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+/* Score trend chart */
+let scoreChartInst = null;
+function initScoreChart() {
+  if(scoreChartInst) return;
+  const ctx = document.getElementById('scoreChart').getContext('2d');
+  scoreChartInst = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels:['Sett 1','Sett 2','Sett 3','Sett 4','Sett 5','Sett 6','Oggi'],
+      datasets:[{
+        label:'Conversion Score',
+        data: leads[currentLead].scoreHistory,
+        borderColor:'#00B9B6',
+        backgroundColor:'rgba(0,185,182,0.08)',
+        tension:.4, fill:true,
+        pointBackgroundColor:'#00B9B6',
+        pointRadius:4, pointHoverRadius:6
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{font:{family:'Manrope',size:10}}, grid:{color:'rgba(0,0,89,0.04)'}},
+        y:{min:0, max:100, ticks:{font:{family:'Manrope',size:10}}, grid:{color:'rgba(0,0,89,0.04)'}}
+      }
+    }
+  });
+  window.scoreChartInst = scoreChartInst;
+}
+
+// ── FUNNEL EMAIL DATABASE (v3.0) ──
+const FUNNEL_EMAILS = {
+  invito_demo: {
+    trigger: "Trigger: Primo contatto — nessuna interazione precedente\nScore AI: < 45 (Bassa readiness)\nTiming: Prima email di contatto",
+    oggetto: "Una demo di 30 minuti per scoprire Earnext",
+    corpo: `Buongiorno [Nome],
+
+le scrivo per proporle una breve demo di Earnext, la piattaforma di wealth planning per family office, consulenti indipendenti e professionisti patrimoniali.
+
+In 30 minuti le mostreremo come aggregare automaticamente gli asset patrimoniali di un cliente, generare report professionali e migliorare la qualità della relazione consulenziale attraverso una visione patrimoniale chiara, aggiornata e condivisibile.
+
+Può prenotare direttamente uno slot nel nostro calendario:
+👉 https://www.earnext.com/it/contact
+
+Oppure mi indichi la sua disponibilità e provvedo io a organizzare.
+
+Cordiali saluti,`
+  },
+  sollecito_demo_1: {
+    trigger: "Trigger: Nessuna risposta dopo 7 giorni\nScore AI: Score invariato — bassa engagement\nTiming: 7 giorni senza risposta",
+    oggetto: "Earnext — ancora disponibili per una demo",
+    corpo: `Buongiorno [Nome],
+
+le rinnovo l'invito a scoprire Earnext con una breve demo.
+
+La piattaforma è pensata per aiutare i professionisti patrimoniali a offrire ai propri clienti una visione chiara e aggiornata di tutti gli asset, riducendo il tempo operativo e migliorando la qualità della relazione consulenziale.
+
+Dopo la demo potrà testare gratuitamente la piattaforma per 30 giorni, con supporto dedicato.
+
+👉 Prenoti una demo: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  sollecito_demo_2: {
+    trigger: "Trigger: Nessuna risposta dopo ulteriori 7 giorni\nScore AI: Score basso — lead freddo\nTiming: Ultimo contatto — chiude il ciclo",
+    oggetto: "Earnext — può esplorarlo anche in autonomia",
+    corpo: `Buongiorno [Nome],
+
+questa è la mia ultima email prima di lasciarle spazio.
+
+Se preferisce esplorare la piattaforma in autonomia, può registrarsi gratuitamente qui:
+👉 Registrazione: https://app.earnext.com/register-pro
+
+Se invece preferisce una guida, siamo disponibili per una demo quando sarà il momento giusto per lei.
+
+La aspettiamo.
+
+Cordiali saluti,`
+  },
+  followup_demo: {
+    trigger: "Trigger: Demo completata\nScore AI: Score in crescita — media/alta readiness\nTiming: Entro 24h dalla demo — allegare i 3 documenti",
+    oggetto: "Grazie per la demo — ecco i prossimi passi",
+    corpo: `Buongiorno [Nome],
+
+la ringrazio per il tempo dedicato e per l'interesse mostrato durante la demo.
+
+In allegato trova:
+• La presentazione della piattaforma
+• La lista degli intermediari collegati e in fase di collegamento
+• Un esempio di report patrimoniale
+
+Per iniziare il test gratuito si registri qui:
+👉 https://app.earnext.com/register-pro
+
+Avrà a disposizione:
+• 30 giorni per esplorare il cliente demo
+• Fino a 3 clienti in test con 30 giorni di prova gratuita ciascuno
+• Supporto dedicato durante tutto il periodo
+• Possibilità di aggiungere utenti delegati gratuitamente
+
+Sono disponibile per una call se desidera approfondire un aspetto specifico.
+
+Cordiali saluti,`
+  },
+  value_perception: {
+    trigger: "Trigger: Demo completata — nessuna registrazione dopo 3 giorni\nScore AI: Score medio — value perception da rafforzare\nTiming: 3-4 giorni dopo la demo ★ EMAIL NUOVA v3.0",
+    oggetto: "Earnext — trasformare i dati patrimoniali in consulenza",
+    corpo: `Buongiorno [Nome],
+
+dopo la demo, volevamo lasciarle un punto di sintesi sul valore principale di Earnext.
+
+La piattaforma non è pensata solo per aggregare dati patrimoniali, ma per aiutare il professionista a trasformare informazioni frammentate in una visione chiara, aggiornata e utile nella relazione con il cliente finale.
+
+In particolare, Earnext consente di:
+• centralizzare asset finanziari e non finanziari in un'unica vista
+• generare report patrimoniali professionali e personalizzabili
+• supportare simulazioni e pianificazione per obiettivi
+• rendere più efficace e strutturato il dialogo consulenziale
+
+Se desidera, possiamo organizzare una breve call per approfondire il caso d'uso più vicino alla sua attività.
+
+👉 Prenoti una call: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  sollecito_fu_1: {
+    trigger: "Trigger: Nessuna registrazione dopo 7 giorni dal follow-up\nScore AI: Score in calo — engagement assente\nTiming: 7 giorni senza registrazione",
+    oggetto: "Earnext — possiamo aiutarla nella registrazione",
+    corpo: `Buongiorno [Nome],
+
+spero tutto bene.
+
+Se lo desidera, possiamo fissare una call di un'ora per accompagnarla nella registrazione e nei primi passi sulla piattaforma.
+
+👉 Richieda supporto operativo: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  sollecito_fu_2: {
+    trigger: "Trigger: Nessuna risposta dopo l'intero ciclo follow-up\nScore AI: Score basso — lead freddo\nTiming: Ultimo contatto — chiude il ciclo",
+    oggetto: "Earnext — ultima email da parte nostra",
+    corpo: `Buongiorno [Nome],
+
+non voglio disturbarla ulteriormente, quindi questa sarà la mia ultima email.
+
+Se in futuro vorrà esplorare la piattaforma, può registrarsi in autonomia:
+👉 https://app.earnext.com/register-pro
+
+O contattarci quando sarà il momento giusto per lei. Saremo qui.
+
+Cordiali saluti,`
+  },
+  benvenuto_reg: {
+    trigger: "Trigger: Registrazione completata\nScore AI: Score in crescita — primo segnale di attivazione\nTiming: Immediata alla registrazione ★ DA IMPLEMENTARE",
+    oggetto: "Benvenuto in Earnext — iniziamo insieme",
+    corpo: `Buongiorno [Nome],
+
+benvenuto in Earnext. Siamo felici di averla a bordo.
+
+Per aiutarla a partire nel modo migliore, le proponiamo una breve call in cui le mostreremo come:
+• Esplorare il cliente demo già disponibile in piattaforma
+• Inserire il primo cliente in test e visualizzarne automaticamente il patrimonio
+• Caricare un portafoglio finanziario e generare il primo report
+
+Avrà 30 giorni di prova gratuita per ogni cliente inserito in test.
+
+Ci indichi la sua disponibilità per una breve sessione di onboarding:
+👉 https://www.earnext.com/it/contact
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  inattivo_onboard: {
+    trigger: "Trigger: Nessun login nei primi 7 giorni\nScore AI: Score fermo — activation a rischio\nTiming: 7 giorni di inattività dopo registrazione",
+    oggetto: "Earnext — una call per iniziare al meglio",
+    corpo: `Buongiorno [Nome],
+
+le ricordiamo che siamo disponibili per una breve call di supporto per mostrarle come:
+• Esplorare il cliente demo
+• Inserire il primo cliente in test e visualizzarne automaticamente il patrimonio
+• Caricare un portafoglio finanziario
+
+Il cliente demo è disponibile per 30 giorni dalla registrazione — le consigliamo di esplorarlo prima che scada.
+
+👉 Prenoti una sessione di onboarding: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  sollecito_onboard: {
+    trigger: "Trigger: Ancora nessun login dopo 14 giorni\nScore AI: Score basso — rischio abbandono\nTiming: 7 giorni dopo il precedente — ultimo tentativo",
+    oggetto: "Earnext — siamo qui quando è pronto",
+    corpo: `Buongiorno [Nome],
+
+la contattiamo un'ultima volta per ricordarle che siamo disponibili per una call di supporto, per mostrarle le funzionalità principali e rispondere a qualsiasi domanda.
+
+Se questo non è il momento ideale, nessun problema: la aspettiamo quando sarà pronto a iniziare.
+
+Cordiali saluti,`
+  },
+  scad_demo_5: {
+    trigger: "Trigger: Nessun cliente reale caricato — 5 giorni alla scadenza\nScore AI: Score basso — activation non avviata\nTiming: Automatica 5 giorni prima ★ DA IMPLEMENTARE",
+    oggetto: "Earnext — 5 giorni per esplorare il cliente demo",
+    corpo: `Buongiorno [Nome],
+
+le ricordiamo che ha ancora 5 giorni per esplorare il cliente demo su Earnext.
+
+Non ha ancora inserito un cliente in test? È il momento giusto per iniziare: avrà 30 giorni di prova gratuita per vedere il valore della piattaforma su un caso reale.
+
+👉 Acceda ora e inserisca il primo cliente: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  scad_demo_1: {
+    trigger: "Trigger: Nessun cliente reale caricato — 1 giorno alla scadenza\nScore AI: Score basso — urgenza massima\nTiming: Automatica 1 giorno prima ★ DA IMPLEMENTARE",
+    oggetto: "Earnext — domani scade il cliente demo",
+    corpo: `Buongiorno [Nome],
+
+domani il periodo di visualizzazione del cliente demo su Earnext terminerà.
+
+Se non ha ancora inserito un cliente in test, può farlo adesso: avrà 30 giorni di prova gratuita per valutare la piattaforma su un caso reale.
+
+👉 Acceda ora: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  scad_demo_0: {
+    trigger: "Trigger: Scadenza demo — nessun cliente reale caricato\nScore AI: Score molto basso — lead a rischio abbandono\nTiming: Automatica giorno stesso ★ DA IMPLEMENTARE",
+    oggetto: "Earnext — il cliente demo è scaduto",
+    corpo: `Buongiorno [Nome],
+
+il periodo di visualizzazione del cliente demo su Earnext è terminato oggi.
+
+Per continuare a esplorare la piattaforma, inserisca un cliente in test: avrà 30 giorni di prova gratuita su un caso patrimoniale reale.
+
+👉 Acceda ora: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  primo_cliente: {
+    trigger: "Trigger: Inserimento primo cliente reale in test\nScore AI: Score in forte crescita — activation avviata\nTiming: Immediata all'inserimento ★ DA IMPLEMENTARE",
+    oggetto: "Earnext — il test è iniziato",
+    corpo: `Buongiorno [Nome],
+
+ha inserito il suo primo cliente in test su Earnext. Ottimo inizio.
+
+Da questo momento ha 30 giorni di prova gratuita. Se attiverà l'abbonamento entro la scadenza, non verrà addebitato nessun costo di set-up.
+
+Vuole una guida per esplorare le funzionalità principali? Siamo disponibili per una breve call dedicata.
+
+👉 Prenoti una call di supporto: https://www.earnext.com/it/contact
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  call_test_1: {
+    trigger: "Trigger: Nessuna interazione dopo 7 giorni dall'inserimento cliente\nScore AI: Score medio — conversion readiness da aumentare\nTiming: 7 giorni senza risposta",
+    oggetto: "Earnext — una call per sfruttare al meglio il test",
+    corpo: `Buongiorno [Nome],
+
+le ricordiamo che se attiverà l'abbonamento per il cliente in test entro la scadenza, non verrà addebitato nessun costo di set-up.
+
+Siamo disponibili per una call di supporto per mostrarle le funzionalità principali e rispondere a tutte le sue domande.
+
+👉 Prenoti una call: https://www.earnext.com/it/contact
+
+Cordiali saluti,`
+  },
+  call_test_2: {
+    trigger: "Trigger: Nessuna risposta dopo l'intero ciclo test\nScore AI: Score in calo — lead a rischio\nTiming: 7 giorni dopo il sollecito — ultimo tentativo",
+    oggetto: "Earnext — siamo disponibili quando vuole",
+    corpo: `Buongiorno [Nome],
+
+se questo non è il momento ideale, nessun problema: la aspettiamo quando sarà pronta a valutare il servizio.
+
+Ricordi che attivando l'abbonamento entro la scadenza del test non verrà addebitato nessun costo di set-up.
+
+Cordiali saluti,`
+  },
+  scad_test_5: {
+    trigger: "Trigger: 5 giorni alla scadenza del test\nScore AI: Score alto se utilizza la piattaforma\nTiming: Automatica 5 giorni prima",
+    oggetto: "Earnext — 5 giorni per attivare l'abbonamento senza set-up fee",
+    corpo: `Buongiorno [Nome],
+
+il periodo di prova per il cliente [Nome Cliente] su Earnext terminerà tra 5 giorni.
+
+Attivi l'abbonamento entro le 23:59 del [Data] per continuare a usufruire dei vantaggi della piattaforma senza nessun costo di set-up.
+
+👉 Attivi l'abbonamento: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  scad_test_1: {
+    trigger: "Trigger: 1 giorno alla scadenza del test\nScore AI: Score alto — urgenza massima\nTiming: Automatica 1 giorno prima",
+    oggetto: "Earnext — domani scade il test. Attivi oggi senza set-up fee",
+    corpo: `Buongiorno [Nome],
+
+il periodo di prova per il cliente [Nome Cliente] su Earnext termina domani.
+
+Attivi l'abbonamento entro le 23:59 del [Data] per continuare senza interruzioni e senza nessun costo di set-up.
+
+👉 Attivi l'abbonamento: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  scad_test_0: {
+    trigger: "Trigger: Scadenza test\nScore AI: Momento decisivo — conversion o abbandono\nTiming: Automatica giorno stesso",
+    oggetto: "Earnext — il periodo di prova per [Nome Cliente] è terminato",
+    corpo: `Buongiorno [Nome],
+
+il periodo di prova per il cliente [Nome Cliente] su Earnext è terminato oggi.
+
+Per continuare a usufruire della piattaforma, attivi l'abbonamento per questo cliente.
+
+👉 Attivi l'abbonamento: https://app.earnext.com
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  abbonamento_attivato: {
+    trigger: "Trigger: Abbonamento attivato\nScore AI: Score alto — cliente attivo\nTiming: Immediata dopo attivazione ★ EMAIL NUOVA v3.0",
+    oggetto: "Earnext — abbonamento attivato, prossimi passi",
+    corpo: `Buongiorno [Nome],
+
+la ringraziamo per aver attivato l'abbonamento Earnext.
+
+Da questo momento può utilizzare la piattaforma per supportare in modo continuativo la relazione con i suoi clienti attraverso:
+• Aggregazione patrimoniale automatica
+• Report professionali personalizzabili
+• Simulazioni e pianificazione per obiettivi
+• Monitoraggio nel tempo
+
+Per aiutarla a ottenere il massimo valore fin dai primi giorni, le proponiamo una breve sessione operativa dedicata ai prossimi passi.
+
+👉 Prenoti una sessione operativa: https://www.earnext.com/it/contact
+
+Cordiali saluti,
+Il team Earnext`
+  },
+  basso_utilizzo: {
+    trigger: "Trigger: Login < 2 volte in 15 giorni dopo abbonamento\nScore AI: Activation score basso — retention a rischio\nTiming: 15 giorni dopo attivazione ★ EMAIL NUOVA v3.0",
+    oggetto: "Earnext — possiamo aiutarla ad attivare meglio la piattaforma?",
+    corpo: `Buongiorno [Nome],
+
+volevamo assicurarci che stia ottenendo il massimo valore dalla piattaforma.
+
+Molti professionisti ottengono i risultati migliori quando iniziano a:
+• Caricare più clienti e visualizzarne il patrimonio completo
+• Creare report patrimoniali da condividere con i clienti
+• Utilizzare le simulazioni per supportare la pianificazione
+• Costruire una visione più chiara e strutturata nella relazione consulenziale
+
+Se lo desidera, possiamo organizzare una sessione dedicata per aiutarla a impostare il flusso di lavoro più adatto alla sua attività.
+
+👉 Richieda supporto operativo: https://www.earnext.com/it/contact
+
+Cordiali saluti,
+Il team Earnext`
+  }
+};
+
+// ── EMAIL TAB SWITCHING ──
+function switchEmailTab(tab, btn) {
+  document.querySelectorAll('.email-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('email-pane-ai').style.display    = tab==='ai'     ? 'block' : 'none';
+  document.getElementById('email-pane-funnel').style.display = tab==='funnel' ? 'block' : 'none';
+}
+
+function updateFunnelEmail() {
+  const key = document.getElementById('funnel-stage-select').value;
+  const triggerBox = document.getElementById('funnel-trigger-box');
+  if (!key || !FUNNEL_EMAILS[key]) {
+    triggerBox.style.display = 'none';
+    document.getElementById('funnel-email-subject').textContent = 'Seleziona una fase funnel';
+    document.getElementById('funnel-email-body').innerHTML = '<span style="color:var(--text3);font-style:italic;">Seleziona una fase dal menu per vedere il testo.</span>';
+    return;
+  }
+  const em = FUNNEL_EMAILS[key];
+  // Get current lead name for personalization
+  const leadName = document.getElementById('lead-name') ? document.getElementById('lead-name').textContent.split(' ')[0] : '[Nome]';
+  const bodyPersonalized = em.corpo.replace(/\[Nome\]/g, leadName !== '—' ? leadName : '[Nome]');
+  document.getElementById('funnel-email-subject').textContent = em.oggetto;
+  document.getElementById('funnel-email-body').innerHTML = bodyPersonalized.replace(/\n/g,'<br>');
+  triggerBox.style.display = 'block';
+  document.getElementById('funnel-trigger-text').innerHTML = em.trigger.replace(/\n/g,'<br>');
+}
+
+function copyEmailContent(type) {
+  let subj, body;
+  if (type === 'ai') {
+    subj = document.getElementById('email-subject').textContent;
+    body = document.getElementById('email-body').innerText;
+  } else {
+    subj = document.getElementById('funnel-email-subject').textContent;
+    body = document.getElementById('funnel-email-body').innerText;
+  }
+  if (!subj || subj === '—' || subj === 'Seleziona una fase funnel') {
+    showToast('Nessuna email da copiare', true);
+    return;
+  }
+  navigator.clipboard.writeText('Oggetto: ' + subj + '\n\n' + body).catch(()=>{});
+  showToast('✓ Email copiata negli appunti');
+}
+
+// Override old copy button listener if present
+document.addEventListener('DOMContentLoaded', function() {
+  const oldCopy = document.querySelector('.btn-copy');
+  if (oldCopy) {
+    oldCopy.removeEventListener('click', ()=>{});
+  }
+});
+
+
+// DEMO LEAD LIST + HOME STATS
+function buildDemoLeadRows(){
+  return Object.entries(leads).map(([key,l]) => ({
+    __demoKey: key,
+    'Contact name': l.name,
+    'Account name': l.sub.split('•')[0].trim(),
+    'Contact role': l.sub.split('•')[0].trim(),
+    'City': (l.sub.split('•')[1]||'').trim(),
+    'Country': 'Italia',
+    'Readiness': l.scoreBadges.read === 'ALTA' ? 'Alta' : (l.scoreBadges.read === 'MEDIA' ? 'Media' : 'Bassa'),
+    'Conversion Score': l.scores.conv,
+    'Value Perception Score': l.scores.vp,
+    'Readiness Score': l.scores.read,
+    'Azione AI': l.scores.read >= 70 ? 'Sales Activation' : (l.scores.read >= 50 ? 'Onboarding Call' : 'Nurturing LLM'),
+    'Opp Stage': l.status,
+    'Hotness': l.scores.conv >= 70 ? 'Hot' : (l.scores.conv >= 50 ? 'Warm' : 'Cold'),
+    'Lead Source': l.tags[0] || 'Demo',
+    'Giorni ultimo contatto': l.last,
+    'Creation date': l.date,
+    'Email Oggetto': l.emailSubject,
+    'Email Corpo': l.emailBody
+  }));
+}
+
+function initDemoLeadList(){
+  if(csvLeads && csvLeads.length) return;
+  csvLeads = buildDemoLeadRows();
+  filteredCsvLeads = [...csvLeads];
+  document.getElementById('lead-list-panel').classList.add('visible');
+  document.getElementById('btn-prev').style.display='flex';
+  document.getElementById('btn-next').style.display='flex';
+  document.getElementById('llp-count').textContent=csvLeads.length+' demo';
+  document.querySelectorAll('.nav-badge').forEach(b=>b.textContent=csvLeads.length);
+  renderCsvLeadList();
+  selectCsvLead(0);
+  updateHomeStats();
+}
+
+function updateHomeStats(){
+  const data = (csvLeads && csvLeads.length) ? csvLeads : buildDemoLeadRows();
+  const total = data.length;
+  const alta = data.filter(l => (l['Readiness']||'').trim()==='Alta').length;
+  const media = data.filter(l => (l['Readiness']||'').trim()==='Media').length;
+  const bassa = data.filter(l => (l['Readiness']||'').trim()==='Bassa').length;
+  const set = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  set('home-total', total);
+  set('home-high', alta);
+  set('home-mid', media);
+  set('home-low', bassa);
+}
+
+// Initialize demo list when page loads
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(initDemoLeadList, 80);
+});
+
+// REPORT GENERATOR
+function getReportDataset(){
+  if(csvLeads && csvLeads.length){
+    return csvLeads;
+  }
+  return Object.values(leads).map(l => ({
+    'Contact name': l.name,
+    'Account name': l.sub.split('•')[0].trim(),
+    'Readiness': l.scoreBadges.read === 'ALTA' ? 'Alta' : (l.scoreBadges.read === 'MEDIA' ? 'Media' : 'Bassa'),
+    'Conversion Score': l.scores.conv,
+    'Value Perception Score': l.scores.vp,
+    'Readiness Score': l.scores.read,
+    'Azione AI': l.scores.read >= 70 ? 'Sales Activation' : (l.scores.read >= 50 ? 'Onboarding Call' : 'Nurturing LLM'),
+    'Opp Stage': l.status,
+    'Hotness': l.scores.conv >= 70 ? 'Hot' : (l.scores.conv >= 50 ? 'Warm' : 'Cold')
+  }));
+}
+
+function renderReport(){
+  const data = getReportDataset();
+  const total = data.length;
+  const alta = data.filter(l => (l['Readiness']||'').trim() === 'Alta').length;
+  const media = data.filter(l => (l['Readiness']||'').trim() === 'Media').length;
+  const bassa = data.filter(l => (l['Readiness']||'').trim() === 'Bassa').length;
+  const avgConv = total ? Math.round(data.reduce((s,l)=>s+parseInt(l['Conversion Score']||0),0)/total) : 0;
+  const avgVP = total ? Math.round(data.reduce((s,l)=>s+parseInt(l['Value Perception Score']||0),0)/total) : 0;
+  const salesAct = data.filter(l => (l['Azione AI']||'').toLowerCase().includes('sales')).length;
+  const nurturing = data.filter(l => (l['Azione AI']||'').toLowerCase().includes('nurturing')).length;
+  const onboarding = data.filter(l => (l['Azione AI']||'').toLowerCase().includes('onboarding')).length;
+
+  document.getElementById('rp-total').textContent = total;
+  document.getElementById('rp-alta').textContent = alta;
+  document.getElementById('rp-media').textContent = media;
+  document.getElementById('rp-bassa').textContent = bassa;
+
+  const altaPct = total ? Math.round((alta/total)*100) : 0;
+  const mediaPct = total ? Math.round((media/total)*100) : 0;
+  const bassaPct = total ? Math.round((bassa/total)*100) : 0;
+
+  document.getElementById('report-summary').innerHTML = `
+    <div class="report-p">Il sistema ha analizzato <strong>${total}</strong> lead/professionisti. Il <strong>${altaPct}%</strong> presenta readiness alta e dovrebbe essere indirizzato verso attività di sales activation.</div>
+    <div class="report-metric-row">
+      <div class="report-metric"><div class="num">${avgConv}</div><div class="lbl">Conversion Score medio</div></div>
+      <div class="report-metric"><div class="num">${avgVP}</div><div class="lbl">Value Perception media</div></div>
+      <div class="report-metric"><div class="num">${salesAct}</div><div class="lbl">Sales activation</div></div>
+    </div>
+  `;
+
+  document.getElementById('report-priorities').innerHTML = `
+    <div class="report-list">
+      <div class="report-li"><i class="ti ti-check"></i><span>Attivare rapidamente i lead con readiness alta: <strong>${alta}</strong> profili.</span></div>
+      <div class="report-li"><i class="ti ti-check"></i><span>Gestire i lead medi con contenuti mirati e onboarding: <strong>${media}</strong> profili.</span></div>
+      <div class="report-li"><i class="ti ti-check"></i><span>Inserire i lead freddi in nurturing educativo: <strong>${bassa}</strong> profili.</span></div>
+      <div class="report-li"><i class="ti ti-check"></i><span>Monitorare activation e utilizzo per ridurre il rischio churn post-vendita.</span></div>
+    </div>
+  `;
+
+  const top = [...data].sort((a,b)=>parseInt(b['Conversion Score']||0)-parseInt(a['Conversion Score']||0)).slice(0,8);
+  const tbody = document.getElementById('report-top-tbody');
+  tbody.innerHTML = top.map(l => {
+    const r = (l['Readiness']||'Bassa').trim();
+    const cls = r === 'Alta' ? 'p-hi' : (r === 'Media' ? 'p-me' : 'p-lo');
+    return `<tr>
+      <td><strong style="color:var(--navy);">${l['Contact name']||'—'}</strong></td>
+      <td>${l['Account name']||'—'}</td>
+      <td><span class="pill ${cls}">${r}</span></td>
+      <td><strong style="color:var(--teal-dp);">${l['Conversion Score']||0}</strong></td>
+      <td>${l['Azione AI']||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  const reportText =
+`REPORT AI CLIENT INTELLIGENCE — EARNEXT
+
+1. Executive Summary
+Il sistema ha analizzato ${total} lead/professionisti provenienti dal dataset CRM.
+La distribuzione della readiness evidenzia:
+- Alta readiness: ${alta} lead (${altaPct}%)
+- Media readiness: ${media} lead (${mediaPct}%)
+- Bassa readiness: ${bassa} lead (${bassaPct}%)
+
+Il Conversion Score medio è ${avgConv}/100, mentre la Value Perception media è ${avgVP}/100.
+
+2. Lettura strategica
+I lead con readiness alta rappresentano priorità commerciale immediata: hanno maggiore probabilità di conversione e richiedono intervento sales entro tempi brevi.
+I lead con readiness media devono essere accompagnati con contenuti mirati e follow-up consulenziale.
+I lead con readiness bassa vanno inseriti in un percorso di nurturing educativo, orientato alla comprensione del valore della piattaforma.
+
+3. Azioni raccomandate
+- Sales Activation: ${salesAct} lead
+- Onboarding / Call consulenziale: ${onboarding} lead
+- Nurturing educativo: ${nurturing} lead
+- Monitoraggio activation & usage per clienti già attivi
+
+4. Next Step
+Integrare il report nel processo commerciale settimanale, utilizzandolo come base per:
+- prioritizzazione sales
+- selezione email funnel
+- monitoraggio conversione
+- prevenzione churn post-attivazione
+
+Conclusione
+L’obiettivo del sistema non è automatizzare la relazione, ma identificare il momento corretto per renderla più efficace.`;
+
+  document.getElementById('report-output').textContent = reportText;
+  if(typeof addLog === 'function') addLog('✓ Report AI generato');
+}
+
+function copyReport(){
+  const el = document.getElementById('report-output');
+  const text = el ? el.innerText : '';
+  if(!text || text.includes('verrà generato')){
+    showToast('Genera prima il report', true);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(()=>showToast('✓ Report copiato negli appunti')).catch(()=>showToast('Impossibile copiare il report', true));
+}
+
+</script>
+</body>
+</html>
